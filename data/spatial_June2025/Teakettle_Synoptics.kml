@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+<name>Gaia GPS Export</name>
+<atom:author><atom:name>GaiaGPS running on iOS</atom:name></atom:author>
+<description><![CDATA[]]></description>
+<Style id="track"><LineStyle><color>7f0000ff</color><width>4</width></LineStyle></Style>
+<Style id="sh_green-circle"><IconStyle><scale>1.3</scale><Icon><href>http://maps.google.com/mapfiles/kml/paddle/grn-circle.png</href></Icon><hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/></IconStyle></Style>
+<Style id="sh_red-circle"><IconStyle><scale>1.3</scale><Icon><href>http://maps.google.com/mapfiles/kml/paddle/red-circle.png</href></Icon><hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/></IconStyle></Style>
+<Style id="sh_ylw-pushpin">
+<IconStyle>
+<scale>1.3</scale>
+<Icon>
+<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+</Icon>
+<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+</IconStyle>
+</Style>
+<Folder>
+<name>Waypoints</name>
+<description></description>
+
+<Placemark>
+<name>TECR03</name>
+<description><![CDATA[Location: 36.95606, -119.03290<br>
+Elevation: 6,991.5 ft<br>
+Time Created: 6/4/24, 12:16:29 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.03290,36.95606,2131.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TECR04</name>
+<description><![CDATA[Location: 36.95812, -119.03311<br>
+Elevation: 7,030.8 ft<br>
+Time Created: 6/4/24, 12:16:39 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.03311,36.95812,2143.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TECR07</name>
+<description><![CDATA[Location: 36.95624, -119.03866<br>
+Elevation: 7,303.1 ft<br>
+Time Created: 6/4/24, 12:25:45 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.03866,36.95624,2226.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TECR09</name>
+<description><![CDATA[Location: 36.96622, -119.04598<br>
+Elevation: 7,880.6 ft<br>
+Time Created: 6/4/24, 12:24:57 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.04598,36.96622,2402.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TEAK11</name>
+<description><![CDATA[Location: 36.97263, -119.04200<br>
+Elevation: 7,526.2 ft<br>
+Time Created: 6/4/24, 12:12:34 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.04200,36.97263,2294.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TECR08</name>
+<description><![CDATA[Location: 36.96289, -119.04227<br>
+Elevation: 7,365.5 ft<br>
+Time Created: 6/4/24, 12:17:40 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.04227,36.96289,2245.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TECR12</name>
+<description><![CDATA[Location: 36.95736, -119.04373<br>
+Elevation: 7,500.0 ft<br>
+Time Created: 6/4/24, 12:26:11 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.04373,36.95736,2286.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TECR-extra</name>
+<description><![CDATA[Location: 36.96897, -119.05129<br>
+Elevation: 7,808.4 ft<br>
+Time Created: 6/4/24, 12:24:10 PM PDT<br>
+Notes: Few small pools, no flow.
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.05129,36.96897,2380.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TEAK07</name>
+<description><![CDATA[Location: 36.96666, -119.03881<br>
+Elevation: 7,276.9 ft<br>
+Time Created: 6/4/24, 12:10:09 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.03881,36.96666,2218.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TEAK13</name>
+<description><![CDATA[Location: 36.97347, -119.04268<br>
+Elevation: 7,778.9 ft<br>
+Time Created: 6/4/24, 12:14:29 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.04268,36.97347,2371.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TECR06</name>
+<description><![CDATA[Location: 36.95565, -119.03873<br>
+Elevation: 7,267.1 ft<br>
+Time Created: 6/4/24, 12:25:57 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.03873,36.95565,2215.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TEAK02</name>
+<description><![CDATA[Location: 36.96111, -119.03006<br>
+Elevation: 7,007.9 ft<br>
+Time Created: 6/4/24, 12:09:15 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.03006,36.96111,2136.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TEAK10</name>
+<description><![CDATA[Location: 36.96920, -119.04133<br>
+Elevation: 7,519.7 ft<br>
+Time Created: 6/4/24, 12:12:20 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.04133,36.96920,2292.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TEAK05</name>
+<description><![CDATA[Location: 36.96392, -119.03643<br>
+Elevation: 7,208.0 ft<br>
+Time Created: 6/4/24, 12:10:02 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.03643,36.96392,2197.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TEAK04</name>
+<description><![CDATA[Location: 36.96107, -119.03309<br>
+Elevation: 7,073.5 ft<br>
+Time Created: 6/4/24, 12:09:33 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.03309,36.96107,2156.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TEAK14</name>
+<description><![CDATA[Location: 36.97683, -119.04820<br>
+Elevation: 7,988.8 ft<br>
+Time Created: 6/4/24, 12:15:08 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.04820,36.97683,2435.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TECR02</name>
+<description><![CDATA[Location: 36.95719, -119.03128<br>
+Elevation: 0.0 ft<br>
+Time Created: 5/30/25, 8:30:54 AM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.03128,36.95719,0.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TEAK01</name>
+<description><![CDATA[Location: 36.96085, -119.02789<br>
+Elevation: 6,857.0 ft<br>
+Time Created: 6/4/24, 12:06:41 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.02789,36.96085,2090.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>OUTLET</name>
+<description><![CDATA[Location: 36.95519, -119.02123<br>
+Elevation: 6,627.3 ft<br>
+Time Created: 6/4/24, 12:16:01 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.02123,36.95519,2020.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TECR-extra</name>
+<description><![CDATA[Location: 36.97159, -119.05103<br>
+Elevation: 0.0 ft<br>
+Time Created: 5/27/25, 12:58:54 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.05103,36.97159,0.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TECR-extra</name>
+<description><![CDATA[Location: 36.95765, -119.04473<br>
+Elevation: 0.0 ft<br>
+Time Created: 5/27/25, 11:16:19 AM PDT<br>
+Notes: Moved downstream from prior TECR14
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.04473,36.95765,0.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TECR13</name>
+<description><![CDATA[Location: 36.97086, -119.05036<br>
+Elevation: 0.0 ft<br>
+Time Created: 5/27/25, 12:52:06 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.05036,36.97086,0.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TEAK09</name>
+<description><![CDATA[Location: 36.97021, -119.04069<br>
+Elevation: 7,365.5 ft<br>
+Time Created: 6/4/24, 12:12:05 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.04069,36.97021,2245.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TECR-extra</name>
+<description><![CDATA[Location: 36.95737, -119.04444<br>
+Elevation: 0.0 ft<br>
+Time Created: 5/27/25, 11:05:15 AM PDT<br>
+Notes: Rename or finalize name
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.04444,36.95737,0.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TECR11</name>
+<description><![CDATA[Location: 36.96782, -119.04908<br>
+Elevation: 7,841.2 ft<br>
+Time Created: 6/4/24, 12:24:31 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.04908,36.96782,2390.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TECR01</name>
+<description><![CDATA[Location: 36.95520, -119.02354<br>
+Elevation: 0.0 ft<br>
+Time Created: 5/27/25, 9:00:30 AM PDT<br>
+Notes: Neon Site 
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.02354,36.95520,0.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TEAK08</name>
+<description><![CDATA[Location: 36.96670, -119.03960<br>
+Elevation: 7,368.8 ft<br>
+Time Created: 6/25/24, 7:38:54 AM PDT<br>
+Notes: Wet meadow between TEA8 and 9 (36.96670, -119.03960)
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.03960,36.96670,2246.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TEAK06</name>
+<description><![CDATA[Location: 36.96377, -119.03537<br>
+Elevation: 7,152.2 ft<br>
+Time Created: 6/4/24, 12:09:50 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.03537,36.96377,2180.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TECR10</name>
+<description><![CDATA[Location: 36.96627, -119.04751<br>
+Elevation: 7,650.9 ft<br>
+Time Created: 6/4/24, 12:23:48 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.04751,36.96627,2332.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TECR05</name>
+<description><![CDATA[Location: 36.95632, -119.03792<br>
+Elevation: 7,568.9 ft<br>
+Time Created: 6/4/24, 12:23:17 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.03792,36.95632,2307.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TEAK03</name>
+<description><![CDATA[Location: 36.96162, -119.02956<br>
+Elevation: 6,906.2 ft<br>
+Time Created: 6/4/24, 12:07:01 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.02956,36.96162,2105.0</coordinates>
+</Point>
+</Placemark>
+
+<Placemark>
+<name>TEAK12</name>
+<description><![CDATA[Location: 36.97355, -119.04217<br>
+Elevation: 7,726.4 ft<br>
+Time Created: 6/4/24, 12:14:17 PM PDT<br>
+]]></description>
+<styleUrl>#sh_ylw-pushpin</styleUrl>
+<Point>
+<coordinates>-119.04217,36.97355,2355.0</coordinates>
+</Point>
+</Placemark>
+
+</Folder></Document>
+</kml>
