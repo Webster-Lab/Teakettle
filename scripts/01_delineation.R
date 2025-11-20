@@ -3936,23 +3936,23 @@ drive_auth()
 2
 
 # save Google Drive folder ID
-folder_id = as_id("LINK")
+folder_id = as_id("https://drive.google.com/drive/folders/12aLuGibQChrLTg2kMwANlT5B-Cf8PRzd")
 
 # upload files one by one (there is probs a better way)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_DEM.tif", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shx", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR01/TECR01_DEM.tif", path = folder_id)
+drive_upload(media = "data/data_geo/TECR01/TECR01_stream_network.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR01/TECR01_stream_network.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR01/TECR01_stream_network.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR01/TECR01_stream_network.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR01/TECR01_watershed.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR01/TECR01_watershed.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR01/TECR01_watershed.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR01/TECR01_watershed.shx", path = folder_id)
 
 # Clear local folders #
 files <- list.files(path = "data/temp", full.names = TRUE)
 file.remove(files)
-files <- list.files(path = "data/data_geo/XXXXXX/", full.names = TRUE)
+files <- list.files(path = "data/data_geo/TECR01/", full.names = TRUE)
 file.remove(files)
 
 
@@ -4176,23 +4176,23 @@ drive_auth()
 2
 
 # save Google Drive folder ID
-folder_id = as_id("LINK")
+folder_id = as_id("https://drive.google.com/drive/folders/1AmiQaxxj6nQyNlq0jR3t8UAgJUK6jXGm")
 
 # upload files one by one (there is probs a better way)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_DEM.tif", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shx", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR02/TECR02_DEM.tif", path = folder_id)
+drive_upload(media = "data/data_geo/TECR02/TECR02_stream_network.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR02/TECR02_stream_network.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR02/TECR02_stream_network.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR02/TECR02_stream_network.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR02/TECR02_watershed.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR02/TECR02_watershed.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR02/TECR02_watershed.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR02/TECR02_watershed.shx", path = folder_id)
 
 # Clear local folders #
 files <- list.files(path = "data/temp", full.names = TRUE)
 file.remove(files)
-files <- list.files(path = "data/data_geo/XXXXXX/", full.names = TRUE)
+files <- list.files(path = "data/data_geo/TECR02/", full.names = TRUE)
 file.remove(files)
 
 
@@ -4417,23 +4417,23 @@ drive_auth()
 2
 
 # save Google Drive folder ID
-folder_id = as_id("LINK")
+folder_id = as_id("https://drive.google.com/drive/folders/1u9ch4Ik7pdZb0fr_eUFi7yZfIQrndnuP")
 
 # upload files one by one (there is probs a better way)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_DEM.tif", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shx", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR03/TECR03_DEM.tif", path = folder_id)
+drive_upload(media = "data/data_geo/TECR03/TECR03_stream_network.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR03/TECR03_stream_network.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR03/TECR03_stream_network.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR03/TECR03_stream_network.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR03/TECR03_watershed.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR03/TECR03_watershed.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR03/TECR03_watershed.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR03/TECR03_watershed.shx", path = folder_id)
 
 # Clear local folders #
 files <- list.files(path = "data/temp", full.names = TRUE)
 file.remove(files)
-files <- list.files(path = "data/data_geo/XXXXXX/", full.names = TRUE)
+files <- list.files(path = "data/data_geo/TECR03/", full.names = TRUE)
 file.remove(files)
 
 
@@ -4657,23 +4657,23 @@ drive_auth()
 2
 
 # save Google Drive folder ID
-folder_id = as_id("LINK")
+folder_id = as_id("https://drive.google.com/drive/folders/1A9fRh55FaKiYcibYyQgIx1wypkzJm5Yq")
 
 # upload files one by one (there is probs a better way)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_DEM.tif", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shx", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR04/TECR04_DEM.tif", path = folder_id)
+drive_upload(media = "data/data_geo/TECR04/TECR04_stream_network.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR04/TECR04_stream_network.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR04/TECR04_stream_network.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR04/TECR04_stream_network.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR04/TECR04_watershed.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR04/TECR04_watershed.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR04/TECR04_watershed.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR04/TECR04_watershed.shx", path = folder_id)
 
 # Clear local folders #
 files <- list.files(path = "data/temp", full.names = TRUE)
 file.remove(files)
-files <- list.files(path = "data/data_geo/XXXXXX/", full.names = TRUE)
+files <- list.files(path = "data/data_geo/TECR04/", full.names = TRUE)
 file.remove(files)
 
 
@@ -4897,23 +4897,23 @@ drive_auth()
 2
 
 # save Google Drive folder ID
-folder_id = as_id("LINK")
+folder_id = as_id("https://drive.google.com/drive/folders/1Scmuk_HN8-3CrfCgu_KMKICF0oYWFhjH")
 
 # upload files one by one (there is probs a better way)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_DEM.tif", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shx", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR05/TECR05_DEM.tif", path = folder_id)
+drive_upload(media = "data/data_geo/TECR05/TECR05_stream_network.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR05/TECR05_stream_network.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR05/TECR05_stream_network.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR05/TECR05_stream_network.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR05/TECR05_watershed.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR05/TECR05_watershed.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR05/TECR05_watershed.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR05/TECR05_watershed.shx", path = folder_id)
 
 # Clear local folders #
 files <- list.files(path = "data/temp", full.names = TRUE)
 file.remove(files)
-files <- list.files(path = "data/data_geo/XXXXXX/", full.names = TRUE)
+files <- list.files(path = "data/data_geo/TECR05/", full.names = TRUE)
 file.remove(files)
 
 
@@ -5136,23 +5136,23 @@ drive_auth()
 2
 
 # save Google Drive folder ID
-folder_id = as_id("LINK")
+folder_id = as_id("https://drive.google.com/drive/folders/109YaLvPPTASNtuyjyNQQEqtqQpyBeALV")
 
 # upload files one by one (there is probs a better way)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_DEM.tif", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shx", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR06/TECR06_DEM.tif", path = folder_id)
+drive_upload(media = "data/data_geo/TECR06/TECR06_stream_network.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR06/TECR06_stream_network.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR06/TECR06_stream_network.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR06/TECR06_stream_network.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR06/TECR06_watershed.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR06/TECR06_watershed.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR06/TECR06_watershed.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR06/TECR06_watershed.shx", path = folder_id)
 
 # Clear local folders #
 files <- list.files(path = "data/temp", full.names = TRUE)
 file.remove(files)
-files <- list.files(path = "data/data_geo/XXXXXX/", full.names = TRUE)
+files <- list.files(path = "data/data_geo/TECR06/", full.names = TRUE)
 file.remove(files)
 
 
@@ -5376,23 +5376,23 @@ drive_auth()
 2
 
 # save Google Drive folder ID
-folder_id = as_id("LINK")
+folder_id = as_id("https://drive.google.com/drive/folders/12ZUW7C1B6GorLIuCQ23IZ0B_JWMNbEcR")
 
 # upload files one by one (there is probs a better way)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_DEM.tif", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shx", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR12/TECR12_DEM.tif", path = folder_id)
+drive_upload(media = "data/data_geo/TECR12/TECR12_stream_network.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR12/TECR12_stream_network.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR12/TECR12_stream_network.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR12/TECR12_stream_network.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR12/TECR12_watershed.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR12/TECR12_watershed.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR12/TECR12_watershed.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR12/TECR12_watershed.shx", path = folder_id)
 
 # Clear local folders #
 files <- list.files(path = "data/temp", full.names = TRUE)
 file.remove(files)
-files <- list.files(path = "data/data_geo/XXXXXX/", full.names = TRUE)
+files <- list.files(path = "data/data_geo/TECR12/", full.names = TRUE)
 file.remove(files)
 
 
@@ -5617,23 +5617,23 @@ drive_auth()
 2
 
 # save Google Drive folder ID
-folder_id = as_id("LINK")
+folder_id = as_id("https://drive.google.com/drive/folders/1l648HXQ_-QHkTDQ69g3I8zGFt9CoR7H7")
 
 # upload files one by one (there is probs a better way)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_DEM.tif", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shx", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR07/TECR07_DEM.tif", path = folder_id)
+drive_upload(media = "data/data_geo/TECR07/TECR07_stream_network.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR07/TECR07_stream_network.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR07/TECR07_stream_network.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR07/TECR07_stream_network.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR07/TECR07_watershed.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR07/TECR07_watershed.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR07/TECR07_watershed.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR07/TECR07_watershed.shx", path = folder_id)
 
 # Clear local folders #
 files <- list.files(path = "data/temp", full.names = TRUE)
 file.remove(files)
-files <- list.files(path = "data/data_geo/XXXXXX/", full.names = TRUE)
+files <- list.files(path = "data/data_geo/TECR07/", full.names = TRUE)
 file.remove(files)
 
 
@@ -5857,23 +5857,23 @@ drive_auth()
 2
 
 # save Google Drive folder ID
-folder_id = as_id("LINK")
+folder_id = as_id("https://drive.google.com/drive/folders/1meoNl4vOTPyTU68J7LFnD-CSbRBcUn-b")
 
 # upload files one by one (there is probs a better way)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_DEM.tif", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shx", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR08/TECR08_DEM.tif", path = folder_id)
+drive_upload(media = "data/data_geo/TECR08/TECR08_stream_network.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR08/TECR08_stream_network.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR08/TECR08_stream_network.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR08/TECR08_stream_network.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR08/TECR08_watershed.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR08/TECR08_watershed.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR08/TECR08_watershed.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR08/TECR08_watershed.shx", path = folder_id)
 
 # Clear local folders #
 files <- list.files(path = "data/temp", full.names = TRUE)
 file.remove(files)
-files <- list.files(path = "data/data_geo/XXXXXX/", full.names = TRUE)
+files <- list.files(path = "data/data_geo/TECR08/", full.names = TRUE)
 file.remove(files)
 
 
@@ -6096,23 +6096,23 @@ drive_auth()
 2
 
 # save Google Drive folder ID
-folder_id = as_id("LINK")
+folder_id = as_id("https://drive.google.com/drive/folders/13Lj1Rx4wYZFwJGzqw1XeBk8qR7hnoaIl")
 
 # upload files one by one (there is probs a better way)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_DEM.tif", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shx", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR09/TECR09_DEM.tif", path = folder_id)
+drive_upload(media = "data/data_geo/TECR09/TECR09_stream_network.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR09/TECR09_stream_network.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR09/TECR09_stream_network.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR09/TECR09_stream_network.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR09/TECR09_watershed.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR09/TECR09_watershed.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR09/TECR09_watershed.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR09/TECR09_watershed.shx", path = folder_id)
 
 # Clear local folders #
 files <- list.files(path = "data/temp", full.names = TRUE)
 file.remove(files)
-files <- list.files(path = "data/data_geo/XXXXXX/", full.names = TRUE)
+files <- list.files(path = "data/data_geo/TECR09/", full.names = TRUE)
 file.remove(files)
 
 
@@ -6337,23 +6337,23 @@ drive_auth()
 2
 
 # save Google Drive folder ID
-folder_id = as_id("LINK")
+folder_id = as_id("https://drive.google.com/drive/folders/1U9pnO09-nNeUsIVLmILsU4pgnZxR_maQ")
 
 # upload files one by one (there is probs a better way)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_DEM.tif", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shx", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR10/TECR10_DEM.tif", path = folder_id)
+drive_upload(media = "data/data_geo/TECR10/TECR10_stream_network.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR10/TECR10_stream_network.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR10/TECR10_stream_network.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR10/TECR10_stream_network.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR10/TECR10_watershed.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR10/TECR10_watershed.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR10/TECR10_watershed.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR10/TECR10_watershed.shx", path = folder_id)
 
 # Clear local folders #
 files <- list.files(path = "data/temp", full.names = TRUE)
 file.remove(files)
-files <- list.files(path = "data/data_geo/XXXXXX/", full.names = TRUE)
+files <- list.files(path = "data/data_geo/TECR10/", full.names = TRUE)
 file.remove(files)
 
 
@@ -6577,23 +6577,23 @@ drive_auth()
 2
 
 # save Google Drive folder ID
-folder_id = as_id("LINK")
+folder_id = as_id("https://drive.google.com/drive/folders/174n19pF5_7UEvwAlW670QaeeQpjNS2jE")
 
 # upload files one by one (there is probs a better way)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_DEM.tif", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shx", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR11/TECR11_DEM.tif", path = folder_id)
+drive_upload(media = "data/data_geo/TECR11/TECR11_stream_network.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR11/TECR11_stream_network.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR11/TECR11_stream_network.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR11/TECR11_stream_network.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR11/TECR11_watershed.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR11/TECR11_watershed.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR11/TECR11_watershed.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR11/TECR11_watershed.shx", path = folder_id)
 
 # Clear local folders #
 files <- list.files(path = "data/temp", full.names = TRUE)
 file.remove(files)
-files <- list.files(path = "data/data_geo/XXXXXX/", full.names = TRUE)
+files <- list.files(path = "data/data_geo/TECR11/", full.names = TRUE)
 file.remove(files)
 
 
@@ -6818,22 +6818,22 @@ drive_auth()
 2
 
 # save Google Drive folder ID
-folder_id = as_id("LINK")
+folder_id = as_id("https://drive.google.com/drive/folders/1YBbhiwn4YUm22kSIxForvG44Wg1N3jkK")
 
 # upload files one by one (there is probs a better way)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_DEM.tif", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_stream_network.shx", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.dbf", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.prj", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shp", path = folder_id)
-drive_upload(media = "data/data_geo/XXXXXX/XXXXXX_watershed.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR13/TECR13_DEM.tif", path = folder_id)
+drive_upload(media = "data/data_geo/TECR13/TECR13_stream_network.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR13/TECR13_stream_network.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR13/TECR13_stream_network.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR13/TECR13_stream_network.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR13/TECR13_watershed.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR13/TECR13_watershed.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR13/TECR13_watershed.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR13/TECR13_watershed.shx", path = folder_id)
 
 # Clear local folders #
 files <- list.files(path = "data/temp", full.names = TRUE)
 file.remove(files)
-files <- list.files(path = "data/data_geo/XXXXXX/", full.names = TRUE)
+files <- list.files(path = "data/data_geo/TECR13/", full.names = TRUE)
 file.remove(files)
 
