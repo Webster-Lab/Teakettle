@@ -1,7 +1,8 @@
 ##==============================================================================
 ## Project: TEA
 ## Script to calculate subcatchment area using a digital elevation model
-## This script delineates each subcatchment separately. 
+## This script delineates each subcatchment separately and writes the resulting spatial files to Google Drive.
+## NOTE that if you create new deliniations of previously-saved delinations, you need to delete the old fies on Google Drive because they do not get overwritten with the current code (ideally, someone will add code to overwrite in future!).
 ## Author: Alex Webster
 ## Last update: Nov 20, 2025
 ##==============================================================================
@@ -44,6 +45,9 @@ June2025_r$Lon[June2025_r$siteID=="TEAK01"] = -119.02789
 # TEAK03
 June2025_r$Lat[June2025_r$siteID=="TEAK03"] = 36.96196
 June2025_r$Lon[June2025_r$siteID=="TEAK03"] = -119.02963
+# TEAK04
+June2025_r$Lat[June2025_r$siteID=="TEAK04"] = 36.96144
+June2025_r$Lon[June2025_r$siteID=="TEAK04"] = -119.03320
 # TEAK05
 June2025_r$Lat[June2025_r$siteID=="TEAK05"] = 36.96444
 June2025_r$Lon[June2025_r$siteID=="TEAK05"] = -119.03655
