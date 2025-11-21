@@ -224,4 +224,11 @@ write.csv(all_areas_r, "data/script_output/02_subcatareas/subcatareas_all.csv", 
 
 #### Clear spatial data from folders before pushing changes to GitHub ####
 
+# Clear local folders #
 
+for (folder in folder_names) {
+  # Construct the file path
+  folder_path <- paste0("data/data_geo/", folder, "/")
+  files <- list.files(path = folder_path, full.names = TRUE)
+  file.remove(files)
+}
