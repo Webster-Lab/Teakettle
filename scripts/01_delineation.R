@@ -1082,6 +1082,11 @@ files <- list.files(path = "data/data_geo/TEAK03/", full.names = TRUE)
 file.remove(files)
 
 ##############
+## TEAK03B ##
+#############
+# this site was added upstream of TEAK03 due to stream drying. The move was significant enough to warrant naming it something different. Need to delineate.
+
+##############
 ## TEAK04 ##
 ##############
 
@@ -5400,6 +5405,11 @@ files <- list.files(path = "data/data_geo/TECR12/", full.names = TRUE)
 file.remove(files)
 
 
+
+##############
+## TECR12B ##
+#############
+# this site was added upstream of TECR12 (upstream of an ephemeral trib) because we were concerned that TECR12 was redundant with TECR06. The move was significant enough to warrant naming it something different. Need to delineate.
 
 ##############
 ## TECR07 ##
