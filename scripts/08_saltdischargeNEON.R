@@ -69,8 +69,28 @@ saltq_files$data$files$name
 
 # look at the basic (not expanded) data table for Salt-based Discharge 
 saltq_june2017 <- read.csv(saltq_files$data$files$url
-                           [grep("sbd_fieldData.2017-06.basic.",
+                           [grep("sbd_backgroundFieldSaltData.2017-06.expanded.",
                                  saltq_files$data$files$name)])
+
+# saltq_june2017b <- read.csv(saltq_files$data$files$url
+                           [grep("sbd_plateauSampleFieldData.2017-06.expanded.",
+                                 saltq_files$data$files$name)])
+
+# saltq_june2017c <- read.csv(saltq_files$data$files$url
+                            [grep("sbd_conductivityFieldData.2017-06.expanded.",
+                                  saltq_files$data$files$name)])
+
+# saltq_june2017d <- read.csv(saltq_files$data$files$url
+                            [grep("sbd_backgroundFieldCondData.2017-06.expanded.",
+                                  saltq_files$data$files$name)])
+
+# saltq_june2017e <- read.csv(saltq_files$data$files$url
+                            [grep("sbd_fieldData.2017-06.expanded.",
+                                  saltq_files$data$files$name)])
+
+saltq_june2017f <- read.csv(saltq_files$data$files$url
+                            [grep("sbd_plateauMeasurementFieldData.2017-06.expanded.",
+                                  saltq_files$data$files$name)])
 
 # reformat Date and Time
 saltq_june2017$collectDate <- as.POSIXct(saltq_june2017$collectDate, format = "%Y-%m-%dT%H:%MZ")
@@ -86,3 +106,9 @@ drive_upload(
   path = as_id("https://drive.google.com/drive/u/0/folders/1JyEtf_4KDG9SwtedySrDD-yt3mSVPfbZ"),
   name = "saltq_june2017.csv"
 )
+
+#### Read me: Salt-based discharge was not pulled and collated. As seen above in lines 71-93,
+# there are several different files in this data package that seem to contain data of interest.
+# NEON does not recommend trying to bind these datasets into one. NEON's method for measuring
+# salt-based discharge was not clear. It might be wise to contact someone at NEON for an explanation,
+# then determine which datasets from the package are needed.

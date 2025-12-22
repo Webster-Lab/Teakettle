@@ -1619,3 +1619,77 @@ drive_upload(
 
 #### Read me ####
 # # -- As of 12/05/2025, there were no data after September 2023.
+
+#### Part 2: Read me ####
+# The following code is used to combine all of the individual CSVs into one CSV,
+# and to store that CSV in the same Google Drive folder for analysis.
+
+#### Libraries ####
+install.packages("googledrive")
+install.packages("tidyverse")
+
+library(googledrive)
+library(tidyverse)
+
+#### Local folders ####
+# List and delete the files in these folders. These folders will be used for each dataset.
+files <- list.files(path = "NEON", full.names = TRUE)
+file.remove(files)
+
+files <- list.files(path = "googledrive", full.names = TRUE)
+file.remove(files)
+
+#### Load data ####
+# Set up Google Drive folder
+fieldq <- googledrive::as_id("https://drive.google.com/drive/u/0/folders/1vYZBL9IYhINuo7vsnKxPFuOpZLjMS9EL")
+
+# List and filter CSV files with "N" in their names
+fieldq_files <- googledrive::drive_ls(path = fieldq, type = "csv")
+fieldq_files <- fieldq_files[grepl("fieldq", fieldq_files$name), ]
+
+# Create an empty list to store the cleaned data frames
+fieldq_list <- lapply(seq_along(fieldq_files$name), function(i) {
+  googledrive::drive_download(
+    file = fieldq_files$id[i],
+    path = paste0("googledrive/", fieldq_files$name[i]),
+    overwrite = TRUE
+  )
+  
+  # Read the CSV file
+  read.csv(paste0("googledrive/", fieldq_files$name[i]), header = TRUE)
+})
+
+# Assign names to the list elements based on the file names
+names(fieldq_list) <- fieldq_files$name
+
+# Check the contents of the list
+str(fieldq_list)
+
+#### Combine CSVs into one dataframe ####
+# Create a new dataframe for the merged files
+folder <- "googledrive"
+
+files <- list.files(folder, pattern = "\\.csv$", full.names = TRUE)
+
+combined_df <- NULL
+
+# Loop over files
+for (f in files) {
+  temp <- read.csv(f, stringsAsFactors = FALSE)
+  combined_df <- if (is.null(combined_df)) temp else rbind(combined_df, temp)
+}
+
+#### Write and rename the dataframe as a CSV ####
+write.csv(
+  combined_df,
+  file = "all_fielddischarge_data.csv",
+  row.names = FALSE
+)
+
+#### Upload CSV to the specific Google Drive folder ####
+folder_id <- drive_get("Discharge field collection")
+
+drive_upload(
+  "all_fielddischarge_data.csv",
+  path = folder_id,
+)

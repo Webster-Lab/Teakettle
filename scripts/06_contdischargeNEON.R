@@ -1471,3 +1471,80 @@ drive_upload(
 #### Read me ####
 # -- As of 12/04/2025, all data after September 2023 were "provisional," and because 
 # of this were not downloaded into the Google Drive.
+
+#### Part 2: Read me ####
+# The following code is used to combine all of the individual CSVs into one CSV,
+# and to store that CSV in the same Google Drive folder for analysis.
+
+#### NOTE: Continuous discharge data does not easily bind. Why do column names differ
+# across month-long datasets?
+
+#### Libraries ####
+install.packages("googledrive")
+install.packages("tidyverse")
+
+library(googledrive)
+library(tidyverse)
+
+#### Local folders ####
+# List and delete the files in these folders. These folders will be used for each dataset.
+files <- list.files(path = "NEON", full.names = TRUE)
+file.remove(files)
+
+files <- list.files(path = "googledrive", full.names = TRUE)
+file.remove(files)
+
+#### Load data ####
+# Set up Google Drive folder
+contq <- googledrive::as_id("https://drive.google.com/drive/u/0/folders/1QZ7O7nIpGZQxsbIjHfsc2gJGg0hDgt7V")
+
+# List and filter CSV files with "N" in their names
+contq_files <- googledrive::drive_ls(path = contq, type = "csv")
+contq_files <- contq_files[grepl("contq", contq_files$name), ]
+
+# Create an empty list to store the cleaned data frames
+contq_list <- lapply(seq_along(contq_files$name), function(i) {
+  googledrive::drive_download(
+    file = contq_files$id[i],
+    path = paste0("googledrive/", contq_files$name[i]),
+    overwrite = TRUE
+  )
+  
+  # Read the CSV file
+  read.csv(paste0("googledrive/", contq_files$name[i]), header = TRUE)
+})
+
+# Assign names to the list elements based on the file names
+names(contq_list) <- contq_files$name
+
+# Check the contents of the list
+str(contq_list)
+
+#### Combine CSVs into one dataframe ####
+# Create a new dataframe for the merged files
+folder <- "googledrive"
+
+files <- list.files(folder, pattern = "\\.csv$", full.names = TRUE)
+
+combined_df <- NULL
+
+# Loop over files
+for (f in files) {
+  temp <- read.csv(f, stringsAsFactors = FALSE)
+  combined_df <- if (is.null(combined_df)) temp else rbind(combined_df, temp)
+}
+
+#### Write and rename the dataframe as a CSV ####
+write.csv(
+  combined_df,
+  file = "all_contdischarge_data.csv",
+  row.names = FALSE
+)
+
+#### Upload CSV to the specific Google Drive folder ####
+folder_id <- drive_get("Continuous discharge")
+
+drive_upload(
+  "all_contdischarge_data.csv",
+  path = folder_id,
+)

@@ -1,4 +1,4 @@
-#### Read me ####
+#### Part 1: Read me ####
 # -- The following code is what was used to access nitrate data through 
 # NEON's API. Only published data were used. All CSVs were placed 
 # in the Google Drive folder, "Nitrate in surface water." 
@@ -58,8 +58,8 @@ length(N_urls)
 
 # show the first 10 URLs available
 N_urls[1:10]
-#### NOVEMBER 2018 ####
 
+#### NOVEMBER 2018 ####
 N_nov2018 <- GET(N_urls[grep("TECR/2018-11", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_nov2018, as = "text"))
 N_files$data$files$name
@@ -89,7 +89,6 @@ drive_upload(
 )
 
 #### DECEMBER 2018 ####
-
 N_dec2018 <- GET(N_urls[grep("TECR/2018-12", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_dec2018, as = "text"))
 N_files$data$files$name
@@ -119,7 +118,6 @@ drive_upload(
 )
 
 #### JANUARY 2019 ####
-
 N_jan2019 <- GET(N_urls[grep("TECR/2019-01", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_jan2019, as = "text"))
 N_files$data$files$name
@@ -149,7 +147,6 @@ drive_upload(
 )
 
 #### FEBRUARY 2019 ####
-
 N_feb2019 <- GET(N_urls[grep("TECR/2019-02", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_feb2019, as = "text"))
 N_files$data$files$name
@@ -179,7 +176,6 @@ drive_upload(
 )
 
 #### MARCH 2019 ####
-
 N_mar2019 <- GET(N_urls[grep("TECR/2019-03", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_mar2019, as = "text"))
 N_files$data$files$name
@@ -209,7 +205,6 @@ drive_upload(
 )
 
 #### APRIL 2019 ####
-
 N_apr2019 <- GET(N_urls[grep("TECR/2019-04", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_apr2019, as = "text"))
 N_files$data$files$name
@@ -239,7 +234,6 @@ drive_upload(
 )
 
 #### MAY 2019 ####
-
 N_may2019 <- GET(N_urls[grep("TECR/2019-05", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_may2019, as = "text"))
 N_files$data$files$name
@@ -269,7 +263,6 @@ drive_upload(
 )
 
 #### JUNE 2019 ####
-
 N_june2019 <- GET(N_urls[grep("TECR/2019-06", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_june2019, as = "text"))
 N_files$data$files$name
@@ -299,7 +292,6 @@ drive_upload(
 )
 
 #### JULY 2019 ####
-
 N_july2019 <- GET(N_urls[grep("TECR/2019-07", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_july2019, as = "text"))
 N_files$data$files$name
@@ -329,7 +321,6 @@ drive_upload(
 )
 
 #### AUGUST 2019 ####
-
 N_aug2019 <- GET(N_urls[grep("TECR/2019-08", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_aug2019, as = "text"))
 N_files$data$files$name
@@ -359,7 +350,6 @@ drive_upload(
 )
 
 #### SEPTEMBER 2019 ####
-
 N_sept2019 <- GET(N_urls[grep("TECR/2019-09", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_sept2019, as = "text"))
 N_files$data$files$name
@@ -389,7 +379,6 @@ drive_upload(
 )
 
 #### OCTOBER 2019 ####
-
 N_oct2019 <- GET(N_urls[grep("TECR/2019-10", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_oct2019, as = "text"))
 N_files$data$files$name
@@ -419,7 +408,6 @@ drive_upload(
 )
 
 #### NOVEMBER 2019 ####
-
 N_nov2019 <- GET(N_urls[grep("TECR/2019-11", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_nov2019, as = "text"))
 N_files$data$files$name
@@ -449,7 +437,6 @@ drive_upload(
 )
 
 #### DECEMBER 2019 ####
-
 N_dec2019 <- GET(N_urls[grep("TECR/2019-12", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_dec2019, as = "text"))
 N_files$data$files$name
@@ -479,7 +466,6 @@ drive_upload(
 )
 
 #### JANURARY 2020 ####
-
 N_jan2020 <- GET(N_urls[grep("TECR/2020-01", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_jan2020, as = "text"))
 N_files$data$files$name
@@ -509,7 +495,6 @@ drive_upload(
 )
 
 #### FEBRUARY 2020 ####
-
 N_feb2020 <- GET(N_urls[grep("TECR/2020-02", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_feb2020, as = "text"))
 N_files$data$files$name
@@ -539,7 +524,6 @@ drive_upload(
 )
 
 #### MARCH 2020 ####
-
 N_mar2020 <- GET(N_urls[grep("TECR/2020-03", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_mar2020, as = "text"))
 N_files$data$files$name
@@ -569,7 +553,6 @@ drive_upload(
 )
 
 #### APRIL 2020 ####
-
 N_apr2020 <- GET(N_urls[grep("TECR/2020-04", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_apr2020, as = "text"))
 N_files$data$files$name
@@ -599,7 +582,6 @@ drive_upload(
 )
 
 #### MAY 2020 ####
-
 N_may2020 <- GET(N_urls[grep("TECR/2020-05", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_may2020, as = "text"))
 N_files$data$files$name
@@ -629,7 +611,6 @@ drive_upload(
 )
 
 #### JUNE 2020 ####
-
 N_june2020 <- GET(N_urls[grep("TECR/2020-06", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_june2020, as = "text"))
 N_files$data$files$name
@@ -659,7 +640,6 @@ drive_upload(
 )
 
 #### JULY 2020 ####
-
 N_july2020 <- GET(N_urls[grep("TECR/2020-07", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_july2020, as = "text"))
 N_files$data$files$name
@@ -689,7 +669,6 @@ drive_upload(
 )
 
 #### AUGUST 2020 ####
-
 N_aug2020 <- GET(N_urls[grep("TECR/2020-08", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_aug2020, as = "text"))
 N_files$data$files$name
@@ -719,7 +698,6 @@ drive_upload(
 )
 
 #### SEPTEMBER 2020 ####
-
 N_sept2020 <- GET(N_urls[grep("TECR/2020-09", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_sept2020, as = "text"))
 N_files$data$files$name
@@ -749,7 +727,6 @@ drive_upload(
 )
 
 #### OCTOBER 2020 ####
-
 N_oct2020 <- GET(N_urls[grep("TECR/2020-10", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_oct2020, as = "text"))
 N_files$data$files$name
@@ -779,7 +756,6 @@ drive_upload(
 )
 
 #### NOVEMBER 2020 ####
-
 N_nov2020 <- GET(N_urls[grep("TECR/2020-11", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_nov2020, as = "text"))
 N_files$data$files$name
@@ -809,7 +785,6 @@ drive_upload(
 )
 
 #### DECEMBER 2020 ####
-
 N_dec2020 <- GET(N_urls[grep("TECR/2020-12", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_dec2020, as = "text"))
 N_files$data$files$name
@@ -839,7 +814,6 @@ drive_upload(
 ) 
 
 #### JANUARY 2021 ####
-
 N_jan2021 <- GET(N_urls[grep("TECR/2021-01", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_jan2021, as = "text"))
 N_files$data$files$name
@@ -869,7 +843,6 @@ drive_upload(
 ) 
 
 #### FEBRUARY 2021 ####
-
 N_feb2021 <- GET(N_urls[grep("TECR/2021-02", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_feb2021, as = "text"))
 N_files$data$files$name
@@ -899,7 +872,6 @@ drive_upload(
 ) 
 
 #### MARCH 2021 ####
-
 N_mar2021 <- GET(N_urls[grep("TECR/2021-03", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_mar2021, as = "text"))
 N_files$data$files$name
@@ -929,7 +901,6 @@ drive_upload(
 ) 
 
 #### APRIL 2021 ####
-
 N_apr2021 <- GET(N_urls[grep("TECR/2021-04", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_apr2021, as = "text"))
 N_files$data$files$name
@@ -959,7 +930,6 @@ drive_upload(
 ) 
 
 #### MAY 2021 ####
-
 N_may2021 <- GET(N_urls[grep("TECR/2021-05", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_may2021, as = "text"))
 N_files$data$files$name
@@ -989,7 +959,6 @@ drive_upload(
 ) 
 
 #### JUNE 2021 ####
-
 N_june2021 <- GET(N_urls[grep("TECR/2021-06", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_june2021, as = "text"))
 N_files$data$files$name
@@ -1019,7 +988,6 @@ drive_upload(
 ) 
 
 #### JULY 2021 ####
-
 N_july2021 <- GET(N_urls[grep("TECR/2021-07", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_july2021, as = "text"))
 N_files$data$files$name
@@ -1049,7 +1017,6 @@ drive_upload(
 ) 
 
 #### AUGUST 2021 ####
-
 N_aug2021 <- GET(N_urls[grep("TECR/2021-08", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_aug2021, as = "text"))
 N_files$data$files$name
@@ -1079,7 +1046,6 @@ drive_upload(
 ) 
 
 #### SEPTEMBER 2021 ####
-
 N_sept2021 <- GET(N_urls[grep("TECR/2021-09", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_sept2021, as = "text"))
 N_files$data$files$name
@@ -1109,7 +1075,6 @@ drive_upload(
 ) 
 
 #### OCTOBER 2021 ####
-
 N_oct2021 <- GET(N_urls[grep("TECR/2021-10", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_oct2021, as = "text"))
 N_files$data$files$name
@@ -1139,7 +1104,6 @@ drive_upload(
 ) 
 
 #### NOVEMBER 2021 ####
-
 N_nov2021 <- GET(N_urls[grep("TECR/2021-11", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_nov2021, as = "text"))
 N_files$data$files$name
@@ -1169,7 +1133,6 @@ drive_upload(
 ) 
 
 #### DECEMBER 2021 ####
-
 N_dec2021 <- GET(N_urls[grep("TECR/2021-12", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_dec2021, as = "text"))
 N_files$data$files$name
@@ -1199,7 +1162,6 @@ drive_upload(
 ) 
 
 #### JANUARY 2022 ####
-
 N_jan2022 <- GET(N_urls[grep("TECR/2022-01", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_jan2022, as = "text"))
 N_files$data$files$name
@@ -1229,7 +1191,6 @@ drive_upload(
 ) 
 
 #### FEBRUARY 2022 ####
-
 N_feb2022 <- GET(N_urls[grep("TECR/2022-02", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_feb2022, as = "text"))
 N_files$data$files$name
@@ -1259,7 +1220,6 @@ drive_upload(
 ) 
 
 #### MARCH 2022 ####
-
 N_mar2022 <- GET(N_urls[grep("TECR/2022-03", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_mar2022, as = "text"))
 N_files$data$files$name
@@ -1289,7 +1249,6 @@ drive_upload(
 ) 
 
 #### APRIL 2022 ####
-
 N_apr2022 <- GET(N_urls[grep("TECR/2022-04", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_apr2022, as = "text"))
 N_files$data$files$name
@@ -1319,7 +1278,6 @@ drive_upload(
 ) 
 
 #### MAY 2022 ####
-
 N_may2022 <- GET(N_urls[grep("TECR/2022-05", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_may2022, as = "text"))
 N_files$data$files$name
@@ -1349,7 +1307,6 @@ drive_upload(
 ) 
 
 #### JUNE 2022 ####
-
 N_june2022 <- GET(N_urls[grep("TECR/2022-06", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_june2022, as = "text"))
 N_files$data$files$name
@@ -1379,7 +1336,6 @@ drive_upload(
 ) 
 
 #### JULY 2022 ####
-
 N_july2022 <- GET(N_urls[grep("TECR/2022-07", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_july2022, as = "text"))
 N_files$data$files$name
@@ -1409,7 +1365,6 @@ drive_upload(
 ) 
 
 #### AUGUST 2022 ####
-
 N_aug2022 <- GET(N_urls[grep("TECR/2022-08", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_aug2022, as = "text"))
 N_files$data$files$name
@@ -1439,7 +1394,6 @@ drive_upload(
 ) 
 
 #### SEPTEMBER 2022 ####
-
 N_sept2022 <- GET(N_urls[grep("TECR/2022-09", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_sept2022, as = "text"))
 N_files$data$files$name
@@ -1469,7 +1423,6 @@ drive_upload(
 ) 
 
 #### OCTOBER 2022 ####
-
 N_oct2022 <- GET(N_urls[grep("TECR/2022-10", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_oct2022, as = "text"))
 N_files$data$files$name
@@ -1499,7 +1452,6 @@ drive_upload(
 ) 
 
 #### NOVEMBER 2022 ####
-
 N_nov2022 <- GET(N_urls[grep("TECR/2022-11", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_nov2022, as = "text"))
 N_files$data$files$name
@@ -1529,7 +1481,6 @@ drive_upload(
 ) 
 
 #### DECEMBER 2022 ####
-
 N_dec2022 <- GET(N_urls[grep("TECR/2022-12", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_dec2022, as = "text"))
 N_files$data$files$name
@@ -1559,7 +1510,6 @@ drive_upload(
 ) 
 
 #### JANUARY 2023 ####
-
 N_jan2023 <- GET(N_urls[grep("TECR/2023-01", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_jan2023, as = "text"))
 N_files$data$files$name
@@ -1589,7 +1539,6 @@ drive_upload(
 ) 
 
 #### FEBRUARY 2023 ####
-
 N_feb2023 <- GET(N_urls[grep("TECR/2023-02", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_feb2023, as = "text"))
 N_files$data$files$name
@@ -1619,7 +1568,6 @@ drive_upload(
 ) 
 
 #### MARCH 2023 ####
-
 N_mar2023 <- GET(N_urls[grep("TECR/2023-03", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_mar2023, as = "text"))
 N_files$data$files$name
@@ -1649,7 +1597,6 @@ drive_upload(
 ) 
 
 #### APRIL 2023 ####
-
 N_apr2023 <- GET(N_urls[grep("TECR/2023-04", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_apr2023, as = "text"))
 N_files$data$files$name
@@ -1679,7 +1626,6 @@ drive_upload(
 ) 
 
 #### MAY 2023 ####
-
 N_may2023 <- GET(N_urls[grep("TECR/2023-05", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_may2023, as = "text"))
 N_files$data$files$name
@@ -1709,7 +1655,6 @@ drive_upload(
 ) 
 
 #### JUNE 2023 ####
-
 N_june2023 <- GET(N_urls[grep("TECR/2023-06", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_june2023, as = "text"))
 N_files$data$files$name
@@ -1739,7 +1684,6 @@ drive_upload(
 ) 
 
 #### JULY 2023 ####
-
 N_july2023 <- GET(N_urls[grep("TECR/2023-07", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_july2023, as = "text"))
 N_files$data$files$name
@@ -1769,7 +1713,6 @@ drive_upload(
 ) 
 
 #### AUGUST 2023 ####
-
 N_aug2023 <- GET(N_urls[grep("TECR/2023-08", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_aug2023, as = "text"))
 N_files$data$files$name
@@ -1799,7 +1742,6 @@ drive_upload(
 ) 
 
 #### SEPTEMBER 2023 ####
-
 N_sept2023 <- GET(N_urls[grep("TECR/2023-09", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_sept2023, as = "text"))
 N_files$data$files$name
@@ -1829,7 +1771,6 @@ drive_upload(
 ) 
 
 #### OCTOBER 2023 ####
-
 N_oct2023 <- GET(N_urls[grep("TECR/2023-10", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_oct2023, as = "text"))
 N_files$data$files$name
@@ -1859,7 +1800,6 @@ drive_upload(
 ) 
 
 #### NOVEMBER 2023 ####
-
 N_nov2023 <- GET(N_urls[grep("TECR/2023-11", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_nov2023, as = "text"))
 N_files$data$files$name
@@ -1889,7 +1829,6 @@ drive_upload(
 ) 
 
 #### DECEMBER 2023 ####
-
 N_dec2023 <- GET(N_urls[grep("TECR/2023-12", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_dec2023, as = "text"))
 N_files$data$files$name
@@ -2089,5 +2028,78 @@ drive_upload(
   name = "N_june2024.csv"
 ) 
 #### Read me ####
-# -- As of 12/04/2025, all data after June 2024 were "provisional," and because 
-# of this were not downloaded into the Google Drive.
+# -- As of 12/04/2025, all data after June 2024 were "provisional.".
+
+#### Part 2: Read me ####
+# The following code is used to combine all of the individual CSVs into one CSV,
+# and to store that CSV in the same Google Drive folder for analysis.
+
+#### Libraries ####
+install.packages("googledrive")
+install.packages("tidyverse")
+
+library(googledrive)
+library(tidyverse)
+
+#### Local folders ####
+# List and delete the files in these folders. These folders will be used for each dataset.
+files <- list.files(path = "NEON", full.names = TRUE)
+file.remove(files)
+
+files <- list.files(path = "googledrive", full.names = TRUE)
+file.remove(files)
+
+#### Load data ####
+# Set up Google Drive folder
+nitrates <- googledrive::as_id("https://drive.google.com/drive/u/0/folders/1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7")
+
+# List and filter CSV files with "N" in their names
+nitrate_files <- googledrive::drive_ls(path = nitrates, type = "csv")
+nitrate_files <- nitrate_files[grepl("N", nitrate_files$name), ]
+
+# Create an empty list to store the cleaned data frames
+nitrate_list <- lapply(seq_along(nitrate_files$name), function(i) {
+  googledrive::drive_download(
+    file = nitrate_files$id[i],
+    path = paste0("googledrive/", nitrate_files$name[i]),
+    overwrite = TRUE
+  )
+  
+  # Read the CSV file
+  read.csv(paste0("googledrive/", nitrate_files$name[i]), header = TRUE)
+})
+
+# Assign names to the list elements based on the file names
+names(nitrate_list) <- nitrate_files$name
+
+# Check the contents of the list
+str(nitrate_list)
+
+#### Combine CSVs into one dataframe ####
+# Create a new dataframe for the merged files
+folder <- "googledrive"
+
+files <- list.files(folder, pattern = "\\.csv$", full.names = TRUE)
+
+combined_df <- NULL
+
+# Loop over files
+for (f in files) {
+  temp <- read.csv(f, stringsAsFactors = FALSE)
+  combined_df <- if (is.null(combined_df)) temp else rbind(combined_df, temp)
+}
+
+#### Write and rename the dataframe as a CSV ####
+write.csv(
+  combined_df,
+  file = "all_nitrate_data.csv",
+  row.names = FALSE
+)
+
+#### Upload CSV to the specific Google Drive folder ####
+folder_id <- drive_get("Nitrate in surface water")
+
+drive_upload(
+  "all_nitrate_data.csv",
+  path = folder_id,
+)

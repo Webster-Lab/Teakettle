@@ -1749,3 +1749,77 @@ drive_upload(
 
 #### Read me ####
 # # -- As of 12/08/2025, all data after September 2023 were "provisional."
+
+#### Part 2: Read me ####
+# The following code is used to combine all of the individual CSVs into one CSV,
+# and to store that CSV in the same Google Drive folder for analysis.
+
+#### Libraries ####
+install.packages("googledrive")
+install.packages("tidyverse")
+
+library(googledrive)
+library(tidyverse)
+
+#### Local folders ####
+# List and delete the files in these folders. These folders will be used for each dataset.
+files <- list.files(path = "NEON", full.names = TRUE)
+file.remove(files)
+
+files <- list.files(path = "googledrive", full.names = TRUE)
+file.remove(files)
+
+#### Load data ####
+# Set up Google Drive folder
+gauge <- googledrive::as_id("https://drive.google.com/drive/u/0/folders/1zth-iYIf-fqCzh2V6I5gS2DbXD-nQR1T")
+
+# List and filter CSV files with "N" in their names
+gauge_files <- googledrive::drive_ls(path = gauge, type = "csv")
+gauge_files <- gauge_files[grepl("gauge", gauge_files$name), ]
+
+# Create an empty list to store the cleaned data frames
+gauge_list <- lapply(seq_along(gauge_files$name), function(i) {
+  googledrive::drive_download(
+    file = gauge_files$id[i],
+    path = paste0("googledrive/", gauge_files$name[i]),
+    overwrite = TRUE
+  )
+  
+  # Read the CSV file
+  read.csv(paste0("googledrive/", gauge_files$name[i]), header = TRUE)
+})
+
+# Assign names to the list elements based on the file names
+names(gauge_list) <- gauge_files$name
+
+# Check the contents of the list
+str(gauge_list)
+
+#### Combine CSVs into one dataframe ####
+# Create a new dataframe for the merged files
+folder <- "googledrive"
+
+files <- list.files(folder, pattern = "\\.csv$", full.names = TRUE)
+
+combined_df <- NULL
+
+# Loop over files
+for (f in files) {
+  temp <- read.csv(f, stringsAsFactors = FALSE)
+  combined_df <- if (is.null(combined_df)) temp else rbind(combined_df, temp)
+}
+
+#### Write and rename the dataframe as a CSV ####
+write.csv(
+  combined_df,
+  file = "all_gaugeheight_data.csv",
+  row.names = FALSE
+)
+
+#### Upload CSV to the specific Google Drive folder ####
+folder_id <- drive_get("Gauge height")
+
+drive_upload(
+  "all_gaugeheight_data.csv",
+  path = folder_id,
+)
