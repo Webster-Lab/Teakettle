@@ -230,8 +230,6 @@ tss <- read.csv("2025_TSS.csv")
 doc_tdn <- read.csv("2025_DOC_TDN.csv")
 head(data)
 
-
-
 ############################################
 #### PRE-FIRE PROBABILITY DISTRIBUTIONS #### 
 ############################################
