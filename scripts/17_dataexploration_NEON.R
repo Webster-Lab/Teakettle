@@ -42,7 +42,358 @@ chem <- read.csv("all_waterchem_data.csv")
 wq <- read.csv("all_waterquality_data.csv")
 
 #### Make plots ####
-# list the datasets so you can use a "for" loop
-data_list <- list(gases, elevation, fieldQ, gaugeheight, isotopes, nitrate, temp, chem, wq)
 
-plots < list()
+## Dissolved gases
+# convert x-axis variable to POSIXct format
+gases$collectDate <- as.POSIXct(gases$collectDate)
+
+# methane
+ch4 <- ggplot(gases, aes(x = collectDate, y = concentrationCH4)) +
+  geom_point() +
+  labs(title = "Methane - NEON - Pre-fire",
+       x = "Time",
+       y = "Methane") +
+  theme_minimal()
+ch4
+
+ch4_vio <- ggplot(gases, aes(x = collectDate, y = concentrationCH4)) +
+  geom_violin() +
+  labs(title = "Methane - NEON - Pre-fire",
+       x = "Time",
+       y = "Methane") +
+  theme_minimal()
+ch4_vio
+
+# carbon dioxide
+co2 <- ggplot(gases, aes(x = collectDate, y = concentrationCO2)) +
+  geom_point() +
+  labs(title = "Carbon Dioxide - NEON - Pre-fire",
+       x = "Time",
+       y = "Carbon Dioxide") +
+  theme_minimal()
+co2
+
+co2_vio <- ggplot(gases, aes(x = collectDate, y = concentrationCO2)) +
+  geom_violin() +
+  labs(title = "Carbon Dioxide - NEON - Pre-fire",
+       x = "Time",
+       y = "Carbon Dioxide") +
+  theme_minimal()
+co2_vio
+
+# nitrous oxide
+n2o <- ggplot(gases, aes(x = collectDate, y = concentrationN2O)) +
+  geom_point() +
+  labs(title = "Nitrous Oxide - NEON - Pre-fire",
+       x = "Time",
+       y = "Nitrous Oxide") +
+  theme_minimal()
+n2o
+
+n2o_vio <- ggplot(gases, aes(x = collectDate, y = concentrationN2O)) +
+  geom_violin() +
+  labs(title = "Carbon Dioxide - NEON - Pre-fire",
+       x = "Time",
+       y = "Nitrous Oxide") +
+  theme_minimal()
+n2o_vio
+
+## Elevation
+# convert x-axis variable to POSIXct format
+elevation$startDateTime <- as.POSIXct(elevation$startDateTime)
+elevation$endDateTime <- as.POSIXct(elevation$endDateTime)
+
+elev <- ggplot(elevation, aes(x = endDateTime, y = surfacewaterElevMean)) +
+  geom_point() +
+  labs(title = "Surface Water Elevation - NEON - Pre-fire",
+       x = "Time",
+       y = "Elevation") +
+  theme_minimal()
+elev
+
+elev_vio <- ggplot(elevation, aes(x = endDateTime, y = surfacewaterElevMean)) +
+  geom_violin() +
+  labs(title = "Surface Water Elevation - NEON - Pre-fire",
+       x = "Time",
+       y = "Elevation") +
+  theme_minimal()
+elev_vio
+
+## Field discharge
+# convert x-axis variable to POSIXct format
+fieldQ$collectDate <- as.POSIXct(fieldQ$collectDate)
+
+# field discharge
+field_dis <- ggplot(fieldQ, aes(x = collectDate, y = finalDischarge)) +
+  geom_point() +
+  labs(title = "Discharge (field measurement) - NEON - Pre-fire",
+       x = "Time",
+       y = "Discharge") +
+  theme_minimal()
+field_dis
+
+field_dis_vio <- ggplot(fieldQ, aes(x = collectDate, y = finalDischarge)) +
+  geom_violin() +
+  labs(title = "Discharge (field measurement) - NEON - Pre-fire",
+       x = "Time",
+       y = "Discharge") +
+  theme_minimal()
+field_dis_vio
+
+# stage
+field_stage <- ggplot(fieldQ, aes(x = collectDate, y = streamStage)) +
+  geom_point() +
+  labs(title = "Stream stage - NEON - Pre-fire",
+       x = "Time",
+       y = "Stage") +
+  theme_minimal()
+field_stage
+
+field_stage_vio <- ggplot(fieldQ, aes(x = collectDate, y = streamStage)) +
+  geom_violin() +
+  labs(title = "Stream stage - NEON - Pre-fire",
+       x = "Time",
+       y = "Stage") +
+  theme_minimal()
+field_stage_vio
+
+# Gauge height
+# convert x-axis variable to POSIXct format
+gaugeheight$startDate <- as.POSIXct(gaugeheight$startDate)
+gaugeheight$endDate <- as.POSIXct(gaugeheight$endDate)
+
+# gauge height
+gauge <- ggplot(gaugeheight, aes(x = startDate, y = initialStageHeight)) +
+  geom_point() +
+  labs(title = "Gauge height - NEON - Pre-fire",
+      x = "Time",
+      y = "Stage") +
+  theme_minimal()
+gauge
+
+gauge_vio <- ggplot(gaugeheight, aes(x = startDate, y = initialStageHeight)) +
+  geom_violin() +
+  labs(title = "Gauge height - NEON - Pre-fire",
+       x = "Time",
+       y = "Stage") +
+  theme_minimal()
+gauge_vio
+
+# elevation
+gauge_elev <- ggplot(gaugeheight, aes(x = startDate, y = elevation)) +
+  geom_point() +
+  labs(title = "Elevation - NEON - Pre-fire",
+       x = "Time",
+       y = "Elevation") +
+  theme_minimal()
+gauge_elev
+
+gauge_elev_vio <- ggplot(gaugeheight, aes(x = startDate, y = elevation)) +
+  geom_violin() +
+  labs(title = "Elevation - NEON - Pre-fire",
+       x = "Time",
+       y = "Elevation") +
+  theme_minimal()
+gauge_elev_vio
+
+# Isotopes
+# convert x-axis variable to POSIXct format
+isotopes$collectDate <- as.POSIXct(isotopes$collectDate)
+
+# d18 - oxygen
+d18 <- ggplot(isotopes, aes(x = collectDate, y = d18OWater)) +
+  geom_point() +
+  labs(title = "d18O - NEON - Pre-fire",
+       x = "Time",
+       y = "d18O") +
+  theme_minimal()
+d18
+
+d18_vio <- ggplot(isotopes, aes(x = collectDate, y = d18OWater)) +
+  geom_violin() +
+  labs(title = "d18O - NEON - Pre-fire",
+       x = "Time",
+       y = "d18O") +
+  theme_minimal()
+d18_vio
+
+# d2 - hydrogen
+d2 <- ggplot(isotopes, aes(x = collectDate, y = d2HWater)) +
+  geom_point() +
+  labs(title = "d2H - NEON - Pre-fire",
+       x = "Time",
+       y = "d2H") +
+  theme_minimal()
+d2
+
+d2_vio <- ggplot(isotopes, aes(x = collectDate, y = d2HWater)) +
+  geom_violin() +
+  labs(title = "d2H - NEON - Pre-fire",
+       x = "Time",
+       y = "d2H") +
+  theme_minimal()
+d2_vio
+
+# Nitrates
+# convert x-axis variable to POSIXct format
+nitrate$startDateTime <- as.POSIXct(nitrate$startDateTime)
+nitrate$endDateTime <- as.POSIXct(nitrate$endDateTime)
+
+# total nitrogen
+n <- ggplot(nitrate, aes(x = endDateTime, y = surfWaterNitrateMean)) +
+  geom_point() +
+  labs(title = "Total Nitrogen - NEON - Pre-fire",
+       x = "Time",
+       y = "Total Nitrogen") +
+  theme_minimal()
+n
+
+n_vio <- ggplot(nitrate, aes(x = endDateTime, y = surfWaterNitrateMean)) +
+  geom_violin() +
+  labs(title = "Total Nitrogen - NEON - Pre-fire",
+       x = "Time",
+       y = "Total Nitrogen") +
+  theme_minimal()
+n_vio
+
+# Water temperature
+# convert x-axis variable to POSIXct format
+temp$startDateTime <- as.POSIXct(temp$startDateTime)
+
+# temp
+watertemp <- ggplot(temp, aes(x = startDateTime, y = surfacewaterTempMean)) +
+  geom_point() +
+  labs(title = "Surface Water Temperature - NEON - Pre-fire",
+       x = "Time",
+       y = "Temperature") +
+  theme_minimal()
+watertemp
+
+watertemp_vio <- ggplot(temp, aes(x = startDateTime, y = surfacewaterTempMean)) +
+  geom_violin() +
+  labs(title = "Surface Water Temperature - NEON - Pre-fire",
+       x = "Time",
+       y = "Temperature") +
+  theme_minimal()
+watertemp_vio
+
+# Water chemistry
+# convert x-axis variable to POSIXct format
+chem$collectDate <- as.POSIXct(chem$collectDate)
+
+all_chem <- ggplot(chem, aes(x = collectDate, y = analyteConcentration, color = analyte)) +
+  geom_point() +
+  labs(title = "Water Chemistry - NEON - Pre-fire",
+       x = "Time",
+       y = "Temperature") +
+  theme_minimal()
+all_chem
+
+# We probably don't need all of these variables...
+
+# Water quality
+# convert x-axis variable to POSIXct format
+wq$startDateTime <- as.POSIXct(wq$startDateTime)
+wq$endDateTime <- as.POSIXct(wq$endDateTime)
+
+# Specific conductance
+spc <- ggplot(wq, aes(x = startDateTime, y = specificConductance)) +
+  geom_point() +
+  labs(title = "SpC - NEON - Pre-fire",
+       x = "Time",
+       y = "Specific Conductance") +
+  theme_minimal()
+spc
+
+spc_vio <- ggplot(wq, aes(x = startDateTime, y = specificConductance)) +
+  geom_violin() +
+  labs(title = "SpC - NEON - Pre-fire",
+       x = "Time",
+       y = "Specific Conductance") +
+  theme_minimal()
+spc_vio
+
+# Dissolved oxygen
+do <- ggplot(wq, aes(x = startDateTime, y = dissolvedOxygen)) +
+  geom_point() +
+  labs(title = "D.O. - NEON - Pre-fire",
+       x = "Time",
+       y = "Dissolved Oxygen") +
+  theme_minimal()
+do
+
+do_vio <- ggplot(wq, aes(x = startDateTime, y = dissolvedOxygen)) +
+  geom_violin() +
+  labs(title = "D.O. - NEON - Pre-fire",
+       x = "Time",
+       y = "Dissolved Oxygen") +
+  theme_minimal()
+do_vio
+
+# pH
+ph <- ggplot(wq, aes(x = startDateTime, y = pH)) +
+  geom_point() +
+  labs(title = "pH - NEON - Pre-fire",
+       x = "Time",
+       y = "pH") +
+  theme_minimal()
+ph
+
+ph_vio <- ggplot(wq, aes(x = startDateTime, y = pH)) +
+  geom_violin() +
+  labs(title = "pH - NEON - Pre-fire",
+       x = "Time",
+       y = "pH") +
+  theme_minimal()
+ph_vio
+
+# Chlorophyll
+chloro <- ggplot(wq, aes(x = startDateTime, y = chlorophyll)) +
+  geom_point() +
+  labs(title = "Chlorophyll - NEON - Pre-fire",
+       x = "Time",
+       y = "Chlorophyll") +
+  theme_minimal()
+chloro
+
+chloro_vio <- ggplot(wq, aes(x = startDateTime, y = chlorophyll)) +
+  geom_violin() +
+  labs(title = "Chlorophyll - NEON - Pre-fire",
+       x = "Time",
+       y = "Chlorophyll") +
+  theme_minimal()
+chloro_vio
+
+# Turbidity
+turb <- ggplot(wq, aes(x = startDateTime, y = turbidity)) +
+  geom_point() +
+  labs(title = "Turbidity - NEON - Pre-fire",
+       x = "Time",
+       y = "Turbidity") +
+  theme_minimal()
+turb
+
+turb_vio <- ggplot(wq, aes(x = startDateTime, y = turbidity)) +
+  geom_violin() +
+  labs(title = "Turbidity - NEON - Pre-fire",
+       x = "Time",
+       y = "Turbidity") +
+  theme_minimal()
+turb_vio
+
+# fDOM
+fdom <- ggplot(wq, aes(x = startDateTime, y = fDOM)) +
+  geom_point() +
+  labs(title = "fDOM - NEON - Pre-fire",
+       x = "Time",
+       y = "fDOM") +
+  theme_minimal()
+fdom
+
+fdom_vio <- ggplot(wq, aes(x = startDateTime, y = fDOM)) +
+  geom_violin() +
+  labs(title = "fDOM - NEON - Pre-fire",
+       x = "Time",
+       y = "fDOM") +
+  theme_minimal()
+fdom_vio
