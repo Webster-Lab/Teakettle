@@ -41,9 +41,7 @@ temp <- read.csv("all_temp_data.csv")
 chem <- read.csv("all_waterchem_data.csv")
 wq <- read.csv("all_waterquality_data.csv")
 
-#### Make plots ####
-
-## Dissolved gases
+#### Dissolved gases ####
 # convert x-axis variable to POSIXct format
 gases$collectDate <- as.POSIXct(gases$collectDate)
 
@@ -98,7 +96,40 @@ n2o_vio <- ggplot(gases, aes(x = collectDate, y = concentrationN2O)) +
   theme_minimal()
 n2o_vio
 
-## Elevation
+#### Save plots to Google Drive ####
+# clear the local folder we used so it can be used elsewhere
+files <- list.files(path = "plots", full.names = TRUE)
+file.remove(files)
+
+plots <- list(ch4, ch4_vio, co2, co2_vio, n2o, n2o_vio)
+
+out_dir <- "plots"
+dir.create(out_dir, showWarnings = FALSE)
+
+# save to local folder
+for (i in seq_along(plots)) {
+  ggsave(
+    filename = file.path(out_dir, paste0("plot_", i, ".png")),
+    plot = plots[[i]],
+    width = 8,
+    height = 6,
+    dpi = 300
+  )
+}
+
+# get list of all files in your local folder
+plot_files <- list.files("plots", full.names = TRUE)
+
+# upload all of them
+lapply(plot_files, function(f) {
+  drive_upload(
+    media = f,
+    path = "https://drive.google.com/drive/u/0/folders/1F4butqJbV59XWKhwMlrDYoW2rZmhZXLR",  # Google Drive folder
+    name = basename(f)
+  )
+})
+
+#### Elevation ####
 # convert x-axis variable to POSIXct format
 elevation$startDateTime <- as.POSIXct(elevation$startDateTime)
 elevation$endDateTime <- as.POSIXct(elevation$endDateTime)
@@ -119,7 +150,40 @@ elev_vio <- ggplot(elevation, aes(x = endDateTime, y = surfacewaterElevMean)) +
   theme_minimal()
 elev_vio
 
-## Field discharge
+#### Save plots to Google Drive ####
+# clear the local folder we used so it can be used elsewhere
+files <- list.files(path = "plots", full.names = TRUE)
+file.remove(files)
+
+plots <- list(elev, elev_vio)
+
+out_dir <- "plots"
+dir.create(out_dir, showWarnings = FALSE)
+
+# save to local folder
+for (i in seq_along(plots)) {
+  ggsave(
+    filename = file.path(out_dir, paste0("plot_", i, ".png")),
+    plot = plots[[i]],
+    width = 8,
+    height = 6,
+    dpi = 300
+  )
+}
+
+# get list of all files in your local folder
+plot_files <- list.files("plots", full.names = TRUE)
+
+# upload all of them
+lapply(plot_files, function(f) {
+  drive_upload(
+    media = f,
+    path = "https://drive.google.com/drive/u/0/folders/1zlxEsaNg3Ywopf6zSTk7SXtxGZOFxKcx",  # Google Drive folder
+    name = basename(f)
+  )
+})
+
+#### Field discharge ####
 # convert x-axis variable to POSIXct format
 fieldQ$collectDate <- as.POSIXct(fieldQ$collectDate)
 
@@ -157,7 +221,40 @@ field_stage_vio <- ggplot(fieldQ, aes(x = collectDate, y = streamStage)) +
   theme_minimal()
 field_stage_vio
 
-# Gauge height
+#### Save plots to Google Drive ####
+# clear the local folder we used so it can be used elsewhere
+files <- list.files(path = "plots", full.names = TRUE)
+file.remove(files)
+
+plots <- list(field_dis, field_dis_vio, field_stage, field_stage_vio)
+
+out_dir <- "plots"
+dir.create(out_dir, showWarnings = FALSE)
+
+# save to local folder
+for (i in seq_along(plots)) {
+  ggsave(
+    filename = file.path(out_dir, paste0("plot_", i, ".png")),
+    plot = plots[[i]],
+    width = 8,
+    height = 6,
+    dpi = 300
+  )
+}
+
+# get list of all files in your local folder
+plot_files <- list.files("plots", full.names = TRUE)
+
+# upload all of them
+lapply(plot_files, function(f) {
+  drive_upload(
+    media = f,
+    path = "https://drive.google.com/drive/u/0/folders/1zcdPthcrbGpALtjAXWvCCLor2Ic5fmS5",  # Google Drive folder
+    name = basename(f)
+  )
+})
+
+#### Gauge height ####
 # convert x-axis variable to POSIXct format
 gaugeheight$startDate <- as.POSIXct(gaugeheight$startDate)
 gaugeheight$endDate <- as.POSIXct(gaugeheight$endDate)
@@ -196,7 +293,40 @@ gauge_elev_vio <- ggplot(gaugeheight, aes(x = startDate, y = elevation)) +
   theme_minimal()
 gauge_elev_vio
 
-# Isotopes
+#### Save plots to Google Drive ####
+# clear the local folder we used so it can be used elsewhere
+files <- list.files(path = "plots", full.names = TRUE)
+file.remove(files)
+
+plots <- list(gauge, gauge_vio, gauge_elev, gauge_elev_vio)
+  
+out_dir <- "plots"
+dir.create(out_dir, showWarnings = FALSE)
+
+# save to local folder
+for (i in seq_along(plots)) {
+  ggsave(
+    filename = file.path(out_dir, paste0("plot_", i, ".png")),
+    plot = plots[[i]],
+    width = 8,
+    height = 6,
+    dpi = 300
+  )
+}
+
+# get list of all files in your local folder
+plot_files <- list.files("plots", full.names = TRUE)
+
+# upload all of them
+lapply(plot_files, function(f) {
+  drive_upload(
+    media = f,
+    path = "https://drive.google.com/drive/u/0/folders/1Dfv-52BlWPPV1uCEBL3vvPhABTSoVT-C",  # Google Drive folder
+    name = basename(f)
+  )
+})
+
+#### Isotopes ####
 # convert x-axis variable to POSIXct format
 isotopes$collectDate <- as.POSIXct(isotopes$collectDate)
 
@@ -234,7 +364,40 @@ d2_vio <- ggplot(isotopes, aes(x = collectDate, y = d2HWater)) +
   theme_minimal()
 d2_vio
 
-# Nitrates
+#### Save plots to Google Drive ####
+# clear the local folder we used so it can be used elsewhere
+files <- list.files(path = "plots", full.names = TRUE)
+file.remove(files)
+
+plots <- list(d18, d18_vio, d2, d2_vio)
+
+out_dir <- "plots"
+dir.create(out_dir, showWarnings = FALSE)
+
+# save to local folder
+for (i in seq_along(plots)) {
+  ggsave(
+    filename = file.path(out_dir, paste0("plot_", i, ".png")),
+    plot = plots[[i]],
+    width = 8,
+    height = 6,
+    dpi = 300
+  )
+}
+
+# get list of all files in your local folder
+plot_files <- list.files("plots", full.names = TRUE)
+
+# upload all of them
+lapply(plot_files, function(f) {
+  drive_upload(
+    media = f,
+    path = "https://drive.google.com/drive/u/0/folders/12bGGYQ1_B_Qdn_EfEQRnXuzGn7R7LF9s",  # Google Drive folder
+    name = basename(f)
+  )
+})
+
+#### Nitrates ####
 # convert x-axis variable to POSIXct format
 nitrate$startDateTime <- as.POSIXct(nitrate$startDateTime)
 nitrate$endDateTime <- as.POSIXct(nitrate$endDateTime)
@@ -256,7 +419,40 @@ n_vio <- ggplot(nitrate, aes(x = endDateTime, y = surfWaterNitrateMean)) +
   theme_minimal()
 n_vio
 
-# Water temperature
+#### Save plots to Google Drive ####
+# clear the local folder we used so it can be used elsewhere
+files <- list.files(path = "plots", full.names = TRUE)
+file.remove(files)
+
+plots <- list(n, n_vio)
+
+out_dir <- "plots"
+dir.create(out_dir, showWarnings = FALSE)
+
+# save to local folder
+for (i in seq_along(plots)) {
+  ggsave(
+    filename = file.path(out_dir, paste0("plot_", i, ".png")),
+    plot = plots[[i]],
+    width = 8,
+    height = 6,
+    dpi = 300
+  )
+}
+
+# get list of all files in your local folder
+plot_files <- list.files("plots", full.names = TRUE)
+
+# upload all of them
+lapply(plot_files, function(f) {
+  drive_upload(
+    media = f,
+    path = "https://drive.google.com/drive/u/0/folders/1lwp55DiSi7Y3VyacO50yVGWuJD6pXo2c",  # Google Drive folder
+    name = basename(f)
+  )
+})
+
+#### Water temperature ####
 # convert x-axis variable to POSIXct format
 temp$startDateTime <- as.POSIXct(temp$startDateTime)
 
@@ -277,7 +473,40 @@ watertemp_vio <- ggplot(temp, aes(x = startDateTime, y = surfacewaterTempMean)) 
   theme_minimal()
 watertemp_vio
 
-# Water chemistry
+#### Save plots to Google Drive ####
+# clear the local folder we used so it can be used elsewhere
+files <- list.files(path = "plots", full.names = TRUE)
+file.remove(files)
+
+plots <- list(watertemp, watertemp_vio)
+
+out_dir <- "plots"
+dir.create(out_dir, showWarnings = FALSE)
+
+# save to local folder
+for (i in seq_along(plots)) {
+  ggsave(
+    filename = file.path(out_dir, paste0("plot_", i, ".png")),
+    plot = plots[[i]],
+    width = 8,
+    height = 6,
+    dpi = 300
+  )
+}
+
+# get list of all files in your local folder
+plot_files <- list.files("plots", full.names = TRUE)
+
+# upload all of them
+lapply(plot_files, function(f) {
+  drive_upload(
+    media = f,
+    path = "https://drive.google.com/drive/u/0/folders/1Z3HUTd1agLaQpqrkW1x6T-PuMhOossMr",  # Google Drive folder
+    name = basename(f)
+  )
+})
+
+#### Water chemistry ####
 # convert x-axis variable to POSIXct format
 chem$collectDate <- as.POSIXct(chem$collectDate)
 
@@ -291,7 +520,40 @@ all_chem
 
 # We probably don't need all of these variables...
 
-# Water quality
+#### Save plots to Google Drive ####
+# clear the local folder we used so it can be used elsewhere
+files <- list.files(path = "plots", full.names = TRUE)
+file.remove(files)
+
+plots <- list(all_chem)
+
+out_dir <- "plots"
+dir.create(out_dir, showWarnings = FALSE)
+
+# save to local folder
+for (i in seq_along(plots)) {
+  ggsave(
+    filename = file.path(out_dir, paste0("plot_", i, ".png")),
+    plot = plots[[i]],
+    width = 8,
+    height = 6,
+    dpi = 300
+  )
+}
+
+# get list of all files in your local folder
+plot_files <- list.files("plots", full.names = TRUE)
+
+# upload all of them
+lapply(plot_files, function(f) {
+  drive_upload(
+    media = f,
+    path = "https://drive.google.com/drive/u/0/folders/1O75VnCjDjYevyega1FtWjXGgTvcAR3YI",  # Google Drive folder
+    name = basename(f)
+  )
+})
+
+#### Water quality ####
 # convert x-axis variable to POSIXct format
 wq$startDateTime <- as.POSIXct(wq$startDateTime)
 wq$endDateTime <- as.POSIXct(wq$endDateTime)
@@ -397,3 +659,37 @@ fdom_vio <- ggplot(wq, aes(x = startDateTime, y = fDOM)) +
        y = "fDOM") +
   theme_minimal()
 fdom_vio
+
+#### Save plots to Google Drive ####
+# clear the local folder we used so it can be used elsewhere
+files <- list.files(path = "plots", full.names = TRUE)
+file.remove(files)
+
+plots <- list(spc, spc_vio, do, do_vio, ph, ph_vio, chloro, chloro_vio,
+              turb, turb_vio, fdom, fdom_vio)
+
+out_dir <- "plots"
+dir.create(out_dir, showWarnings = FALSE)
+
+# save to local folder
+for (i in seq_along(plots)) {
+  ggsave(
+    filename = file.path(out_dir, paste0("plot_", i, ".png")),
+    plot = plots[[i]],
+    width = 8,
+    height = 6,
+    dpi = 300
+  )
+}
+
+# get list of all files in your local folder
+plot_files <- list.files("plots", full.names = TRUE)
+
+# upload all of them
+lapply(plot_files, function(f) {
+  drive_upload(
+    media = f,
+    path = "https://drive.google.com/drive/u/0/folders/115olzrtHOBqg9NTxFCHadblt6GIrk2gu",  # Google Drive folder
+    name = basename(f)
+  )
+})
