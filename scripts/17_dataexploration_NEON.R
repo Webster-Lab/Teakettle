@@ -405,17 +405,17 @@ nitrate$endDateTime <- as.POSIXct(nitrate$endDateTime)
 # total nitrogen
 n <- ggplot(nitrate, aes(x = endDateTime, y = surfWaterNitrateMean)) +
   geom_point() +
-  labs(title = "Total Nitrogen - NEON - Pre-fire",
+  labs(title = "Nitrates - NEON - Pre-fire",
        x = "Time",
-       y = "Total Nitrogen") +
+       y = "Nitrates") +
   theme_minimal()
 n
 
 n_vio <- ggplot(nitrate, aes(x = endDateTime, y = surfWaterNitrateMean)) +
   geom_violin() +
-  labs(title = "Total Nitrogen - NEON - Pre-fire",
+  labs(title = "Nitrates - NEON - Pre-fire",
        x = "Time",
-       y = "Total Nitrogen") +
+       y = "Nitrates") +
   theme_minimal()
 n_vio
 
