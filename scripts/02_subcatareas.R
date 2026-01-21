@@ -35,7 +35,7 @@ library(googlesheets4)
 #### Load Data ####
 ###################
 
-# Below loades data from Google Drive that was written to Google Drive in the 01_deliniation.R script
+# Below loads data from Google Drive that was written to Google Drive in the 01_deliniation.R script
 
 #folder link to id
 jp_folder = "https://drive.google.com/drive/folders/10oUXtZCdOF1khwH2SD5KxUL0EVSl0GZv"
@@ -124,6 +124,7 @@ folder_names <- c("OUTLET",
                   "TECR10",
                   "TECR11",
                   'TECR12',
+                  'TECR12B',
                   'TECR13')
 
 # Create an empty list to store the shapefiles
@@ -163,7 +164,7 @@ all_areas <- do.call(rbind, areas_list)
 # delete tiny areas and geometries:
 all_areas = all_areas[ !rownames(all_areas) %in% c("TEAK10.2","TEAK12.2","TEAK12.3","TECR06.2","TECR06.3","TECR07.2"),]
 # rename siteIDs to get rid of duplicate nomenclature:
-rownames(all_areas) = substr(rownames(all_areas), start = 1, stop = 6)
+rownames(all_areas) = gsub("\\..*", "", rownames(all_areas))
 
 #### Plot the combined areas ####
 # Extract centroids

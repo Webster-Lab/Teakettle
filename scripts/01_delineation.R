@@ -25,6 +25,7 @@ library(whitebox)
 library(tmaptools)
 library(googledrive)
 
+
 ###############
 ## Load data ##
 ###############
@@ -34,6 +35,11 @@ June2025 = read_csv("data/spatial_June2025/Teakettle_Synoptics.csv")
 names(June2025) = c("Lon","Lat","Z", "siteID","Elev_ft",
                     "LatLon","Notes","TimeCreated") 
 June2025_r = June2025[,c(4,1,2)]
+
+# add TECR12B
+# this site was added upstream of TECR12 (upstream of an ephemeral trib) because we were concerned that TECR12 was redundant with TECR06. The move was significant enough to warrant naming it something different.
+temp = data.frame(siteID = "TECR12B", Lon = -119.04444, Lat = 36.95737)
+June2025_r = rbind(June2025_r, temp)
 
 # The below adjustments snap subcatchment outlets to correct locations (hopefully) and remove "extra" sites
 # Adjustments were made by selecting alternative waypoints in Gaia GPS + trial and error that things snapped correctly
@@ -82,6 +88,9 @@ June2025_r$Lon[June2025_r$siteID=="TECR07"] = -119.03875
 # TECR12
 June2025_r$Lat[June2025_r$siteID=="TECR12"] = 36.95725
 June2025_r$Lon[June2025_r$siteID=="TECR12"] = -119.04305
+# TECR12B
+June2025_r$Lat[June2025_r$siteID=="TECR12B"] = 36.95756
+June2025_r$Lon[June2025_r$siteID=="TECR12B"] = -119.04463
 
 
 ###############
@@ -115,6 +124,7 @@ newfolders <- c("OUTLET",
                "TECR10",
                "TECR11",
                'TECR12',
+               'TECR12B',
                'TECR13')
 for (i in newfolders){
   dir.create(file.path("data", "data_geo", i), recursive = TRUE)
@@ -5410,6 +5420,242 @@ file.remove(files)
 ## TECR12B ##
 #############
 # this site was added upstream of TECR12 (upstream of an ephemeral trib) because we were concerned that TECR12 was redundant with TECR06. The move was significant enough to warrant naming it something different. Need to delineate.
+
+
+# isolate lat lon
+TECR12B = June2025_r[June2025_r$siteID=="TECR12B",]
+
+#convert it into bare bones sf
+#tell it where your data is, what the coords are in the df, and the crs (FOR LAT LONG, WGS84)
+TECR12B_sf = st_as_sf(TECR12B, coords = c("Lon", "Lat"), 
+                     crs = '+proj=longlat +datum=WGS84 +no_defs')
+
+#reproject to utm 16
+TECR12B_sf = st_transform(TECR12B_sf, crs = '+proj=utm +zone=16 +datum=NAD83 +units=m +no_defs') %>% 
+  st_geometry()
+
+
+## Clear folders that we will use ##
+
+# List and delete all files in the folder
+files <- list.files(path = "data/data_geo/TECR12B/", full.names = TRUE)
+file.remove(files)
+
+files <- list.files(path = "data/temp", full.names = TRUE)
+file.remove(files)
+
+
+## PULL A DEM ##
+
+### (digital elevation model) ###
+## DEM - by AJS ##
+pour = as_Spatial(TECR12B_sf) # make pour points = spatial object
+pour # check dataset
+#convert Spatial Points to sf (simple features)
+pour_sf = st_as_sf(pour) 
+#use the sf object in get_elev_raster
+assign("has_internet_via_proxy", TRUE, environment(curl::has_internet))
+dem = get_elev_raster(pour_sf, z = 12, clip = "bbox", expand = 3000) # if area getting cut play around with expand number
+res(dem) # resolution in meters
+
+#### If det_elev_raster says: Please connect to the internet and try again
+#curl::has_internet()
+# and this is FALSE
+# Try this:
+#assign("has_internet_via_proxy", TRUE, environment(curl::has_internet))
+
+#plot the elevation
+plot(dem)
+
+#save the elevation raster in a folder called temp
+writeRaster(dem, paste0("data/temp/dem_TECR12B.tif"), overwrite = T)
+
+#plot with mapview to check
+mapview(dem) + mapview(pour_sf)
+
+
+## PREP DEM AND DELINEATE ##
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#Step 1: prep DEM and delineate
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#1.1 write DEM and TECR12B to temp
+#1.2 fill cell pits
+#1.3 breach depressions
+#1.4 write flow direction raster
+#1.5.2 write flow accumulation raster
+#1.5.2 write stream layer
+#1.6 snap pour point
+#1.7 delineate
+#1.8 read back into main
+#1.9 convert to polygons
+
+#whitebox functions do not work just using project directory, so you have to set the working directory
+#we are using all the files that are stored in the temp directory, so:
+getwd()
+#copy and paste that directory if that's where you are working from and make it a temp
+temp <- "Users/awebster2/Library/CloudStorage/Dropbox/Teakettle/Project Phase/R/TEA"
+
+# These next lines are pre-processing steps in digital elevation model (DEM) - they are creating intermediate files
+#1.1
+#Prepares the DEM and delineates the watershed through a series of steps:
+writeRaster(dem, paste0("data/temp/dem_TECR12B.tif"), overwrite = T)
+st_write(TECR12B_sf, paste0("data/temp/synoptics_TECR12B.shp"), delete_layer = T)
+
+#1.2
+#Fills single-cell pits (small depressions or pits in the elevation data are filled in)
+wbt_fill_single_cell_pits(
+  dem = "data/temp/dem_TECR12B.tif",
+  output = "data/temp/dem_TECR12B_fill.tif",
+  wd = temp)
+
+#1.3
+#Breaches depressions (remove artificial depressions or flat areas in the elevation data)
+wbt_breach_depressions(
+  dem = "data/temp/dem_TECR12B_fill.tif",
+  output = "data/temp/dem_TECR12B_fill_breach.tif",
+  wd = temp)
+
+
+#1.4
+#Assigns flow direction
+wbt_d8_pointer(
+  dem = "data/temp/dem_TECR12B_fill_breach.tif",
+  output = "data/temp/flowdir_TECR12B.tif",
+  wd = temp)
+
+
+#1.5
+#Computes flow accumulation
+wbt_d8_flow_accumulation(
+  input = "data/temp/dem_TECR12B_fill_breach.tif",
+  output = "data/temp/flowaccum_TECR12B.tif",
+  wd = temp
+)
+
+#1.6
+#Snaps pour points to the nearest flow path 
+wbt_snap_pour_points(
+  pour_pts = "data/temp/synoptics_TECR12B.shp",
+  flow_accum = "data/temp/flowaccum_TECR12B.tif",
+  snap_dist = 30,
+  output = "data/temp/snap_pour_TECR12B.shp",
+  wd = temp
+)
+
+###+++++ AJW code added to check that snapped pour point is on the correct flow accumulation stream ++++++++###
+# NOTE: The pour point MUST be on the right flow accumulation stream for the watershed to delineate correctly. 
+#If the point is not on the correct stream after snapping, the only way to fix it is to play around with moving the lat/lon closer to the target stream, 
+#then editing the lat/lon into the lat/lon csv, then rerunning the code to this point and checking that it got on the right stream, then delineating. 
+#You can also try changing the snap_dist in the snapping function, but that won't work if the point isn't closer to the right stream 
+#(it will likely end up on a different stream, or get stuck in non-stream land).
+
+#read stream raster
+streams <- raster("data/temp/flowaccum_TECR12B.tif") #flow accumulation, indicating the number of cells that contribute flow to each cell in the landscape.
+#filter out low-flow areas or noise in the flow accumulation raster
+#streams[streams<20] <- NA #THIS VALUE IS SOMETHING YOU PLAY AROUND WITH; there's no one answer
+#writes the modified streams raster to a new raster
+#writeRaster(streams, paste0("temp/cropped_streams_newmex.tif"), overwrite=T)
+
+#now use the new WBT functions to extract the streams!
+wbt_extract_streams(
+  flow_accum = "data/temp/flowaccum_TECR12B.tif",
+  output = "data/temp/streams_TECR12B.tif",
+  threshold = 20, # specifies the number of cells that contribute flow to each cell in the landscape. If small streams aren't showing up, lower this number!
+  wd = temp
+)
+
+wbt_raster_streams_to_vector(
+  streams = "data/temp/streams_TECR12B.tif",
+  d8_pntr = "data/temp/flowdir_TECR12B.tif",
+  output = "data/temp/streams_TECR12B.shp",
+  wd = temp
+)
+
+#input into R 
+#read shapefile containing stream data
+streams <- st_read(paste0("data/temp/streams_TECR12B.shp"))
+#assigns the coordinate reference system (CRS) of the stream data to match DEM system
+st_crs(streams) <- st_crs(dem)
+plot(streams)
+
+#input snapped pour pt
+pour_pt_snap <- st_read(paste0("data/temp/snap_pour_TECR12B.shp"))
+#assigns the coordinate reference system (CRS) of the stream data to match DEM system
+st_crs(pour_pt_snap) <- st_crs(dem)
+
+#### check if points are on stream
+mapview(dem, maxpixels = 742182) + 
+  mapview(streams) + mapview(pour_sf) + mapview(pour_pt_snap, color="red")
+
+###+++++ end AJW code added to check that snapped pour point is on the correct flow accumulation stream ++++++++###
+
+#1.7
+#Delineates the watershed 
+wbt_watershed(
+  d8_pntr = "data/temp/flowdir_TECR12B.tif",
+  pour_pts = "data/temp/snap_pour_TECR12B.shp",
+  output = "data/temp/shed_TECR12B.tif",
+  wd = temp
+)
+
+#1.8
+#be sure your watershed shapefile is pulled in so we can use polygon area to get WS area
+TECR12B_ws <- raster(paste0("data/temp/shed_TECR12B.tif"))
+
+mapview(TECR12B_ws, maxpixels =  2970452)
+
+#1.9
+#converts into a stars object, it is a multi-dimensional array that represents raster data.
+TECR12B_ws <- st_as_stars(TECR12B_ws) %>% st_as_sf(merge=T) #it says to skip but it works with this one
+
+#plots watershed shapefile
+mapview(TECR12B_ws)
+#writes shapefile to data folder
+#st_write(TECR12B_ws, paste0("data/data_geo/TECR12B/TECR12B_watershed.shp"), delete_layer = T)
+
+#plots dem raster with newmex shapefile
+mapview(TECR12B_ws) + mapview(dem) + mapview(pour_sf)
+
+#export all of these so we have them!
+st_write(TECR12B_ws, paste0("data/data_geo/TECR12B/TECR12B_watershed.shp"), delete_layer = T)
+st_write(streams, paste0("data/data_geo/TECR12B/TECR12B_stream_network.shp"), delete_layer = T)
+writeRaster(dem, paste0("data/data_geo/TECR12B/TECR12B_DEM.tif"), overwrite=T)
+
+#GET THE AREA OF YOUR WATERSHED POLYGONS (it has to be in sf format)
+(sum(st_area(TECR12B_ws)))/1000000 # in square km
+
+# #Check area is ok with flowdir
+# flowdir = raster('data/temp/flowdir_TECR12B.tif')
+# plot(flowdir) + plot(streams)
+# mapview(flowdir)+mapview(streams)+mapview(pour_sf)+mapview(TECR12B_ws)
+
+## WRITE DATA TO GOOGLE DRIVE ##
+
+# authenticate connection to Google Drive
+drive_auth() 
+2
+
+# save Google Drive folder ID
+folder_id = as_id("https://drive.google.com/drive/u/0/folders/1hfvkcJC_xW0WKSPBHpDa1XYFVbBiiAm3")
+
+# upload files one by one (there is probs a better way)
+drive_upload(media = "data/data_geo/TECR12B/TECR12B_DEM.tif", path = folder_id)
+drive_upload(media = "data/data_geo/TECR12B/TECR12B_stream_network.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR12B/TECR12B_stream_network.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR12B/TECR12B_stream_network.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR12B/TECR12B_stream_network.shx", path = folder_id)
+drive_upload(media = "data/data_geo/TECR12B/TECR12B_watershed.dbf", path = folder_id)
+drive_upload(media = "data/data_geo/TECR12B/TECR12B_watershed.prj", path = folder_id)
+drive_upload(media = "data/data_geo/TECR12B/TECR12B_watershed.shp", path = folder_id)
+drive_upload(media = "data/data_geo/TECR12B/TECR12B_watershed.shx", path = folder_id)
+
+# Clear local folders #
+files <- list.files(path = "data/temp", full.names = TRUE)
+file.remove(files)
+files <- list.files(path = "data/data_geo/TECR12B/", full.names = TRUE)
+file.remove(files)
+
 
 ##############
 ## TECR07 ##
