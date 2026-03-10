@@ -12,22 +12,39 @@ install.packages("googledrive")
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+library(lubridate)
 library(googledrive) # Make sure Google Drive authentication is updated, otherwise the connection won't work.
 
 #### Load data ####
-drive_find(n_max = 10) 
+# Replace with your folder ID
+folder_id <- "1p9D19AD-kVP1evKlDuaRglwtxDMNj7iM"
+
+# List all files inside that folder
+files_in_folder <- drive_ls(as_id(folder_id))
+files_in_folder
+
+
+# 3️ Loop through all files and download them
+for (i in seq_len(nrow(files_in_folder))) {
+  file <- files_in_folder[i, ]
+  drive_download(
+    as_id(file$id),
+    path = file$name,   # saves with the same name as in Drive
+    overwrite = TRUE
+  )
+}
 
 # Download the desired file to the working directory
-drive_download("all_dissolvedgases_data.csv", path = "all_dissolvedgases_data.csv", overwrite = TRUE)
-drive_download("all_elevation_data.csv", path = "all_elevation_data.csv", overwrite = TRUE)
-drive_download("all_fielddischarge_data.csv", path = "all_fielddischarge_data.csv", overwrite = TRUE)
-drive_download("all_gaugeheight_data.csv", path = "all_gaugeheight_data.csv", overwrite = TRUE)
-drive_download("all_isotope_data.csv", path = "all_isotope_data.csv", overwrite = TRUE)
-drive_download("all_nitrate_data.csv", path = "all_nitrate_data.csv", overwrite = TRUE)
-drive_download("all_ratingcurve_data.csv", path = "all_ratingcurve_data.csv", overwrite = TRUE)
-drive_download("all_temp_data.csv", path = "all_temp_data.csv", overwrite = TRUE)
-drive_download("all_waterchem_data.csv", path = "all_waterchem_data.csv", overwrite = TRUE)
-drive_download("all_waterquality_data.csv", path = "all_waterquality_data.csv", overwrite = TRUE)
+#drive_download( files_in_folder, path = "all_dissolvedgases_data.csv", overwrite = TRUE)
+#drive_download("all_elevation_data.csv", path = "all_elevation_data.csv", overwrite = TRUE)
+#drive_download("all_fielddischarge_data.csv", path = "all_fielddischarge_data.csv", overwrite = TRUE)
+#drive_download("all_gaugeheight_data.csv", path = "all_gaugeheight_data.csv", overwrite = TRUE)
+#drive_download("all_isotope_data.csv", path = "all_isotope_data.csv", overwrite = TRUE)
+#drive_download("all_nitrate_data.csv", path = "all_nitrate_data.csv", overwrite = TRUE)
+#drive_download("all_ratingcurve_data.csv", path = "all_ratingcurve_data.csv", overwrite = TRUE)
+#drive_download("all_temp_data.csv", path = "all_temp_data.csv", overwrite = TRUE)
+#drive_download("all_waterchem_data.csv", path = "all_waterchem_data.csv", overwrite = TRUE)
+#drive_download("all_waterquality_data.csv", path = "all_waterquality_data.csv", overwrite = TRUE)
 
 #### Load data into R ####
 # omitted rating curve because it's... different
@@ -518,6 +535,27 @@ all_chem <- ggplot(chem, aes(x = collectDate, y = analyteConcentration, color = 
   theme_minimal()
 all_chem
 
+
+##Trying a facet wrapped/geom smooth plot of water chemistry
+
+all_chem_facet <- ggplot(chem, aes(x = collectDate, y = analyteConcentration, color = analyte)) +
+  #geom_point() +
+  geom_smooth(se = FALSE) +
+  labs(
+    title = "Water Chemistry - NEON - Pre-fire",
+    x = "Time",
+    y = "Concentration"
+  ) +
+  theme_minimal() +
+  facet_wrap(~ analyte, scales = "free_y") +   # only y-axis varies
+  scale_x_date(
+    limits = as.Date(c("2018-01-01", "2024-12-31")),
+    date_breaks = "1 year",
+    date_labels = "%Y"
+  ) +
+  theme(legend.position = "none",  axis.text.x = element_text(angle = 45, hjust = 1))
+all_chem_facet
+
 # We probably don't need all of these variables...
 
 #### Save plots to Google Drive ####
@@ -693,3 +731,19 @@ lapply(plot_files, function(f) {
     name = basename(f)
   )
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
