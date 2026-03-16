@@ -29,6 +29,7 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(googledrive)
+library(purrr)
 
 #### Access data products ####
 # data product name: "Continuous Discharge" (DP4.00130.001)
@@ -105,7 +106,7 @@ write.csv(contq_dec2018, "contq_dec2018.csv", row.names = F)
 # Step 2: upload to Drive
 drive_upload(
   media = "contq_dec2018.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1contqZ7O7nIpGZcontqxsbIjHfsc2gJGg0hDgt7V"),
+  path = as_id("https://drive.google.com/drive/u/0/folders/1QZ7O7nIpGZQxsbIjHfsc2gJGg0hDgt7V"),
   name = "contq_dec2018.csv"
 )
 
@@ -893,9 +894,11 @@ contq_files <- jsonlite::fromJSON(content(contq_oct2021, as = "text"))
 contq_files$data$files$name
 
 # look at the basic (not expanded) data table for Continuous Discharge 
-contq_oct2021 <- read.csv(contq_files$data$files$url
-                           [grep("csd_continuousDischarge.2021-10.basic.",
-                                 contq_files$data$files$name)])
+contq_oct2021 <- read.csv(
+  contq_files$data$files$url[
+    grep("csd_15_min.2021-10.basic.", contq_files$data$files$name)
+  ]
+)
 
 # reformat Date and Time
 contq_oct2021$endDate <- as.POSIXct(contq_oct2021$endDate, format = "%Y-%m-%dT%H:%MZ")
@@ -919,7 +922,7 @@ contq_files$data$files$name
 
 # look at the basic (not expanded) data table for Continuous Discharge 
 contq_nov2021 <- read.csv(contq_files$data$files$url
-                          [grep("csd_continuousDischarge.2021-11.basic.",
+                          [grep("csd_15_min.2021-11.basic.",
                                 contq_files$data$files$name)])
 
 # reformat Date and Time
@@ -944,7 +947,7 @@ contq_files$data$files$name
 
 # look at the basic (not expanded) data table for Continuous Discharge 
 contq_dec2021 <- read.csv(contq_files$data$files$url
-                          [grep("csd_continuousDischarge.2021-12.basic.",
+                          [grep("csd_15_min.2021-12.basic.",
                                 contq_files$data$files$name)])
 
 # reformat Date and Time
@@ -968,7 +971,7 @@ contq_files$data$files$name
 
 # look at the basic (not expanded) data table for Continuous Discharge 
 contq_jan2022 <- read.csv(contq_files$data$files$url
-                          [grep("csd_continuousDischarge.2022-01.basic.",
+                          [grep("csd_15_min.2022-01.basic.",
                                 contq_files$data$files$name)])
 
 # reformat Date and Time
@@ -992,7 +995,7 @@ contq_files$data$files$name
 
 # look at the basic (not expanded) data table for Continuous Discharge 
 contq_feb2022 <- read.csv(contq_files$data$files$url
-                          [grep("csd_continuousDischarge.2022-02.basic.",
+                          [grep("csd_15_min.2022-02.basic.",
                                 contq_files$data$files$name)])
 
 # reformat Date and Time
@@ -1016,7 +1019,7 @@ contq_files$data$files$name
 
 # look at the basic (not expanded) data table for Continuous Discharge 
 contq_mar2022 <- read.csv(contq_files$data$files$url
-                          [grep("csd_continuousDischarge.2022-03.basic.",
+                          [grep("csd_15_min.2022-03.basic.",
                                 contq_files$data$files$name)])
 
 # reformat Date and Time
@@ -1040,7 +1043,7 @@ contq_files$data$files$name
 
 # look at the basic (not expanded) data table for Continuous Discharge 
 contq_apr2022 <- read.csv(contq_files$data$files$url
-                          [grep("csd_continuousDischarge.2022-04.basic.",
+                          [grep("csd_15_min.2022-04.basic.",
                                 contq_files$data$files$name)])
 
 # reformat Date and Time
@@ -1064,7 +1067,7 @@ contq_files$data$files$name
 
 # look at the basic (not expanded) data table for Continuous Discharge 
 contq_may2022 <- read.csv(contq_files$data$files$url
-                          [grep("csd_continuousDischarge.2022-05.basic.",
+                          [grep("csd_15_min.2022-05.basic.",
                                 contq_files$data$files$name)])
 
 # reformat Date and Time
@@ -1089,7 +1092,7 @@ contq_files$data$files$name
 
 # look at the basic (not expanded) data table for Continuous Discharge 
 contq_june2022 <- read.csv(contq_files$data$files$url
-                          [grep("csd_continuousDischarge.2022-06.basic.",
+                          [grep("csd_15_min.2022-06.basic.",
                                 contq_files$data$files$name)])
 
 # reformat Date and Time
@@ -1113,7 +1116,7 @@ contq_files$data$files$name
 
 # look at the basic (not expanded) data table for Continuous Discharge 
 contq_july2022 <- read.csv(contq_files$data$files$url
-                           [grep("csd_continuousDischarge.2022-07.basic.",
+                           [grep("csd_15_min.2022-07.basic.",
                                  contq_files$data$files$name)])
 
 # reformat Date and Time
@@ -1137,7 +1140,7 @@ contq_files$data$files$name
 
 # look at the basic (not expanded) data table for Continuous Discharge 
 contq_aug2022 <- read.csv(contq_files$data$files$url
-                           [grep("csd_continuousDischarge.2022-08.basic.",
+                           [grep("csd_15_min.2022-08.basic.",
                                  contq_files$data$files$name)])
 
 # reformat Date and Time
@@ -1162,7 +1165,7 @@ contq_files$data$files$name
 
 # look at the basic (not expanded) data table for Continuous Discharge 
 contq_sept2022 <- read.csv(contq_files$data$files$url
-                          [grep("csd_continuousDischarge.2022-09.basic.",
+                          [grep("csd_15_min.2022-09.basic.",
                                 contq_files$data$files$name)])
 
 # reformat Date and Time
@@ -1186,7 +1189,7 @@ contq_files$data$files$name
 
 # look at the basic (not expanded) data table for Continuous Discharge 
 contq_oct2022 <- read.csv(contq_files$data$files$url
-                           [grep("csd_continuousDischarge.2022-10.basic.",
+                           [grep("csd_15_min.2022-10.basic.",
                                  contq_files$data$files$name)])
 
 # reformat Date and Time
@@ -1210,7 +1213,7 @@ contq_files$data$files$name
 
 # look at the basic (not expanded) data table for Continuous Discharge 
 contq_nov2022 <- read.csv(contq_files$data$files$url
-                          [grep("csd_continuousDischarge.2022-11.basic.",
+                          [grep("csd_15_min.2022-11.basic.",
                                 contq_files$data$files$name)])
 
 # reformat Date and Time
@@ -1234,7 +1237,7 @@ contq_files$data$files$name
 
 # look at the basic (not expanded) data table for Continuous Discharge 
 contq_dec2022 <- read.csv(contq_files$data$files$url
-                          [grep("csd_continuousDischarge.2022-12.basic.",
+                          [grep("csd_15_min.2022-12.basic.",
                                 contq_files$data$files$name)])
 
 # reformat Date and Time
@@ -1258,7 +1261,7 @@ contq_files$data$files$name
 
 # look at the basic (not expanded) data table for Continuous Discharge 
 contq_jan2023 <- read.csv(contq_files$data$files$url
-                          [grep("csd_continuousDischarge.2023-01.basic.",
+                          [grep("csd_15_min.2023-01.basic.",
                                 contq_files$data$files$name)])
 
 # reformat Date and Time
@@ -1283,7 +1286,7 @@ contq_files$data$files$name
 
 # look at the basic (not expanded) data table for Continuous Discharge 
 contq_feb2023 <- read.csv(contq_files$data$files$url
-                          [grep("csd_continuousDischarge.2023-02.basic.",
+                          [grep("csd_15_min.2023-02.basic.",
                                 contq_files$data$files$name)])
 
 # reformat Date and Time
@@ -1307,7 +1310,7 @@ contq_files$data$files$name
 
 # look at the basic (not expanded) data table for Continuous Discharge 
 contq_mar2023 <- read.csv(contq_files$data$files$url
-                          [grep("csd_continuousDischarge.2023-03.basic.",
+                          [grep("csd_15_min.2023-03.basic.",
                                 contq_files$data$files$name)])
 
 # reformat Date and Time
@@ -1331,7 +1334,7 @@ contq_files$data$files$name
 
 # look at the basic (not expanded) data table for Continuous Discharge 
 contq_apr2023 <- read.csv(contq_files$data$files$url
-                          [grep("csd_continuousDischarge.2023-04.basic.",
+                          [grep("csd_15_min.2023-04.basic.",
                                 contq_files$data$files$name)])
 
 # reformat Date and Time
@@ -1355,7 +1358,7 @@ contq_files$data$files$name
 
 # look at the basic (not expanded) data table for Continuous Discharge 
 contq_may2023 <- read.csv(contq_files$data$files$url
-                          [grep("csd_continuousDischarge.2023-05.basic.",
+                          [grep("csd_15_min.2023-05.basic.",
                                 contq_files$data$files$name)])
 
 # reformat Date and Time
@@ -1379,7 +1382,7 @@ contq_files$data$files$name
 
 # look at the basic (not expanded) data table for Continuous Discharge 
 contq_june2023 <- read.csv(contq_files$data$files$url
-                          [grep("csd_continuousDischarge.2023-06.basic.",
+                          [grep("csd_15_min.2023-06.basic.",
                                 contq_files$data$files$name)])
 
 # reformat Date and Time
@@ -1403,7 +1406,7 @@ contq_files$data$files$name
 
 # look at the basic (not expanded) data table for Continuous Discharge 
 contq_july2023 <- read.csv(contq_files$data$files$url
-                           [grep("csd_continuousDischarge.2023-07.basic.",
+                           [grep("csd_15_min.2023-07.basic.",
                                  contq_files$data$files$name)])
 
 # reformat Date and Time
@@ -1427,7 +1430,7 @@ contq_files$data$files$name
 
 # look at the basic (not expanded) data table for Continuous Discharge 
 contq_aug2023 <- read.csv(contq_files$data$files$url
-                           [grep("csd_continuousDischarge.2023-08.basic.",
+                           [grep("csd_15_min.2023-08.basic.",
                                  contq_files$data$files$name)])
 
 # reformat Date and Time
@@ -1451,7 +1454,7 @@ contq_files$data$files$name
 
 # look at the basic (not expanded) data table for Continuous Discharge 
 contq_sept2023 <- read.csv(contq_files$data$files$url
-                          [grep("csd_continuousDischarge.2023-09.basic.",
+                          [grep("csd_15_min.2023-09.basic.",
                                 contq_files$data$files$name)])
 
 # reformat Date and Time
@@ -1480,11 +1483,99 @@ drive_upload(
 # across month-long datasets?
 
 #### Libraries ####
-install.packages("googledrive")
-install.packages("tidyverse")
 
 library(googledrive)
 library(tidyverse)
+
+
+# Google Drive folder
+contq_folder <- as_id("1QZ7O7nIpGZQxsbIjHfsc2gJGg0hDgt7V")
+
+# List files in the folder
+contq_files <- drive_ls(contq_folder)
+
+
+
+
+# List files
+contq_files <- drive_ls(contq_folder)
+
+# Read all files and then immediately delete them
+
+contq_list <- contq_files %>%
+  mutate(data = map2(id, name, function(file_id, filename) {
+    tmp <- tempfile(fileext = ".csv")
+    drive_download(file_id, path = tmp, overwrite = TRUE)
+    
+    # Read everything as character to prevent losing empty columns
+    df <- read_csv(tmp,
+                   col_types = cols(.default = "c"),
+                   name_repair = "minimal")
+    
+    df$source_file <- filename
+    unlink(tmp)
+    return(df)
+  }))
+
+
+#every other method is dropping data and being hella annoying so we're doing this the oldfashioned way...sorry
+contq_all <- bind_rows(contq_apr2019, contq_apr2020, contq_apr2021, contq_apr2022, contq_apr2023, contq_aug2019, contq_aug2020, contq_aug2021, contq_aug2022, contq_aug2023, 
+                       contq_dec2018, contq_dec2020, contq_dec2021, contq_dec2022, contq_feb2019, contq_feb2020, contq_feb2021, contq_feb2022, contq_feb2023, contq_jan2019, contq_jan2021,
+                       contq_jan2022, contq_jan2023, contq_july2019, contq_july2020, contq_july2021, contq_july2022, contq_july2023, contq_june2019, contq_june2020, contq_june2021, contq_june2022,
+                       contq_june2023, contq_mar2019, contq_mar2020, contq_mar2021, contq_mar2022, contq_mar2023, contq_may2019, contq_may2020, contq_may2021, contq_may2022, contq_may2023,
+                       contq_nov2018, contq_nov2019, contq_nov2020, contq_nov2020, contq_nov2021, contq_nov2022, contq_oct2019, contq_oct2020, contq_oct2021, contq_oct2022, contq_sept2019, contq_sept2020,
+                       contq_sept2021, contq_sept2022, contq_sept2023)
+
+
+#OK lots of problems still.  Once we decide what columns are needed, match up the old columns with the new ones.
+
+
+
+
+
+
+
+#### Write and rename the dataframe as a CSV ####
+write.csv(
+  contq_all,
+  file = "all_contdischarge_data.csv",
+  row.names = FALSE
+)
+
+#### Upload CSV to the specific Google Drive folder ####
+folder_id <- as_id("1QZ7O7nIpGZQxsbIjHfsc2gJGg0hDgt7V")
+
+drive_upload(
+  "all_contdischarge_data.csv",
+  path = folder_id,
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #### Local folders ####
 # List and delete the files in these folders. These folders will be used for each dataset.
@@ -1542,7 +1633,7 @@ write.csv(
 )
 
 #### Upload CSV to the specific Google Drive folder ####
-folder_id <- drive_get("Continuous discharge")
+folder_id <- as_id("https://drive.google.com/drive/u/0/folders/1QZ7O7nIpGZQxsbIjHfsc2gJGg0hDgt7V")
 
 drive_upload(
   "all_contdischarge_data.csv",
