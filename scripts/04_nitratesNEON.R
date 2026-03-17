@@ -59,6 +59,14 @@ length(N_urls)
 # show the first 10 URLs available
 N_urls[1:10]
 
+
+#create a folder to hold the csvs
+csv_folder <- "csvs"
+
+if (!dir.exists(csv_folder)) {
+  dir.create(csv_folder)
+}
+
 #### NOVEMBER 2018 ####
 N_nov2018 <- GET(N_urls[grep("TECR/2018-11", N_urls)])
 N_files <- jsonlite::fromJSON(content(N_nov2018, as = "text"))
@@ -74,18 +82,20 @@ N_nov2018$startDateTime <- as.POSIXct(N_nov2018$startDateTime, format = "%Y-%m-%
 N_nov2018$endDateTime <- as.POSIXct(N_nov2018$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_nov2018$adj_N_mean <- (N_nov2018$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_nov2018$adj_N_mean <- (N_nov2018$surfWaterNitrateMean * 0.014)
 
 ## Save the edited file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_nov2018, "N_nov2018.csv", row.names = F)
+write.csv(N_nov2018, "csvs/N_nov2018.csv", row.names = F)
 
 # Step 2: upload to Drive
+
 drive_upload(
   media = "N_nov2018.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
-  name = "N_nov2018.csv"
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
+  name = "N_nov2018.csv",
+  overwrite = TRUE
 )
 
 #### DECEMBER 2018 ####
@@ -103,17 +113,17 @@ N_dec2018$startDateTime <- as.POSIXct(N_dec2018$startDateTime, format = "%Y-%m-%
 N_dec2018$endDateTime <- as.POSIXct(N_dec2018$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_dec2018$adj_N_mean <- (N_dec2018$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_dec2018$adj_N_mean <- (N_dec2018$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_dec2018, "N_dec2018.csv", row.names = F)
+write.csv(N_dec2018, "csvs/N_dec2018.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_dec2018.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_dec2018.csv"
 )
 
@@ -132,17 +142,17 @@ N_jan2019$startDateTime <- as.POSIXct(N_jan2019$startDateTime, format = "%Y-%m-%
 N_jan2019$endDateTime <- as.POSIXct(N_jan2019$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_jan2019$adj_N_mean <- (N_jan2019$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_jan2019$adj_N_mean <- (N_jan2019$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_jan2019, "N_jan2019.csv", row.names = F)
+write.csv(N_jan2019, "csvs/N_jan2019.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_jan2019.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_jan2019.csv"
 )
 
@@ -161,17 +171,17 @@ N_feb2019$startDateTime <- as.POSIXct(N_feb2019$startDateTime, format = "%Y-%m-%
 N_feb2019$endDateTime <- as.POSIXct(N_feb2019$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_feb2019$adj_N_mean <- (N_feb2019$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_feb2019$adj_N_mean <- (N_feb2019$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_feb2019, "N_feb2019.csv", row.names = F)
+write.csv(N_feb2019, "csvs/N_feb2019.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_feb2019.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_feb2019.csv"
 )
 
@@ -190,17 +200,17 @@ N_mar2019$startDateTime <- as.POSIXct(N_mar2019$startDateTime, format = "%Y-%m-%
 N_mar2019$endDateTime <- as.POSIXct(N_mar2019$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_mar2019$adj_N_mean <- (N_mar2019$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_mar2019$adj_N_mean <- (N_mar2019$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_mar2019, "N_mar2019.csv", row.names = F)
+write.csv(N_mar2019, "csvs/N_mar2019.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_mar2019.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_mar2019.csv"
 )
 
@@ -220,16 +230,16 @@ N_apr2019$endDateTime <- as.POSIXct(N_apr2019$endDateTime, format = "%Y-%m-%dT%H
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
 # using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_apr2019$adj_N_mean <- (N_apr2019$surfWaterNitrateMean * 62.0049)/1000
+N_apr2019$adj_N_mean <- (N_apr2019$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_apr2019, "N_apr2019.csv", row.names = F)
+write.csv(N_apr2019, "csvs/N_apr2019.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_apr2019.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_apr2019.csv"
 )
 
@@ -248,17 +258,17 @@ N_may2019$startDateTime <- as.POSIXct(N_may2019$startDateTime, format = "%Y-%m-%
 N_may2019$endDateTime <- as.POSIXct(N_may2019$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_may2019$adj_N_mean <- (N_may2019$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_may2019$adj_N_mean <- (N_may2019$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_may2019, "N_may2019.csv", row.names = F)
+write.csv(N_may2019, "csvs/N_may2019.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_may2019.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_may2019.csv"
 )
 
@@ -277,17 +287,17 @@ N_june2019$startDateTime <- as.POSIXct(N_june2019$startDateTime, format = "%Y-%m
 N_june2019$endDateTime <- as.POSIXct(N_june2019$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_june2019$adj_N_mean <- (N_june2019$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_june2019$adj_N_mean <- (N_june2019$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_june2019, "N_june2019.csv", row.names = F)
+write.csv(N_june2019, "csvs/N_june2019.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_june2019.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_june2019.csv"
 )
 
@@ -306,17 +316,17 @@ N_july2019$startDateTime <- as.POSIXct(N_july2019$startDateTime, format = "%Y-%m
 N_july2019$endDateTime <- as.POSIXct(N_july2019$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_july2019$adj_N_mean <- (N_july2019$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_july2019$adj_N_mean <- (N_july2019$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_july2019, "N_july2019.csv", row.names = F)
+write.csv(N_july2019, "csvs/N_july2019.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_july2019.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_july2019.csv"
 )
 
@@ -335,17 +345,17 @@ N_aug2019$startDateTime <- as.POSIXct(N_aug2019$startDateTime, format = "%Y-%m-%
 N_aug2019$endDateTime <- as.POSIXct(N_aug2019$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_aug2019$adj_N_mean <- (N_aug2019$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_aug2019$adj_N_mean <- (N_aug2019$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_aug2019, "N_aug2019.csv", row.names = F)
+write.csv(N_aug2019, "csvs/N_aug2019.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_aug2019.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_aug2019.csv"
 )
 
@@ -364,17 +374,17 @@ N_sept2019$startDateTime <- as.POSIXct(N_sept2019$startDateTime, format = "%Y-%m
 N_sept2019$endDateTime <- as.POSIXct(N_sept2019$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_sept2019$adj_N_mean <- (N_sept2019$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_sept2019$adj_N_mean <- (N_sept2019$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_sept2019, "N_sept2019.csv", row.names = F)
+write.csv(N_sept2019, "csvs/N_sept2019.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_sept2019.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_sept2019.csv"
 )
 
@@ -393,17 +403,17 @@ N_oct2019$startDateTime <- as.POSIXct(N_oct2019$startDateTime, format = "%Y-%m-%
 N_oct2019$endDateTime <- as.POSIXct(N_oct2019$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_oct2019$adj_N_mean <- (N_oct2019$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_oct2019$adj_N_mean <- (N_oct2019$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_oct2019, "N_oct2019.csv", row.names = F)
+write.csv(N_oct2019, "csvs/N_oct2019.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_oct2019.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_oct2019.csv"
 )
 
@@ -422,17 +432,17 @@ N_nov2019$startDateTime <- as.POSIXct(N_nov2019$startDateTime, format = "%Y-%m-%
 N_nov2019$endDateTime <- as.POSIXct(N_nov2019$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_nov2019$adj_N_mean <- (N_nov2019$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_nov2019$adj_N_mean <- (N_nov2019$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_nov2019, "N_nov2019.csv", row.names = F)
+write.csv(N_nov2019, "csvs/N_nov2019.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_nov2019.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_nov2019.csv"
 )
 
@@ -451,17 +461,17 @@ N_dec2019$startDateTime <- as.POSIXct(N_dec2019$startDateTime, format = "%Y-%m-%
 N_dec2019$endDateTime <- as.POSIXct(N_dec2019$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_dec2019$adj_N_mean <- (N_dec2019$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_dec2019$adj_N_mean <- (N_dec2019$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_dec2019, "N_dec2019.csv", row.names = F)
+write.csv(N_dec2019, "csvs/N_dec2019.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_dec2019.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_dec2019.csv"
 )
 
@@ -480,17 +490,17 @@ N_jan2020$startDateTime <- as.POSIXct(N_jan2020$startDateTime, format = "%Y-%m-%
 N_jan2020$endDateTime <- as.POSIXct(N_jan2020$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_jan2020$adj_N_mean <- (N_jan2020$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_jan2020$adj_N_mean <- (N_jan2020$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_jan2020, "N_jan2020.csv", row.names = F)
+write.csv(N_jan2020, "csvs/N_jan2020.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_jan2020.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_jan2020.csv"
 )
 
@@ -509,17 +519,17 @@ N_feb2020$startDateTime <- as.POSIXct(N_feb2020$startDateTime, format = "%Y-%m-%
 N_feb2020$endDateTime <- as.POSIXct(N_feb2020$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_feb2020$adj_N_mean <- (N_feb2020$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_feb2020$adj_N_mean <- (N_feb2020$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_feb2020, "N_feb2020.csv", row.names = F)
+write.csv(N_feb2020, "csvs/N_feb2020.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_feb2020.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_feb2020.csv"
 )
 
@@ -538,17 +548,17 @@ N_mar2020$startDateTime <- as.POSIXct(N_mar2020$startDateTime, format = "%Y-%m-%
 N_mar2020$endDateTime <- as.POSIXct(N_mar2020$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_mar2020$adj_N_mean <- (N_mar2020$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_mar2020$adj_N_mean <- (N_mar2020$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_mar2020, "N_mar2020.csv", row.names = F)
+write.csv(N_mar2020, "csvs/N_mar2020.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_mar2020.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_mar2020.csv"
 )
 
@@ -567,17 +577,17 @@ N_apr2020$startDateTime <- as.POSIXct(N_apr2020$startDateTime, format = "%Y-%m-%
 N_apr2020$endDateTime <- as.POSIXct(N_apr2020$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_apr2020$adj_N_mean <- (N_apr2020$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_apr2020$adj_N_mean <- (N_apr2020$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_apr2020, "N_apr2020.csv", row.names = F)
+write.csv(N_apr2020, "csvs/N_apr2020.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_apr2020.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_apr2020.csv"
 )
 
@@ -596,17 +606,17 @@ N_may2020$startDateTime <- as.POSIXct(N_may2020$startDateTime, format = "%Y-%m-%
 N_may2020$endDateTime <- as.POSIXct(N_may2020$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_may2020$adj_N_mean <- (N_may2020$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_may2020$adj_N_mean <- (N_may2020$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_may2020, "N_may2020.csv", row.names = F)
+write.csv(N_may2020, "csvs/N_may2020.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_may2020.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_may2020.csv"
 )
 
@@ -625,17 +635,17 @@ N_june2020$startDateTime <- as.POSIXct(N_june2020$startDateTime, format = "%Y-%m
 N_june2020$endDateTime <- as.POSIXct(N_june2020$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_june2020$adj_N_mean <- (N_june2020$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_june2020$adj_N_mean <- (N_june2020$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_june2020, "N_june2020.csv", row.names = F)
+write.csv(N_june2020, "csvs/N_june2020.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_june2020.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_june2020.csv"
 )
 
@@ -654,17 +664,17 @@ N_july2020$startDateTime <- as.POSIXct(N_july2020$startDateTime, format = "%Y-%m
 N_july2020$endDateTime <- as.POSIXct(N_july2020$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_july2020$adj_N_mean <- (N_july2020$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_july2020$adj_N_mean <- (N_july2020$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_july2020, "N_july2020.csv", row.names = F)
+write.csv(N_july2020, "csvs/N_july2020.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_july2020.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_july2020.csv"
 )
 
@@ -683,17 +693,17 @@ N_aug2020$startDateTime <- as.POSIXct(N_aug2020$startDateTime, format = "%Y-%m-%
 N_aug2020$endDateTime <- as.POSIXct(N_aug2020$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_aug2020$adj_N_mean <- (N_aug2020$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_aug2020$adj_N_mean <- (N_aug2020$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_aug2020, "N_aug2020.csv", row.names = F)
+write.csv(N_aug2020, "csvs/N_aug2020.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_aug2020.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_aug2020.csv"
 )
 
@@ -712,17 +722,17 @@ N_sept2020$startDateTime <- as.POSIXct(N_sept2020$startDateTime, format = "%Y-%m
 N_sept2020$endDateTime <- as.POSIXct(N_sept2020$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_sept2020$adj_N_mean <- (N_sept2020$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_sept2020$adj_N_mean <- (N_sept2020$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_sept2020, "N_sept2020.csv", row.names = F)
+write.csv(N_sept2020, "csvs/N_sept2020.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_sept2020.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_sept2020.csv"
 )
 
@@ -741,17 +751,17 @@ N_oct2020$startDateTime <- as.POSIXct(N_oct2020$startDateTime, format = "%Y-%m-%
 N_oct2020$endDateTime <- as.POSIXct(N_oct2020$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_oct2020$adj_N_mean <- (N_oct2020$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_oct2020$adj_N_mean <- (N_oct2020$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_oct2020, "N_oct2020.csv", row.names = F)
+write.csv(N_oct2020, "csvs/N_oct2020.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_oct2020.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_oct2020.csv"
 )
 
@@ -770,17 +780,17 @@ N_nov2020$startDateTime <- as.POSIXct(N_nov2020$startDateTime, format = "%Y-%m-%
 N_nov2020$endDateTime <- as.POSIXct(N_nov2020$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_nov2020$adj_N_mean <- (N_nov2020$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_nov2020$adj_N_mean <- (N_nov2020$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_nov2020, "N_nov2020.csv", row.names = F)
+write.csv(N_nov2020, "csvs/N_nov2020.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_nov2020.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_nov2020.csv"
 )
 
@@ -799,17 +809,17 @@ N_dec2020$startDateTime <- as.POSIXct(N_dec2020$startDateTime, format = "%Y-%m-%
 N_dec2020$endDateTime <- as.POSIXct(N_dec2020$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_dec2020$adj_N_mean <- (N_dec2020$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_dec2020$adj_N_mean <- (N_dec2020$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_dec2020, "N_dec2020.csv", row.names = F)
+write.csv(N_dec2020, "csvs/N_dec2020.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_dec2020.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_dec2020.csv"
 ) 
 
@@ -828,17 +838,17 @@ N_jan2021$startDateTime <- as.POSIXct(N_jan2021$startDateTime, format = "%Y-%m-%
 N_jan2021$endDateTime <- as.POSIXct(N_jan2021$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_jan2021$adj_N_mean <- (N_jan2021$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_jan2021$adj_N_mean <- (N_jan2021$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_jan2021, "N_jan2021.csv", row.names = F)
+write.csv(N_jan2021, "csvs/N_jan2021.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_jan2021.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_jan2021.csv"
 ) 
 
@@ -857,17 +867,17 @@ N_feb2021$startDateTime <- as.POSIXct(N_feb2021$startDateTime, format = "%Y-%m-%
 N_feb2021$endDateTime <- as.POSIXct(N_feb2021$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_feb2021$adj_N_mean <- (N_feb2021$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_feb2021$adj_N_mean <- (N_feb2021$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_feb2021, "N_feb2021.csv", row.names = F)
+write.csv(N_feb2021, "csvs/N_feb2021.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_feb2021.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_feb2021.csv"
 ) 
 
@@ -886,17 +896,17 @@ N_mar2021$startDateTime <- as.POSIXct(N_mar2021$startDateTime, format = "%Y-%m-%
 N_mar2021$endDateTime <- as.POSIXct(N_mar2021$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_mar2021$adj_N_mean <- (N_mar2021$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_mar2021$adj_N_mean <- (N_mar2021$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_mar2021, "N_mar2021.csv", row.names = F)
+write.csv(N_mar2021, "csvs/N_mar2021.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_mar2021.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_mar2021.csv"
 ) 
 
@@ -915,17 +925,17 @@ N_apr2021$startDateTime <- as.POSIXct(N_apr2021$startDateTime, format = "%Y-%m-%
 N_apr2021$endDateTime <- as.POSIXct(N_apr2021$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_apr2021$adj_N_mean <- (N_apr2021$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_apr2021$adj_N_mean <- (N_apr2021$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_apr2021, "N_apr2021.csv", row.names = F)
+write.csv(N_apr2021, "csvs/N_apr2021.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_apr2021.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_apr2021.csv"
 ) 
 
@@ -944,17 +954,17 @@ N_may2021$startDateTime <- as.POSIXct(N_may2021$startDateTime, format = "%Y-%m-%
 N_may2021$endDateTime <- as.POSIXct(N_may2021$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_may2021$adj_N_mean <- (N_may2021$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_may2021$adj_N_mean <- (N_may2021$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_may2021, "N_may2021.csv", row.names = F)
+write.csv(N_may2021, "csvs/N_may2021.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_may2021.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_may2021.csv"
 ) 
 
@@ -973,17 +983,17 @@ N_june2021$startDateTime <- as.POSIXct(N_june2021$startDateTime, format = "%Y-%m
 N_june2021$endDateTime <- as.POSIXct(N_june2021$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_june2021$adj_N_mean <- (N_june2021$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_june2021$adj_N_mean <- (N_june2021$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_june2021, "N_june2021.csv", row.names = F)
+write.csv(N_june2021, "csvs/N_june2021.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_june2021.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_june2021.csv"
 ) 
 
@@ -1002,17 +1012,17 @@ N_july2021$startDateTime <- as.POSIXct(N_july2021$startDateTime, format = "%Y-%m
 N_july2021$endDateTime <- as.POSIXct(N_july2021$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_july2021$adj_N_mean <- (N_july2021$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_july2021$adj_N_mean <- (N_july2021$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_july2021, "N_july2021.csv", row.names = F)
+write.csv(N_july2021, "csvs/N_july2021.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_july2021.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_july2021.csv"
 ) 
 
@@ -1031,17 +1041,17 @@ N_aug2021$startDateTime <- as.POSIXct(N_aug2021$startDateTime, format = "%Y-%m-%
 N_aug2021$endDateTime <- as.POSIXct(N_aug2021$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_aug2021$adj_N_mean <- (N_aug2021$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_aug2021$adj_N_mean <- (N_aug2021$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_aug2021, "N_aug2021.csv", row.names = F)
+write.csv(N_aug2021, "csvs/N_aug2021.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_aug2021.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_aug2021.csv"
 ) 
 
@@ -1060,17 +1070,17 @@ N_sept2021$startDateTime <- as.POSIXct(N_sept2021$startDateTime, format = "%Y-%m
 N_sept2021$endDateTime <- as.POSIXct(N_sept2021$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_sept2021$adj_N_mean <- (N_sept2021$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_sept2021$adj_N_mean <- (N_sept2021$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_sept2021, "N_sept2021.csv", row.names = F)
+write.csv(N_sept2021, "csvs/N_sept2021.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_sept2021.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_sept2021.csv"
 ) 
 
@@ -1089,17 +1099,17 @@ N_oct2021$startDateTime <- as.POSIXct(N_oct2021$startDateTime, format = "%Y-%m-%
 N_oct2021$endDateTime <- as.POSIXct(N_oct2021$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_oct2021$adj_N_mean <- (N_oct2021$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_oct2021$adj_N_mean <- (N_oct2021$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_oct2021, "N_oct2021.csv", row.names = F)
+write.csv(N_oct2021, "csvs/N_oct2021.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_oct2021.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_oct2021.csv"
 ) 
 
@@ -1118,17 +1128,17 @@ N_nov2021$startDateTime <- as.POSIXct(N_nov2021$startDateTime, format = "%Y-%m-%
 N_nov2021$endDateTime <- as.POSIXct(N_nov2021$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_nov2021$adj_N_mean <- (N_nov2021$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_nov2021$adj_N_mean <- (N_nov2021$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_nov2021, "N_nov2021.csv", row.names = F)
+write.csv(N_nov2021, "csvs/N_nov2021.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_nov2021.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_nov2021.csv"
 ) 
 
@@ -1147,17 +1157,17 @@ N_dec2021$startDateTime <- as.POSIXct(N_dec2021$startDateTime, format = "%Y-%m-%
 N_dec2021$endDateTime <- as.POSIXct(N_dec2021$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_dec2021$adj_N_mean <- (N_dec2021$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_dec2021$adj_N_mean <- (N_dec2021$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_dec2021, "N_dec2021.csv", row.names = F)
+write.csv(N_dec2021, "csvs/N_dec2021.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_dec2021.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_dec2021.csv"
 ) 
 
@@ -1176,17 +1186,17 @@ N_jan2022$startDateTime <- as.POSIXct(N_jan2022$startDateTime, format = "%Y-%m-%
 N_jan2022$endDateTime <- as.POSIXct(N_jan2022$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_jan2022$adj_N_mean <- (N_jan2022$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_jan2022$adj_N_mean <- (N_jan2022$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_jan2022, "N_jan2022.csv", row.names = F)
+write.csv(N_jan2022, "csvs/N_jan2022.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_jan2022.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_jan2022.csv"
 ) 
 
@@ -1205,17 +1215,17 @@ N_feb2022$startDateTime <- as.POSIXct(N_feb2022$startDateTime, format = "%Y-%m-%
 N_feb2022$endDateTime <- as.POSIXct(N_feb2022$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_feb2022$adj_N_mean <- (N_feb2022$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_feb2022$adj_N_mean <- (N_feb2022$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_feb2022, "N_feb2022.csv", row.names = F)
+write.csv(N_feb2022, "csvs/N_feb2022.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_feb2022.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_feb2022.csv"
 ) 
 
@@ -1234,17 +1244,17 @@ N_mar2022$startDateTime <- as.POSIXct(N_mar2022$startDateTime, format = "%Y-%m-%
 N_mar2022$endDateTime <- as.POSIXct(N_mar2022$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_mar2022$adj_N_mean <- (N_mar2022$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_mar2022$adj_N_mean <- (N_mar2022$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_mar2022, "N_mar2022.csv", row.names = F)
+write.csv(N_mar2022, "csvs/N_mar2022.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_mar2022.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_mar2022.csv"
 ) 
 
@@ -1263,17 +1273,17 @@ N_apr2022$startDateTime <- as.POSIXct(N_apr2022$startDateTime, format = "%Y-%m-%
 N_apr2022$endDateTime <- as.POSIXct(N_apr2022$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_apr2022$adj_N_mean <- (N_apr2022$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_apr2022$adj_N_mean <- (N_apr2022$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_apr2022, "N_apr2022.csv", row.names = F)
+write.csv(N_apr2022, "csvs/N_apr2022.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_apr2022.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_apr2022.csv"
 ) 
 
@@ -1292,17 +1302,17 @@ N_may2022$startDateTime <- as.POSIXct(N_may2022$startDateTime, format = "%Y-%m-%
 N_may2022$endDateTime <- as.POSIXct(N_may2022$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_may2022$adj_N_mean <- (N_may2022$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_may2022$adj_N_mean <- (N_may2022$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_may2022, "N_may2022.csv", row.names = F)
+write.csv(N_may2022, "csvs/N_may2022.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_may2022.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_may2022.csv"
 ) 
 
@@ -1321,17 +1331,17 @@ N_june2022$startDateTime <- as.POSIXct(N_june2022$startDateTime, format = "%Y-%m
 N_june2022$endDateTime <- as.POSIXct(N_june2022$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_june2022$adj_N_mean <- (N_june2022$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_june2022$adj_N_mean <- (N_june2022$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_june2022, "N_june2022.csv", row.names = F)
+write.csv(N_june2022, "csvs/N_june2022.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_june2022.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_june2022.csv"
 ) 
 
@@ -1350,17 +1360,17 @@ N_july2022$startDateTime <- as.POSIXct(N_july2022$startDateTime, format = "%Y-%m
 N_july2022$endDateTime <- as.POSIXct(N_july2022$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_july2022$adj_N_mean <- (N_july2022$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_july2022$adj_N_mean <- (N_july2022$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_july2022, "N_july2022.csv", row.names = F)
+write.csv(N_july2022, "csvs/N_july2022.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_july2022.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_july2022.csv"
 ) 
 
@@ -1379,17 +1389,17 @@ N_aug2022$startDateTime <- as.POSIXct(N_aug2022$startDateTime, format = "%Y-%m-%
 N_aug2022$endDateTime <- as.POSIXct(N_aug2022$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_aug2022$adj_N_mean <- (N_aug2022$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_aug2022$adj_N_mean <- (N_aug2022$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_aug2022, "N_aug2022.csv", row.names = F)
+write.csv(N_aug2022, "csvs/N_aug2022.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_aug2022.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_aug2022.csv"
 ) 
 
@@ -1408,17 +1418,17 @@ N_sept2022$startDateTime <- as.POSIXct(N_sept2022$startDateTime, format = "%Y-%m
 N_sept2022$endDateTime <- as.POSIXct(N_sept2022$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_sept2022$adj_N_mean <- (N_sept2022$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_sept2022$adj_N_mean <- (N_sept2022$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_sept2022, "N_sept2022.csv", row.names = F)
+write.csv(N_sept2022, "csvs/N_sept2022.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_sept2022.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_sept2022.csv"
 ) 
 
@@ -1437,17 +1447,17 @@ N_oct2022$startDateTime <- as.POSIXct(N_oct2022$startDateTime, format = "%Y-%m-%
 N_oct2022$endDateTime <- as.POSIXct(N_oct2022$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_oct2022$adj_N_mean <- (N_oct2022$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_oct2022$adj_N_mean <- (N_oct2022$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_oct2022, "N_oct2022.csv", row.names = F)
+write.csv(N_oct2022, "csvs/N_oct2022.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_oct2022.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_oct2022.csv"
 ) 
 
@@ -1466,17 +1476,17 @@ N_nov2022$startDateTime <- as.POSIXct(N_nov2022$startDateTime, format = "%Y-%m-%
 N_nov2022$endDateTime <- as.POSIXct(N_nov2022$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_nov2022$adj_N_mean <- (N_nov2022$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_nov2022$adj_N_mean <- (N_nov2022$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_nov2022, "N_nov2022.csv", row.names = F)
+write.csv(N_nov2022, "csvs/N_nov2022.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_nov2022.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_nov2022.csv"
 ) 
 
@@ -1495,17 +1505,17 @@ N_dec2022$startDateTime <- as.POSIXct(N_dec2022$startDateTime, format = "%Y-%m-%
 N_dec2022$endDateTime <- as.POSIXct(N_dec2022$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_dec2022$adj_N_mean <- (N_dec2022$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_dec2022$adj_N_mean <- (N_dec2022$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_dec2022, "N_dec2022.csv", row.names = F)
+write.csv(N_dec2022, "csvs/N_dec2022.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_dec2022.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_dec2022.csv"
 ) 
 
@@ -1524,17 +1534,17 @@ N_jan2023$startDateTime <- as.POSIXct(N_jan2023$startDateTime, format = "%Y-%m-%
 N_jan2023$endDateTime <- as.POSIXct(N_jan2023$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_jan2023$adj_N_mean <- (N_jan2023$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_jan2023$adj_N_mean <- (N_jan2023$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_jan2023, "N_jan2023.csv", row.names = F)
+write.csv(N_jan2023, "csvs/N_jan2023.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_jan2023.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_jan2023.csv"
 ) 
 
@@ -1553,17 +1563,17 @@ N_feb2023$startDateTime <- as.POSIXct(N_feb2023$startDateTime, format = "%Y-%m-%
 N_feb2023$endDateTime <- as.POSIXct(N_feb2023$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_feb2023$adj_N_mean <- (N_feb2023$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_feb2023$adj_N_mean <- (N_feb2023$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_feb2023, "N_feb2023.csv", row.names = F)
+write.csv(N_feb2023, "csvs/N_feb2023.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_feb2023.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_feb2023.csv"
 ) 
 
@@ -1582,17 +1592,17 @@ N_mar2023$startDateTime <- as.POSIXct(N_mar2023$startDateTime, format = "%Y-%m-%
 N_mar2023$endDateTime <- as.POSIXct(N_mar2023$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_mar2023$adj_N_mean <- (N_mar2023$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_mar2023$adj_N_mean <- (N_mar2023$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_mar2023, "N_mar2023.csv", row.names = F)
+write.csv(N_mar2023, "csvs/N_mar2023.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_mar2023.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_mar2023.csv"
 ) 
 
@@ -1611,17 +1621,17 @@ N_apr2023$startDateTime <- as.POSIXct(N_apr2023$startDateTime, format = "%Y-%m-%
 N_apr2023$endDateTime <- as.POSIXct(N_apr2023$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_apr2023$adj_N_mean <- (N_apr2023$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_apr2023$adj_N_mean <- (N_apr2023$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_apr2023, "N_apr2023.csv", row.names = F)
+write.csv(N_apr2023, "csvs/N_apr2023.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_apr2023.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_apr2023.csv"
 ) 
 
@@ -1640,17 +1650,17 @@ N_may2023$startDateTime <- as.POSIXct(N_may2023$startDateTime, format = "%Y-%m-%
 N_may2023$endDateTime <- as.POSIXct(N_may2023$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_may2023$adj_N_mean <- (N_may2023$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_may2023$adj_N_mean <- (N_may2023$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_may2023, "N_may2023.csv", row.names = F)
+write.csv(N_may2023, "csvs/N_may2023.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_may2023.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_may2023.csv"
 ) 
 
@@ -1669,17 +1679,17 @@ N_june2023$startDateTime <- as.POSIXct(N_june2023$startDateTime, format = "%Y-%m
 N_june2023$endDateTime <- as.POSIXct(N_june2023$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_june2023$adj_N_mean <- (N_june2023$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_june2023$adj_N_mean <- (N_june2023$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_june2023, "N_june2023.csv", row.names = F)
+write.csv(N_june2023, "csvs/N_june2023.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_june2023.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_june2023.csv"
 ) 
 
@@ -1698,17 +1708,17 @@ N_july2023$startDateTime <- as.POSIXct(N_july2023$startDateTime, format = "%Y-%m
 N_july2023$endDateTime <- as.POSIXct(N_july2023$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_july2023$adj_N_mean <- (N_july2023$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_july2023$adj_N_mean <- (N_july2023$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_july2023, "N_july2023.csv", row.names = F)
+write.csv(N_july2023, "csvs/N_july2023.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_july2023.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_july2023.csv"
 ) 
 
@@ -1727,17 +1737,17 @@ N_aug2023$startDateTime <- as.POSIXct(N_aug2023$startDateTime, format = "%Y-%m-%
 N_aug2023$endDateTime <- as.POSIXct(N_aug2023$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_aug2023$adj_N_mean <- (N_aug2023$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_aug2023$adj_N_mean <- (N_aug2023$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_aug2023, "N_aug2023.csv", row.names = F)
+write.csv(N_aug2023, "csvs/N_aug2023.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_aug2023.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_aug2023.csv"
 ) 
 
@@ -1756,17 +1766,17 @@ N_sept2023$startDateTime <- as.POSIXct(N_sept2023$startDateTime, format = "%Y-%m
 N_sept2023$endDateTime <- as.POSIXct(N_sept2023$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_sept2023$adj_N_mean <- (N_sept2023$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_sept2023$adj_N_mean <- (N_sept2023$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_sept2023, "N_sept2023.csv", row.names = F)
+write.csv(N_sept2023, "csvs/N_sept2023.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_sept2023.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_sept2023.csv"
 ) 
 
@@ -1785,17 +1795,17 @@ N_oct2023$startDateTime <- as.POSIXct(N_oct2023$startDateTime, format = "%Y-%m-%
 N_oct2023$endDateTime <- as.POSIXct(N_oct2023$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_oct2023$adj_N_mean <- (N_oct2023$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_oct2023$adj_N_mean <- (N_oct2023$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_oct2023, "N_oct2023.csv", row.names = F)
+write.csv(N_oct2023, "csvs/N_oct2023.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_oct2023.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_oct2023.csv"
 ) 
 
@@ -1814,17 +1824,17 @@ N_nov2023$startDateTime <- as.POSIXct(N_nov2023$startDateTime, format = "%Y-%m-%
 N_nov2023$endDateTime <- as.POSIXct(N_nov2023$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_nov2023$adj_N_mean <- (N_nov2023$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_nov2023$adj_N_mean <- (N_nov2023$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_nov2023, "N_nov2023.csv", row.names = F)
+write.csv(N_nov2023, "csvs/N_nov2023.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_nov2023.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_nov2023.csv"
 ) 
 
@@ -1843,17 +1853,17 @@ N_dec2023$startDateTime <- as.POSIXct(N_dec2023$startDateTime, format = "%Y-%m-%
 N_dec2023$endDateTime <- as.POSIXct(N_dec2023$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_dec2023$adj_N_mean <- (N_dec2023$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_dec2023$adj_N_mean <- (N_dec2023$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_dec2023, "N_dec2023.csv", row.names = F)
+write.csv(N_dec2023, "csvs/N_dec2023.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
   media = "N_dec2023.csv",
-  path = as_id("https://drive.google.com/drive/u/0/folders/1R-45SX7ckJCuWaRVA-xUE5504VI5P3Jz"),
+  path = as_id("1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_dec2023.csv"
 ) 
 
@@ -1873,11 +1883,11 @@ N_jan2024$endDateTime <- as.POSIXct(N_jan2024$endDateTime, format = "%Y-%m-%dT%H
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
 # using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_jan2024$adj_N_mean <- (N_jan2024$surfWaterNitrateMean * 62.0049)/1000
+N_jan2024$adj_N_mean <- (N_jan2024$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_jan2024, "N_jan2024.csv", row.names = F)
+write.csv(N_jan2024, "csvs/N_jan2024.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
@@ -1901,12 +1911,12 @@ N_feb2024$startDateTime <- as.POSIXct(N_feb2024$startDateTime, format = "%Y-%m-%
 N_feb2024$endDateTime <- as.POSIXct(N_feb2024$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_feb2024$adj_N_mean <- (N_feb2024$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_feb2024$adj_N_mean <- (N_feb2024$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_feb2024, "N_feb2024.csv", row.names = F)
+write.csv(N_feb2024, "csvs/N_feb2024.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
@@ -1930,12 +1940,12 @@ N_mar2024$startDateTime <- as.POSIXct(N_mar2024$startDateTime, format = "%Y-%m-%
 N_mar2024$endDateTime <- as.POSIXct(N_mar2024$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_mar2024$adj_N_mean <- (N_mar2024$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_mar2024$adj_N_mean <- (N_mar2024$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_mar2024, "N_mar2024.csv", row.names = F)
+write.csv(N_mar2024, "csvs/N_mar2024.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
@@ -1958,12 +1968,12 @@ N_apr2024$startDateTime <- as.POSIXct(N_apr2024$startDateTime, format = "%Y-%m-%
 N_apr2024$endDateTime <- as.POSIXct(N_apr2024$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_apr2024$adj_N_mean <- (N_apr2024$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_apr2024$adj_N_mean <- (N_apr2024$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_apr2024, "N_apr2024.csv", row.names = F)
+write.csv(N_apr2024, "csvs/N_apr2024.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
@@ -1986,12 +1996,12 @@ N_may2024$startDateTime <- as.POSIXct(N_may2024$startDateTime, format = "%Y-%m-%
 N_may2024$endDateTime <- as.POSIXct(N_may2024$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_may2024$adj_N_mean <- (N_may2024$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_may2024$adj_N_mean <- (N_may2024$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_may2024, "N_may2024.csv", row.names = F)
+write.csv(N_may2024, "csvs/N_may2024.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
@@ -2014,12 +2024,12 @@ N_june2024$startDateTime <- as.POSIXct(N_june2024$startDateTime, format = "%Y-%m
 N_june2024$endDateTime <- as.POSIXct(N_june2024$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
 
 # add column that is the adjusted value of N, from micromoles/liter to milligrams/liter 
-# using the molecular weight of Nitrate: 62.0049, divided by 1000
-N_june2024$adj_N_mean <- (N_june2024$surfWaterNitrateMean * 62.0049)/1000
+# Since this data is in NO3-N, we will be using the molecular weight of Nitrogen: 14, divided by 1000
+N_june2024$adj_N_mean <- (N_june2024$surfWaterNitrateMean * 0.014)
 
 ## Save the raw file to Google Drive ##
 # Step 1: write the csv to a local file
-write.csv(N_june2024, "N_june2024.csv", row.names = F)
+write.csv(N_june2024, "csvs/N_june2024.csv", row.names = F)
 
 # Step 2: upload to Drive
 drive_upload(
@@ -2027,6 +2037,13 @@ drive_upload(
   path = as_id("https://drive.google.com/drive/u/0/folders/1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7"),
   name = "N_june2024.csv"
 ) 
+
+
+
+
+
+
+
 #### Read me ####
 # -- As of 12/04/2025, all data after June 2024 were "provisional.".
 
@@ -2034,50 +2051,10 @@ drive_upload(
 # The following code is used to combine all of the individual CSVs into one CSV,
 # and to store that CSV in the same Google Drive folder for analysis.
 
-#### Libraries ####
-install.packages("googledrive")
-install.packages("tidyverse")
-
-library(googledrive)
-library(tidyverse)
-
-#### Local folders ####
-# List and delete the files in these folders. These folders will be used for each dataset.
-files <- list.files(path = "NEON", full.names = TRUE)
-file.remove(files)
-
-files <- list.files(path = "googledrive", full.names = TRUE)
-file.remove(files)
-
-#### Load data ####
-# Set up Google Drive folder
-nitrates <- googledrive::as_id("https://drive.google.com/drive/u/0/folders/1lBqEmFXTIRHO-vXIUcPJMSGOdBNzpJy7")
-
-# List and filter CSV files with "N" in their names
-nitrate_files <- googledrive::drive_ls(path = nitrates, type = "csv")
-nitrate_files <- nitrate_files[grepl("N", nitrate_files$name), ]
-
-# Create an empty list to store the cleaned data frames
-nitrate_list <- lapply(seq_along(nitrate_files$name), function(i) {
-  googledrive::drive_download(
-    file = nitrate_files$id[i],
-    path = paste0("googledrive/", nitrate_files$name[i]),
-    overwrite = TRUE
-  )
-  
-  # Read the CSV file
-  read.csv(paste0("googledrive/", nitrate_files$name[i]), header = TRUE)
-})
-
-# Assign names to the list elements based on the file names
-names(nitrate_list) <- nitrate_files$name
-
-# Check the contents of the list
-str(nitrate_list)
 
 #### Combine CSVs into one dataframe ####
 # Create a new dataframe for the merged files
-folder <- "googledrive"
+folder <- "csvs"
 
 files <- list.files(folder, pattern = "\\.csv$", full.names = TRUE)
 
@@ -2092,14 +2069,18 @@ for (f in files) {
 #### Write and rename the dataframe as a CSV ####
 write.csv(
   combined_df,
-  file = "all_nitrate_data.csv",
+  file = "csvs/all_nitrate_data.csv",
   row.names = FALSE
 )
 
 #### Upload CSV to the specific Google Drive folder ####
-folder_id <- drive_get("Nitrate in surface water")
+folder_id <- as_id("1p9D19AD-kVP1evKlDuaRglwtxDMNj7iM")
 
 drive_upload(
-  "all_nitrate_data.csv",
+  "csvs/all_nitrate_data.csv",
   path = folder_id,
 )
+
+
+# Remove the folder and everything inside it
+unlink("csvs", recursive = TRUE, force = TRUE)
