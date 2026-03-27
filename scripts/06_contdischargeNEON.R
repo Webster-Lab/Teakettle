@@ -1533,7 +1533,7 @@ contq_all <- bind_rows(contq_apr2019, contq_apr2020, contq_apr2021, contq_apr202
 
 #OK lots of problems still.  Once we decide what columns are needed, match up the old columns with the new ones.
 #Let's match up the dates
-#weirdly in UTC, so we have to coalesce them, then convert to Pacific Time
+#Coalescing
 
 contq_all <- contq_all %>%
   mutate(
@@ -1543,8 +1543,7 @@ contq_all <- contq_all %>%
     
     endDate = as.POSIXct(endDate, tz = "UTC")  # important!
   ) %>%
-  mutate(DateTime_UTC = coalesce(endDateTime, endDate)) %>%
-  mutate(DateTime_PT = with_tz(DateTime_UTC, "US/Pacific"))
+  mutate(DateTime_UTC = coalesce(endDateTime, endDate))
 
 
 
