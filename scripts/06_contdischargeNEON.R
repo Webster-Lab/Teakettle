@@ -15,12 +15,12 @@
 ## https://www.neonscience.org/resources/learning-hub/tutorials/neon-api-usage
 
 #### Libraries ####
-install.packages("httr")
-install.packages("jsonlite")
-install.packages("dplyr")
-install.packages("tidyr")
-install.packages("ggplot2")
-install.packages("googledrive")
+#install.packages("httr")
+#install.packages("jsonlite")
+#install.packages("dplyr")
+#install.packages("tidyr")
+#install.packages("ggplot2")
+#install.packages("googledrive")
 
 # activate packages
 library(httr)
@@ -1471,6 +1471,10 @@ drive_upload(
   path = as_id("https://drive.google.com/drive/u/0/folders/1QZ7O7nIpGZQxsbIjHfsc2gJGg0hDgt7V"),
   name = "contq_sept2023.csv"
 )
+
+
+
+
 #### Read me ####
 # -- As of 12/04/2025, all data after September 2023 were "provisional," and because 
 # of this were not downloaded into the Google Drive.
@@ -1528,11 +1532,26 @@ contq_all <- bind_rows(contq_apr2019, contq_apr2020, contq_apr2021, contq_apr202
 
 
 #OK lots of problems still.  Once we decide what columns are needed, match up the old columns with the new ones.
+#Let's match up the dates
+#weirdly in UTC, so we have to coalesce them, then convert to Pacific Time
+
+contq_all <- contq_all %>%
+  mutate(
+    endDateTime = as.POSIXct(endDateTime,
+                             format = "%Y-%m-%dT%H:%M:%SZ",
+                             tz = "UTC"),
+    
+    endDate = as.POSIXct(endDate, tz = "UTC")  # important!
+  ) %>%
+  mutate(DateTime_UTC = coalesce(endDateTime, endDate)) %>%
+  mutate(DateTime_PT = with_tz(DateTime_UTC, "US/Pacific"))
 
 
 
 
-
+#woo, okay, so now we need to coalesce the discharge data
+contq_all <- contq_all %>%
+  mutate(dischargeContinuous_merged = coalesce(maxpostDischarge, dischargeContinuous))
 
 
 #### Write and rename the dataframe as a CSV ####
