@@ -2262,6 +2262,8 @@ file.remove(files)
 
 #### Load data ####
 # Set up Google Drive folder
+dir.create("googledrive", showWarnings = FALSE)
+
 temps <- googledrive::as_id("https://drive.google.com/drive/u/0/folders/1cM7EbVUU817C6bVL679HAbPOPtqdqTmt")
 
 # List and filter CSV files with "N" in their names
@@ -2314,3 +2316,6 @@ drive_upload(
   "all_temp_data.csv",
   path = folder_id,
 )
+
+### delete downloaded googledrive folder before pushing to Github
+unlink("googledrive", recursive = TRUE, force = TRUE)
