@@ -16,12 +16,12 @@
 ## https://www.neonscience.org/resources/learning-hub/tutorials/neon-api-usage
 
 #### Libraries ####
-install.packages("httr")
-install.packages("jsonlite")
-install.packages("dplyr")
-install.packages("tidyr")
-install.packages("ggplot2")
-install.packages("googledrive")
+#install.packages("httr")
+#install.packages("jsonlite")
+#install.packages("dplyr")
+#install.packages("tidyr")
+#install.packages("ggplot2")
+#install.packages("googledrive")
 
 # activate packages
 library(httr)
@@ -30,6 +30,57 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(googledrive)
+library(neonUtilities)
+
+
+
+### CAROLINA'S CODE
+
+tecr_elevation <- loadByProduct(
+  dpID = "DP1.20016.001",
+  site = "TECR",
+  startdate = "2019-01",
+  enddate   = "2024-12",
+  package   = "expanded",
+  check.size = FALSE
+)
+
+#select the 5 minute data
+elevation <- tecr_elevation$EOS_5_min
+
+#select the lower site (there are two sites being monitored for TECR surface water elevation)
+elevation_lower <- elevation %>%
+  filter(horizontalPosition == 102 | horizontalPosition == 110)
+
+#format Date/Time
+elevation_lower$startDateTime <- as.POSIXct(elevation_lower$startDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
+
+elevation_lower$endDateTime <- as.POSIXct(elevation_lower$endDateTime, format = "%Y-%m-%dT%H:%M:%SZ")
+
+write.csv(elevation_lower, "all_elevation_data.csv", row.names = F)
+
+#Upload to Drive
+drive_upload(
+  media = "all_elevation_data.csv",
+  path = as_id("https://drive.google.com/drive/u/0/folders/1FFVt_SAe5ZsDeMbR265PIkVAkHMyJ4tj"),
+  name = "all_elevation_data.csv"
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#ELLIOT'S CODE
+
 
 #### Access data products ####
 # data product name: "Elevation of surface water" (DP1.20016.001)
@@ -2185,23 +2236,19 @@ drive_upload(
 # The following code is used to combine all of the individual CSVs into one CSV,
 # and to store that CSV in the same Google Drive folder for analysis.
 
-#### Libraries ####
-install.packages("googledrive")
-install.packages("tidyverse")
-
-library(googledrive)
-library(tidyverse)
-
 #### Local folders ####
 # List and delete the files in these folders. These folders will be used for each dataset.
-files <- list.files(path = "NEON", full.names = TRUE)
-file.remove(files)
+#files <- list.files(path = "NEON", full.names = TRUE)
+#file.remove(files)
 
-files <- list.files(path = "googledrive", full.names = TRUE)
-file.remove(files)
+#files <- list.files(path = "googledrive", full.names = TRUE)
+#file.remove(files)
 
 #### Load data ####
 # Set up Google Drive folder
+
+dir.create("googledrive", showWarnings = FALSE)
+
 elevation <- googledrive::as_id("https://drive.google.com/drive/u/0/folders/1FFVt_SAe5ZsDeMbR265PIkVAkHMyJ4tj")
 
 # List and filter CSV files with "N" in their names
@@ -2240,10 +2287,13 @@ for (f in files) {
   combined_df <- if (is.null(combined_df)) temp else rbind(combined_df, temp)
 }
 
+#order by start date (for some reason, skipping over 2018 and its odd)
+combined_df <- combined_df[order(combined_df$startDateTime), ]
+
 #### Write and rename the dataframe as a CSV ####
 write.csv(
   combined_df,
-  file = "all_elevation_data.csv",
+  file = "all_elevation_data_1.csv",
   row.names = FALSE
 )
 
@@ -2251,6 +2301,10 @@ write.csv(
 folder_id <- drive_get("Elevation of surface water")
 
 drive_upload(
-  "all_elevation_data.csv",
+  "all_elevation_data_1.csv",
   path = folder_id,
 )
+
+### delete downloaded googledrive folder before pushing to Github
+
+unlink("googledrive", recursive = TRUE, force = TRUE)
