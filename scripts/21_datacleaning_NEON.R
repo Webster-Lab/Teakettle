@@ -1,6 +1,6 @@
 
 #### READ ME ####
-# This purpose of this script is to clean and consolidate NEON data 
+# This purpose of this script is to clean, consolidate, and plot NEON data from the TECR site
 # It utilizes the "merged" datasets from the "Merged datasets" folder in Google Drive. 
 # It includes date-time formatting, aggregating/rounding to 15 min intervals, changing QC-flagged data to NA, joining data into a single long dataframe
 
@@ -10,7 +10,8 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(lubridate)
-library(googledrive) 
+library(googledrive)
+library(neonUtilities)
 
 
 #### Download data ####
@@ -60,26 +61,41 @@ contQ <- read.csv("csvs/all_contdischarge_data.csv")
 
 #### Date-Time Formatting ####
 
-###Fix these! These are actually in UTC from Elliot's code -- if we want Pacific Time need to convert (which is better?)
+#Everything is in UTC's at this point
 
-gases$DateTime_PT <- as.POSIXct(gases$collectDate, format = "%Y-%m-%d %H:%M:%S", tz = "US/Pacific")
-fieldQ$DateTime_PT <- as.POSIXct(fieldQ$collectDate, format = "%Y-%m-%d %H:%M:%S", tz = "US/Pacific")
-gaugeheight$DateTime_PT <- as.POSIXct(gaugeheight$startDate, format = "%Y-%m-%d %H:%M:%S", tz = "US/Pacific")
-isotopes$DateTime_PT = as.POSIXct(isotopes$collectDate, format="%Y-%m-%d", tz="US/Pacific") 
-chem$DateTime_PT <- as.POSIXct(chem$startDate, format = "%Y-%m-%d %H:%M:%S", tz = "US/Pacific" )
-chem$DateTime_PT <- as.POSIXct(chem$collectDate, format = "%Y-%m-%d %H:%M:%S", tz = "US/Pacific")
-wq$DateTime_PT <- as.POSIXct(wq$startDateTime, format = "%Y-%m-%d %H:%M:%S", tz = "US/Pacific" )
-contQ$DateTime_PT<- as.POSIXct(contQ$DateTime_PT, format = "%Y-%m-%d %H:%M:%S", tz = "US/Pacific" )
+gases$DateTime_UTC <- as.POSIXct(gases$collectDate, format = "%Y-%m-%d %H:%M:%S", tz = "UTC") 
+fieldQ$DateTime_UTC <- as.POSIXct(fieldQ$collectDate, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
+gaugeheight$DateTime_UTC <- as.POSIXct(gaugeheight$startDate, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
+isotopes$DateTime_UTC = as.POSIXct(isotopes$collectDate, format="%Y-%m-%d", tz="UTC") 
+chem$DateTime_UTC <- as.POSIXct(chem$collectDate, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
+wq$DateTime_UTC <- as.POSIXct(wq$startDateTime, format = "%Y-%m-%d %H:%M:%S", tz = "UTC" )
+contQ$DateTime_UTC<- as.POSIXct(contQ$DateTime_UTC, format = "%Y-%m-%d %H:%M:%S", tz = "UTC" )
 
 
 #nitrate and temp have some date-times and some that are just dates 
 # use parse_date_time() instead of as.POSIXct() to specify multiple formats
-nitrate$DateTime_PT = 
-  parse_date_time(nitrate$startDateTime, c("%Y-%m-%d %H:%M:%S", "%Y-%m-%d" ), exact = T, tz="US/Pacific")
-temp$DateTime_PT = 
-  parse_date_time(temp$startDateTime, c("%Y-%m-%d %H:%M:%S", "%Y-%m-%d" ), exact = T, tz="US/Pacific")
-elevation$DateTime_PT = 
-  parse_date_time(elevation$startDateTime, c("%Y-%m-%d %H:%M:%S", "%Y-%m-%d" ), exact = T, tz="US/Pacific")
+nitrate$DateTime_UTC = 
+  parse_date_time(nitrate$startDateTime, c("%Y-%m-%d %H:%M:%S", "%Y-%m-%d" ), exact = T, tz="UTC")
+temp$DateTime_UTC = 
+  parse_date_time(temp$startDateTime, c("%Y-%m-%d %H:%M:%S", "%Y-%m-%d" ), exact = T, tz="UTC")
+elevation$DateTime_UTC = 
+  parse_date_time(elevation$startDateTime, c("%Y-%m-%d %H:%M:%S", "%Y-%m-%d" ), exact = T, tz="UTC")
+
+
+#Convert everything to Pacific Time...should probably write a loop for this
+gases$DateTime_PT <- with_tz(gases$DateTime_UTC, tzone = "America/Los_Angeles")
+fieldQ$DateTime_PT <- with_tz(fieldQ$DateTime_UTC, tzone = "America/Los_Angeles")
+gaugeheight$DateTime_PT <- with_tz(gaugeheight$DateTime_UTC, tzone = "America/Los_Angeles")
+isotopes$DateTime_PT <- with_tz(isotopes$DateTime_UTC, tzone = "America/Los_Angeles")
+chem$DateTime_PT <- with_tz(chem$DateTime_UTC, tzone = "America/Los_Angeles")
+wq$DateTime_PT <- with_tz(wq$DateTime_UTC, tzone = "America/Los_Angeles")
+contQ$DateTime_PT <- with_tz(contQ$DateTime_UTC, tzone = "America/Los_Angeles")
+nitrate$DateTime_PT <- with_tz(nitrate$DateTime_UTC, tzone = "America/Los_Angeles")
+temp$DateTime_PT <- with_tz(temp$DateTime_UTC, tzone = "America/Los_Angeles")
+elevation$DateTime_PT <- with_tz(elevation$DateTime_UTC, tzone = "America/Los_Angeles")
+
+
+
 
 
 #### Data Cleaning ####
@@ -390,13 +406,70 @@ ggplot(df_long, aes(x = DateTime_PT, y = value))+
 #yikes. too many facets
 
 
+
+
+#### Discharge Data Plotting ####
+#Lets make sure everything is looking fine by plotting surface water elevation, field Q, and continuous Q together
+
+df_Q <- df_long %>%
+  filter(variable == "finalDischarge" | variable == "surfacewaterElevMean" | variable == "dischargeContinuous_merged")
+
+ggplot(df_Q, aes(x = DateTime_PT, y = value))+
+  geom_point()+
+  facet_wrap(~ var_label, scales = "free_y", ncol = 1)+
+  theme_minimal()
+
+
+
+
 #We can finish by deleting the folder of csvs before pushing to Github
 unlink("csvs", recursive = TRUE, force = TRUE)
 
 
-#### Questions for Alex ####
 
-#Leave Date-Time format in UTC or convert to Pacific Time?
+
+
+
+
+### NEON data issues -- using the handy dandy built in Issue Log
+
+#Enter the data product ID and search for issues affecting TECR or all sites
+issues <- getIssueLog(
+  dpID = "DP1.20048.001",
+  token = "YOUR_TOKEN_HERE"
+)
+issues_filtered <- issues %>%
+  filter(grepl("TECR|All", locationAffected, ignore.case = TRUE))
+
+
+
+
+
+#Results pasted below:
+
+#Continous discharge issues
+#2019-10-25 to 2021-05-04:  Pressure data appears erratic.  COVID-19 travel restrictions, wildfire closures, and winter weather limited site access, preventing sensor from being replaced and also collection 
+#of field observation for validation.  Continuous stage and discharge estimates are suspect.
+
+#Surface water elevation issues:
+#2020-02-01 to 2020-05-10: 	TECR pressure transducer behaving poorly.
+#2020-05-28 to 2020-07-18: TECR pressure transducer behaving poorly.
+#See notes from NEON about elevation shift
+
+#Field discharge issues: 
+### reduced field visits during the pandemic (2020-2021)
+
+
+
+
+
+
+
+
+
+
+
+#### Questions for Alex ####
 
 #Which columns to keep, which columns to remove?
   #Removed flag columns after I made flagged data NA
@@ -411,6 +484,11 @@ unlink("csvs", recursive = TRUE, force = TRUE)
 #Gases includes both air and water samples -- do we want both or do we want some sort of difference of the two?
 
 #What's the most useful way to plot this data? 
+
+
+###Daylights savings time:  Goes from 1:45 to 3:00 am in March,  goes from 1:45 back to 1:00 am in November. 
+#I converted from UTC to PT using the with_tz() function, which handles DST automatically.  So this data will be compatible with other data collected in Pacific Time (that changes with daylights savings)
+#If aggregating data to day_level means, might want to keep it in UTC to avoid the 25 hr and 23 hr day problem.
 
 
 # Water Chemistry : 2018 to 2023  - collected monthly to weekly
