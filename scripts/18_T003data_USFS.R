@@ -5,10 +5,10 @@
 # which contains stage and discharge data for all USFS monitoring streams. 
 
 #### Libraries #### 
-install.packages("dplyr")
-install.packages("tidyr")
-install.packages("ggplot2")
-install.packages("googledrive")
+#install.packages("dplyr")
+#install.packages("tidyr")
+#install.packages("ggplot2")
+#install.packages("googledrive")
 library(dplyr)
 library(tidyr)
 library(ggplot2)
@@ -20,19 +20,32 @@ drive_find(n_max = 10)
 # Download the desired file to the working directory
 drive_download("USFS_streamsDischarge.csv", path = "USFS_streamsDischarge.csv", overwrite = TRUE)
 
+
 #### Load data into R ####
 usfs_q <- read.csv("USFS_streamsDischarge.csv")
+#This is the file that has data from 2016-2019. The date/time format changes slightly, so perhaps that's why they were separate?
+data_2016.2019 <- read.csv("https://docs.google.com/spreadsheets/d/1KnlTEVvUwJVlBV8pbgIGt0A2Ttjg0VD1/export?format=csv")
 
 # Create a dataset for T003 specifically
-t003 <- usfs_q[,c(2,3,4,13,14)]
+t003 <- usfs_q[,c(1, 2,4,13,14)]
+t003_later <- data_2016.2019[, c(1,2,3,12,13)]
 
-# Create a date-time column and change its format to POSIXct
-t003$DateTime <- paste(t003$Day, t003$Time, sep = " ")
-t003$DateTime <- as.POSIXct(t003$DateTime, format = "%Y-%m-%d %H:%M:%S")
+
+#Fix date/time formatting
+t003$Date_time_PT <- as.POSIXct(t003$Date_time, format = "%m/%d/%y %H:%M", tz = "America/Los_Angeles")
+t003_later$Date_time_PT <- as.POSIXct(t003_later$Date_time, format = "%m/%d/%y %H:%M", tz = "America/Los_Angeles")
+
+#select columns we want
+t003 <- t003[,c(4,5,6)]
+t003_later <- t003_later[,c(4,5,6)]
+
+#bind the two datasets together
+t003 <- rbind(t003, t003_later)
+
 
 #### Plot entire dataset ####
-t003_plot <- ggplot(t003, aes(DateTime, T003_lps)) + geom_point(size = 0.125) +
-  scale_y_continuous(name = "Discharge (lps)", breaks = seq(0, 800, by = 50)) +
+t003_plot <- ggplot(t003, aes(Date_time_PT, T003_lps)) + geom_point(size = 0.125) +
+  scale_y_continuous(name = "Discharge (lps)", breaks = seq(0, 1500, by = 100)) +
   scale_x_datetime(name = "Year", date_breaks = "3 months", date_labels = "%Y-%m") +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, size = 10),
         axis.title.x = element_text(size = 14, face = "bold"),
@@ -40,6 +53,19 @@ t003_plot <- ggplot(t003, aes(DateTime, T003_lps)) + geom_point(size = 0.125) +
         axis.title.y = element_text(size = 14, face = "bold")) +
   coord_cartesian(expand = TRUE)
 t003_plot
+
+#upload this full plot to the google drive
+ggsave(
+  filename = "t003_2003_2019.png",
+  plot = t003_plot,
+  width = 8,
+  height = 6,
+  dpi = 300)
+
+drive_upload(
+  media = "t003_2003_2019.png",
+  path = as_id("1y3iIvqrsBc_-CSB00OI9tvPNDTtxOsZO")
+)
 
 #### Plot each year individually ####
 
