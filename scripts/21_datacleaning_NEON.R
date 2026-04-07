@@ -16,7 +16,7 @@ library(neonUtilities)
 
 #### Download data ####
 #specify google drive folder
-folder_id <- "1p9D19AD-kVP1evKlDuaRglwtxDMNj7iM"
+folder_id <- "1Ja-yVniIp6-bhnYdkTp-C-ga-2ctfHhI"
 
 # Create local folder "csvs" if it doesn't exist
 csv_folder <- "csvs"
@@ -44,16 +44,15 @@ for (i in seq_len(nrow(files_in_folder))) {
 
 #### Load data into R ####
 
-gases <- read.csv("csvs/all_dissolvedgases_data.csv")
 elevation <- read.csv("csvs/all_elevation_data.csv")
 fieldQ <- read.csv("csvs/all_fielddischarge_data.csv")
-gaugeheight <- read.csv("csvs/all_gaugeheight_data.csv")
 isotopes <- read.csv("csvs/all_isotope_data.csv")
 nitrate <- read.csv("csvs/all_nitrate_data.csv")
 temp <- read.csv("csvs/all_temp_data.csv")
 chem <- read.csv("csvs/all_waterchem_data.csv")
 wq <- read.csv("csvs/all_waterquality_data.csv")
 contQ <- read.csv("csvs/all_contdischarge_data.csv")
+gauge_height<- read.csv("csvs/all_gaugeheight_data.csv")
 
 
 
@@ -63,13 +62,12 @@ contQ <- read.csv("csvs/all_contdischarge_data.csv")
 
 #Everything is in UTC's at this point
 
-gases$DateTime_UTC <- as.POSIXct(gases$collectDate, format = "%Y-%m-%d %H:%M:%S", tz = "UTC") 
 fieldQ$DateTime_UTC <- as.POSIXct(fieldQ$collectDate, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
-gaugeheight$DateTime_UTC <- as.POSIXct(gaugeheight$startDate, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
 isotopes$DateTime_UTC = as.POSIXct(isotopes$collectDate, format="%Y-%m-%d", tz="UTC") 
 chem$DateTime_UTC <- as.POSIXct(chem$collectDate, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
 wq$DateTime_UTC <- as.POSIXct(wq$startDateTime, format = "%Y-%m-%d %H:%M:%S", tz = "UTC" )
 contQ$DateTime_UTC<- as.POSIXct(contQ$DateTime_UTC, format = "%Y-%m-%d %H:%M:%S", tz = "UTC" )
+gauge_height$DateTime_UTC <- as.POSIXct(gauge_height$startDateTime, format = "%Y-%m-%d %H:%M:%S", tz = "UTC" )
 
 
 #nitrate and temp have some date-times and some that are just dates 
@@ -83,9 +81,7 @@ elevation$DateTime_UTC =
 
 
 #Convert everything to Pacific Time...should probably write a loop for this
-gases$DateTime_PT <- with_tz(gases$DateTime_UTC, tzone = "America/Los_Angeles")
 fieldQ$DateTime_PT <- with_tz(fieldQ$DateTime_UTC, tzone = "America/Los_Angeles")
-gaugeheight$DateTime_PT <- with_tz(gaugeheight$DateTime_UTC, tzone = "America/Los_Angeles")
 isotopes$DateTime_PT <- with_tz(isotopes$DateTime_UTC, tzone = "America/Los_Angeles")
 chem$DateTime_PT <- with_tz(chem$DateTime_UTC, tzone = "America/Los_Angeles")
 wq$DateTime_PT <- with_tz(wq$DateTime_UTC, tzone = "America/Los_Angeles")
@@ -93,6 +89,7 @@ contQ$DateTime_PT <- with_tz(contQ$DateTime_UTC, tzone = "America/Los_Angeles")
 nitrate$DateTime_PT <- with_tz(nitrate$DateTime_UTC, tzone = "America/Los_Angeles")
 temp$DateTime_PT <- with_tz(temp$DateTime_UTC, tzone = "America/Los_Angeles")
 elevation$DateTime_PT <- with_tz(elevation$DateTime_UTC, tzone = "America/Los_Angeles")
+gauge_height$DateTime_PT <- with_tz(gauge_height$DateTime_UTC, tzone = "America/Los_Angeles")
 
 
 
@@ -241,30 +238,8 @@ isotopes <- isotopes %>%
 isotopes <- isotopes %>%
   select(DateTime_PT, d18OWater, d2HWater)
 
-#### 5) Gases ####
-#lets go through and make any flagged data NA for all three gases
-gases <- gases %>%
-  mutate(concentrationCO2 = case_when(
-    CO2CheckStandardQF == 1 ~ NA_real_, # set to NA if finalQF equals 1.  NA_real specifies numeric NA
-    TRUE ~ concentrationCO2),
-    concentrationCH4 = case_when(
-    CH4CheckStandardQF == 1 ~ NA_real_, # set to NA if finalQF equals 1.  NA_real specifies numeric NA
-    TRUE ~ concentrationCH4),
-    concentrationN2O = case_when(
-    N2OCheckStandardQF == 1 ~ NA_real_, # set to NA if finalQF equals 1.  NA_real specifies numeric NA
-    TRUE ~ concentrationN2O,
-  ))
-#pick out the columns of interest
-gases <- gases %>%
-  select(DateTime_PT, concentrationCO2, concentrationCH4, concentrationN2O, sampleID)
-### Some of these samples are air and some are water samples! Do we just want to keep the water samples, or are we interested in the difference? 
 
-#Since this data was collected at odd times, lets round it to the nearest 15 minutes
-gases$DateTime_PT = round_date(gases$DateTime_PT, "15 minute")
-
-
-
-#### 6) Elevation ####
+#### 5) Elevation ####
 
 #We probably want mean elevation
 #But for any data that is flagged (FinalQF = 1), we want to put a NA in the mean temp column so we don't use bad data
@@ -289,7 +264,8 @@ elev_15 <- elevation %>%
   summarize(
     surfacewaterElevMean = mean(surfacewaterElevMean, na.rm = TRUE))
 
-#### 7) Field Q ####
+
+#### 6) Field Q ####
 #This data was collected weekly to monthly
 
 #QF field seems to be full on NAs -- not helpful
@@ -302,8 +278,7 @@ fieldQ <- fieldQ %>%
   select(DateTime_PT, finalDischarge)
 
 
-
-#### 8) Continuous Q ####
+#### 7) Continuous Q ####
 # This data was a little messy since NEON changed its sampling frequency and variables in 2021.
 # Coalesce the two different discharge variables
 contQ <- contQ %>%
@@ -311,11 +286,11 @@ mutate(dischargeContinuous_merged = coalesce(maxpostDischarge, dischargeContinuo
 
 
 # Lets set any flagged data to NA:
-contQ <- contQ %>%
-  mutate(dischargeContinuous_merged = case_when(
-    dischargeFinalQF == 1 ~ NA_real_,   # set to NA if finalQF equals 1
-    TRUE ~ dischargeContinuous_merged          # otherwise keep the original value
-  ))
+#contQ <- contQ %>%
+ # mutate(dischargeContinuous_merged = case_when(
+  #  dischargeFinalQF == 1 ~ NA_real_,   # set to NA if finalQF equals 1
+   # TRUE ~ dischargeContinuous_merged          # otherwise keep the original value
+  #))
 
 #Summarize all data by 15 min intervals (they sampled every minute until 2021, then switched to every 15 minutes)
 
@@ -332,6 +307,25 @@ contQ_15 <- contQ %>%
 # Got a lot of NaNs by taking the mean of NAs.  Not sure it matters ,but replace all NaNs with NAs for anything numeric (doing the whole dataframe breaks the datetime)
 contQ_15 <- contQ_15 %>%
   mutate(across(where(is.numeric), ~ na_if(., NaN)))
+
+
+#### Gauge Height ####
+
+# Lets set any flagged data to NA:
+gauge_height <- gauge_height %>%
+  mutate(initialStageHeight = case_when(
+ dataQF == 1 ~ NA_real_,   # set to NA if finalQF equals 1
+TRUE ~ initialStageHeight         # otherwise keep the original value
+))
+
+#Round to 15 minute measurements
+gauge_height_15 <- gauge_height %>%
+  mutate(DateTime_PT = floor_date(DateTime_PT, "15 minutes"))
+  
+
+#Next, select columns of interest
+gauge_height_15 <- gauge_height_15 %>%
+  select(DateTime_PT, initialStageHeight)
 
 #### Joining & pivoting to long data ####
 
@@ -361,6 +355,9 @@ df_joined <-df_joined %>%
 df_joined <- df_joined %>%
   full_join(contQ_15, by = "DateTime_PT")
 
+df_joined <- df_joined %>%
+  full_join(gauge_height_15, by = "DateTime_PT")
+
 
 #lets pivot longer 
 df_long <- df_joined %>%
@@ -389,7 +386,8 @@ df_long <- df_long %>%
     variable == "d2HWater" ~ "‰ (per mil)",
     variable == "surfacewaterElevMean" ~ "meters",
     variable == "finalDischarge" ~ "Liters/sec",
-    variable == "dischargeContinuous_merged" ~ "Liters/sec"
+    variable == "dischargeContinuous_merged" ~ "Liters/sec",
+    variable == "initialStageHeight" ~ "meters"
     ))
 
 
@@ -411,13 +409,26 @@ ggplot(df_long, aes(x = DateTime_PT, y = value))+
 #### Discharge Data Plotting ####
 #Lets make sure everything is looking fine by plotting surface water elevation, field Q, and continuous Q together
 
+#Since I left in the quality flagged data, putting a box where the data was flagged in continuous discharge
+
 df_Q <- df_long %>%
-  filter(variable == "finalDischarge" | variable == "surfacewaterElevMean" | variable == "dischargeContinuous_merged")
+  filter(variable == "finalDischarge" | variable == "surfacewaterElevMean" | variable == "dischargeContinuous_merged"| variable == "initialStageHeight")
 
 ggplot(df_Q, aes(x = DateTime_PT, y = value))+
+  geom_rect(
+    xmin = as.POSIXct("2019-06-01"),
+    xmax = as.POSIXct("2021-02-01"),
+    ymin = -Inf,
+    ymax = Inf,
+    fill = "tomato",
+    alpha = 0.01
+  ) +
   geom_point()+
   facet_wrap(~ var_label, scales = "free_y", ncol = 1)+
   theme_minimal()
+
+
+
 
 
 
@@ -463,33 +474,13 @@ issues_filtered <- issues %>%
 
 
 
+#### Data Notes ####
 
-
-
-
-
-
-#### Questions for Alex ####
-
-#Which columns to keep, which columns to remove?
-  #Removed flag columns after I made flagged data NA
-  #Not currently keeping other metadata in this dataframe (who analyzed it, analysis dates etc)
-  #Not currently keeping standard error, variance, min/max, or exp uncertainty columns
-
-#Is there a protocol for identifying outliers/problem data?
-#Gap filling? Use interpolation?
- 
-#For the monthly/weekly variables: do we want NA's every 15 minutes when they weren't collected?
-  
-#Gases includes both air and water samples -- do we want both or do we want some sort of difference of the two?
-
-#What's the most useful way to plot this data? 
-
+#Data sets most all begin by the start of 2019, extend into mid 2025. 
 
 ###Daylights savings time:  Goes from 1:45 to 3:00 am in March,  goes from 1:45 back to 1:00 am in November. 
 #I converted from UTC to PT using the with_tz() function, which handles DST automatically.  So this data will be compatible with other data collected in Pacific Time (that changes with daylights savings)
 #If aggregating data to day_level means, might want to keep it in UTC to avoid the 25 hr and 23 hr day problem.
-
 
 # Water Chemistry : 2018 to 2023  - collected monthly to weekly
 # Elevation: 2018-to 2024 - collected every 5 minutes
@@ -501,6 +492,21 @@ issues_filtered <- issues %>%
 # Temperature: 2018 to 2024 - collected every 5 minutes
 # Water Quality: 2018 to 2021 - collected every minute
 # Continuous discharge data -- switches from every minute to every 15 minutes in 2021. 
+
+#
+
+
+
+
+#### Questions for Alex ####
+
+
+#Is there a protocol for identifying outliers/problem data?
+#Gap filling? Use interpolation?
+
+
+
+
 
 
 
