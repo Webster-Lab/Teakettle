@@ -134,12 +134,27 @@ df_long <- joined_chems %>%
 
 df_long$value <- as.numeric(df_long$value)
 
-ggplot(df_long, aes(x = Date_time, y = value))+
+chems_faceted <- ggplot(df_long, aes(x = Date_time, y = value))+
   geom_point()+
   geom_line()+
   facet_wrap(~ variable, scales = "free_y")+
   theme_minimal()
 #yikes. too many facets
+
+#upload this full plot to the google drive
+ggsave(
+  filename = "USFS_faceted_chems.png",
+  plot = chems_faceted,
+  width = 12,
+  height = 10,
+  dpi = 300)
+
+drive_upload(
+  media = "USFS_faceted_chems.png",
+  path = as_id("1jX1_HWiE3c_qIc1pU8-f6MV7N-WAwUId")
+)
+
+
 
 
 df_temp <- df_long %>%
@@ -155,3 +170,8 @@ ggplot(df_temp, aes(x = Date_time, y = value))+
 #We can finish by deleting the folders of excels before pushing to Github
 unlink("Excels", recursive = TRUE, force = TRUE)
 unlink("Field_Chems", recursive = TRUE, force = TRUE)
+
+#also that png I made
+png_files <- list.files(pattern = "\\.png$")  # all PNGs in working directory
+file.remove(png_files)
+
