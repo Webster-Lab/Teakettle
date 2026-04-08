@@ -1,4 +1,3 @@
-
 #### READ ME ####
 # This purpose of this script is to clean, consolidate, and plot NEON data from the TECR site
 # It utilizes the "merged" datasets from the "Merged datasets" folder in Google Drive. 
@@ -52,6 +51,7 @@ temp <- read.csv("csvs/all_temp_data.csv")
 chem <- read.csv("csvs/all_waterchem_data.csv")
 wq <- read.csv("csvs/all_waterquality_data.csv")
 contQ <- read.csv("csvs/all_contdischarge_data.csv")
+gauge_height<- read.csv("csvs/all_gaugeheight_data.csv")
 
 
 
@@ -66,6 +66,7 @@ isotopes$DateTime_UTC = as.POSIXct(isotopes$collectDate, format="%Y-%m-%d", tz="
 chem$DateTime_UTC <- as.POSIXct(chem$collectDate, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
 wq$DateTime_UTC <- as.POSIXct(wq$startDateTime, format = "%Y-%m-%d %H:%M:%S", tz = "UTC" )
 contQ$DateTime_UTC<- as.POSIXct(contQ$DateTime_UTC, format = "%Y-%m-%d %H:%M:%S", tz = "UTC" )
+gauge_height$DateTime_UTC <- as.POSIXct(gauge_height$startDateTime, format = "%Y-%m-%d %H:%M:%S", tz = "UTC" )
 
 
 #nitrate and temp have some date-times and some that are just dates 
@@ -87,6 +88,7 @@ contQ$DateTime_PT <- with_tz(contQ$DateTime_UTC, tzone = "America/Los_Angeles")
 nitrate$DateTime_PT <- with_tz(nitrate$DateTime_UTC, tzone = "America/Los_Angeles")
 temp$DateTime_PT <- with_tz(temp$DateTime_UTC, tzone = "America/Los_Angeles")
 elevation$DateTime_PT <- with_tz(elevation$DateTime_UTC, tzone = "America/Los_Angeles")
+gauge_height$DateTime_PT <- with_tz(gauge_height$DateTime_UTC, tzone = "America/Los_Angeles")
 
 
 
@@ -98,12 +100,12 @@ elevation$DateTime_PT <- with_tz(elevation$DateTime_UTC, tzone = "America/Los_An
 #### 1) Nitrates ####
 #We want the adjusted N mean column (which is in milligrams/L of NO3-N)
 #But for any data that is flagged (FinalQF = 1), we want to put a NA in the adjusted N mean column so we don't use bad data
- 
+
 nitrate <- nitrate %>%
-mutate(adj_N_mean = case_when(
-  finalQF == 1 ~ NA_real_,   # set to NA if finalQF equals 1
-  TRUE ~ adj_N_mean          # otherwise keep the original value
-))
+  mutate(adj_N_mean = case_when(
+    finalQF == 1 ~ NA_real_,   # set to NA if finalQF equals 1
+    TRUE ~ adj_N_mean          # otherwise keep the original value
+  ))
 
 #Okay, now lets just select start/end date (in POSIX) and the adjusted N mean column
 nitrate <- nitrate %>%
@@ -212,7 +214,7 @@ wq_15 <- wq %>%
     turbidity = mean(turbidity, na.rm = TRUE),
     fDOM = mean(fDOM, na.rm = TRUE)
   )
-  
+
 # Got a lot of NaNs by taking the mean of NAs.  Not sure it matters ,but replace all NaNs with NAs for anything numeric (doing the whole dataframe breaks the datetime)
 wq_15 <- wq_15 %>%
   mutate(across(where(is.numeric), ~ na_if(., NaN)))
@@ -230,7 +232,7 @@ isotopes <- isotopes %>%
     d2HWater = case_when(
       isotopeH2OExternalLabQF == 1 ~ NA_real_,   # set to NA if finalQF equals 1.  NA_real specifies numeric NA
       TRUE ~ d2HWater   # otherwise keep the original value
-  ))
+    ))
 #pick out the columns we're probably interested in
 isotopes <- isotopes %>%
   select(DateTime_PT, d18OWater, d2HWater)
@@ -279,15 +281,15 @@ fieldQ <- fieldQ %>%
 # This data was a little messy since NEON changed its sampling frequency and variables in 2021.
 # Coalesce the two different discharge variables
 contQ <- contQ %>%
-mutate(dischargeContinuous_merged = coalesce(maxpostDischarge, dischargeContinuous))
+  mutate(dischargeContinuous_merged = coalesce(maxpostDischarge, dischargeContinuous))
 
 
 # Lets set any flagged data to NA:
-contQ <- contQ %>%
-  mutate(dischargeContinuous_merged = case_when(
-    dischargeFinalQF == 1 ~ NA_real_,   # set to NA if finalQF equals 1
-    TRUE ~ dischargeContinuous_merged          # otherwise keep the original value
-  ))
+#contQ <- contQ %>%
+# mutate(dischargeContinuous_merged = case_when(
+#  dischargeFinalQF == 1 ~ NA_real_,   # set to NA if finalQF equals 1
+# TRUE ~ dischargeContinuous_merged          # otherwise keep the original value
+#))
 
 #Summarize all data by 15 min intervals (they sampled every minute until 2021, then switched to every 15 minutes)
 
@@ -304,6 +306,25 @@ contQ_15 <- contQ %>%
 # Got a lot of NaNs by taking the mean of NAs.  Not sure it matters ,but replace all NaNs with NAs for anything numeric (doing the whole dataframe breaks the datetime)
 contQ_15 <- contQ_15 %>%
   mutate(across(where(is.numeric), ~ na_if(., NaN)))
+
+
+#### Gauge Height ####
+
+# Lets set any flagged data to NA:
+gauge_height <- gauge_height %>%
+  mutate(initialStageHeight = case_when(
+    dataQF == 1 ~ NA_real_,   # set to NA if finalQF equals 1
+    TRUE ~ initialStageHeight         # otherwise keep the original value
+  ))
+
+#Round to 15 minute measurements
+gauge_height_15 <- gauge_height %>%
+  mutate(DateTime_PT = floor_date(DateTime_PT, "15 minutes"))
+
+
+#Next, select columns of interest
+gauge_height_15 <- gauge_height_15 %>%
+  select(DateTime_PT, initialStageHeight)
 
 #### Joining & pivoting to long data ####
 
@@ -333,6 +354,9 @@ df_joined <-df_joined %>%
 df_joined <- df_joined %>%
   full_join(contQ_15, by = "DateTime_PT")
 
+df_joined <- df_joined %>%
+  full_join(gauge_height_15, by = "DateTime_PT")
+
 
 #lets pivot longer 
 df_long <- df_joined %>%
@@ -361,8 +385,9 @@ df_long <- df_long %>%
     variable == "d2HWater" ~ "‰ (per mil)",
     variable == "surfacewaterElevMean" ~ "meters",
     variable == "finalDischarge" ~ "Liters/sec",
-    variable == "dischargeContinuous_merged" ~ "Liters/sec"
-    ))
+    variable == "dischargeContinuous_merged" ~ "Liters/sec",
+    variable == "initialStageHeight" ~ "meters"
+  ))
 
 
 
@@ -383,13 +408,26 @@ ggplot(df_long, aes(x = DateTime_PT, y = value))+
 #### Discharge Data Plotting ####
 #Lets make sure everything is looking fine by plotting surface water elevation, field Q, and continuous Q together
 
+#Since I left in the quality flagged data, putting a box where the data was flagged in continuous discharge
+
 df_Q <- df_long %>%
-  filter(variable == "finalDischarge" | variable == "surfacewaterElevMean" | variable == "dischargeContinuous_merged")
+  filter(variable == "finalDischarge" | variable == "surfacewaterElevMean" | variable == "dischargeContinuous_merged"| variable == "initialStageHeight")
 
 ggplot(df_Q, aes(x = DateTime_PT, y = value))+
+  geom_rect(
+    xmin = as.POSIXct("2019-06-01"),
+    xmax = as.POSIXct("2021-02-01"),
+    ymin = -Inf,
+    ymax = Inf,
+    fill = "tomato",
+    alpha = 0.01
+  ) +
   geom_point()+
   facet_wrap(~ var_label, scales = "free_y", ncol = 1)+
   theme_minimal()
+
+
+
 
 
 
@@ -402,16 +440,14 @@ unlink("csvs", recursive = TRUE, force = TRUE)
 
 
 
-
 ### NEON data issues -- using the handy dandy built in Issue Log
 
 #Enter the data product ID and search for issues affecting TECR or all sites
-issues <- getIssueLog(
-  dpID = "DP1.20048.001",
-  token = "YOUR_TOKEN_HERE"
-)
-issues_filtered <- issues %>%
-  filter(grepl("TECR|All", locationAffected, ignore.case = TRUE))
+#issues <- getIssueLog(
+ # dpID = "DP1.20048.001",
+  #token = "YOUR_TOKEN_HERE")
+#issues_filtered <- issues %>%
+#  filter(grepl("TECR|All", locationAffected, ignore.case = TRUE))
 
 
 
@@ -441,21 +477,10 @@ issues_filtered <- issues %>%
 
 
 
-#### Questions for Alex ####
-
-#Which columns to keep, which columns to remove?
-  #Removed flag columns after I made flagged data NA
-  #Not currently keeping other metadata in this dataframe (who analyzed it, analysis dates etc)
-  #Not currently keeping standard error, variance, min/max, or exp uncertainty columns
-
 #Is there a protocol for identifying outliers/problem data?
 #Gap filling? Use interpolation?
- 
-#For the monthly/weekly variables: do we want NA's every 15 minutes when they weren't collected?
-  
-#Gases includes both air and water samples -- do we want both or do we want some sort of difference of the two?
 
-#What's the most useful way to plot this data? 
+
 
 
 ###Daylights savings time:  Goes from 1:45 to 3:00 am in March,  goes from 1:45 back to 1:00 am in November. 
