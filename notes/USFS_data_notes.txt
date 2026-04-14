@@ -1,0 +1,22 @@
+2026/04/14 Meeting with Kevin Mazzocco
+
+Discharge Data:
+
+No change in instrumentation -- Teakettle has been a very clean, reliable, easy site up until the fire. Rarely any equipment failure, main issue was occasional logs in the weir
+
+Teakettle discharge was calculated from the 90 v-notch weir* plus 6' wide Cipoletti notch when >.75m (added both together) 
+
+Flag column indicates weather values are measured (m) or estimated (e).  Estimated data points indicate a short term issue where the value was calculated later 
+by smoothing over data into one missing timestamp, or patching in missing data from the backup solonist logger.  When the weir was drained for sediment calculations, 
+connected before/after draining points to one another to cover gap.
+
+
+Chem Data:
+
+Lab data ended in 2015 (ran out of money)
+pH, temp, EC data were collected on a handheld unit until 2022
+There is some additional turbidity data/temperature data that Kevin can share with us
+Add 2004-2006 Chem data from Kevin's most recent upload
+
+
+

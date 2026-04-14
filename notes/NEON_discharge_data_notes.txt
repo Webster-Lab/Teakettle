@@ -1,0 +1,52 @@
+Rhea et al 2023: User-focused evaluation of National Ecological Observatory Network streamflow estimates
+
+In figure 5b, this shows the all data (even those that are flagged with a with a quality flag by NEON, which my script removes).  It doesn't appear the authors did any gap-filling of this data.
+
+From late 2018-late 2019, TECR data was noted as being Tier 1. Streamflow data that was classified as Tier 1 met the high professional standards of the hydrology community and can be used in all subsequent analysis with confidence.
+
+From late 2019 onward, TECR data was flagged by this paper as having "weak relationships between stage and gauge height".  This data was "not ranked into one of these three tiers because of poor fits between stage and gauge height measurements that caused us to question the quality of the data"  "Users are encouraged to set their own criteria for use, and all of the evaluative metrics are available to assist them in doing so."
+
+-----------------------------------------------------------------------------------------------------------------------
+
+NOTES - 2026/04/13
+Continuous discharge data DOES start in November 2018 at TECR -- nothing before that. This matches Rhea et al dataset as well.
+Gauge height data: "Gauge measurements and field metadata are collected at all aquatic sites whenever another protocol is implemented"
+
+
+Notes on how discharge is measured:
+
+Continuous discharge:
+Continuous sensor measurements of surface water pressure are used to derive water column height. The rating curve equations are applied to water column height to derive continuous stream discharge.
+
+Field Discharge:
+At stream sites (and Toolik Lake inflow and outflow), discharge is measured using a handheld flowmeter (when flows are very low) and acoustic Doppler current profiler (ADCP) instrumentation (when flows are at or above baseflow). During flowmeter measurements the waterbody is divided into lateral sub-sections (of which there are typically 20-25 per cross-section). Within each subsection, an instantaneous velocity magnitude is obtained via a handheld flowmeter and transformed to a volumetric discharge magnitude by applying the velocity across the full subsection area. Total stream discharge is then calculated by summing the discrete volumetric discharges for each subsection. During ADCP measurements the ADCP is placed in a trimaran float and pulled back and forth across the channel using a tethered rope system. Velocity, depth, and area data are continuously measured, and discharge is calculated for each transect. Total discharge for a given bout is the mean discharge across all transects.
+
+Gauge height: Gauge height is the height of the water surface above an established altitude where the stage is zero. The zero level is arbitrary, but is often close to the streambed. Gauge height at stream sites will be related to measurements of stream discharge to formulate stage-discharge rating curves at all NEON stream and river sites. Rating equations will be applied to continuous surface water elevation data in order to calculate continuous stream discharge at all NEON aquatic sites. 
+
+Surface water elevation: In situ sensor-based measurements of surface water elevation, available as 1-minute instantaneous data, and five- and thirty-minute averages in lakes, rivers, and wadeable streams. Based on sensor measurements of water pressure.
+
+
+
+***IMPORTANT NOTE: in Rhea et al, "For the purposes of this discussion, manual reference measurements will be referred to as ‘stage’ and automated, sensed readings as ‘gauge height’."
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+NOTES 4/14 Things Get Messy
+
+Re-ran script with just TECR -- results did not match Rhea et al. 
+I am using the RELEASE 2025 data, while Rhea et al. used the RELEASE 2022 data. 
+
+- To get script to run, I removed data from 9/30/23 (all NA, final date of release) and removed a line that was throwing an error before being overwritten (   #fit_reg <- summary(lm(calibratedPressMean~gaugeHeight, data = df_reg))
+         fit_reg <- summary(lm(calculatedStage~gaugeHeight, data = df_reg))
+
+- New results -- show issues with regression test, but not nearly as bad as published by Rhea et al.
+- Possible some of this is due to the fact that some of the analyzed data were provisional at the time (RELEASE 2022) and NEON may have adjusted things since. The provisional versions of the data are no longer available so we won't know. Note says data were provisional after 9/30/2019, so most of our dataset...
+
+UPDATED version of results released in 2023 -- they just tossed all the provisional data and only analyzed 2019 for TECR...however this was not what was published in the paper
+https://www.hydroshare.org/resource/1a388391632f4277992889e2de152163/
+
+Meeting with Alex: compare neon_q_eval_final_v2 to neon_q_eval (from Hydroshare)
+Look through regressions plots and discharge plots
+
+
+
