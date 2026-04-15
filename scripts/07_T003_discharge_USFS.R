@@ -128,6 +128,8 @@ drive_upload(
   path = as_id("1y3iIvqrsBc_-CSB00OI9tvPNDTtxOsZO")
 )
 
+file.remove("t003_2003_2025.png")
+
 
 
 
