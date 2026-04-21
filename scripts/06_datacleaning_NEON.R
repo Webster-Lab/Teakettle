@@ -94,7 +94,7 @@ gauge_height$DateTime_PT <- with_tz(gauge_height$DateTime_UTC, tzone = "America/
 
 
 
-#### Data Cleaning ####
+#### Initial Data Cleaning ####
 #change flagged data to NA and select columns of interest
 
 #### 1) Nitrates ####
@@ -283,6 +283,7 @@ fieldQ <- fieldQ %>%
 contQ <- contQ %>%
   mutate(dischargeContinuous_merged = coalesce(maxpostDischarge, dischargeContinuous))
 
+# Hold off on getting rid of flagged data until we plot it
 
 # Lets set any flagged data to NA:
 #contQ <- contQ %>%
@@ -308,7 +309,7 @@ contQ_15 <- contQ_15 %>%
   mutate(across(where(is.numeric), ~ na_if(., NaN)))
 
 
-#### Gauge Height ####
+#### 8) Gauge Height ####
 
 # Lets set any flagged data to NA:
 gauge_height <- gauge_height %>%
@@ -326,7 +327,7 @@ gauge_height_15 <- gauge_height %>%
 gauge_height_15 <- gauge_height_15 %>%
   select(DateTime_PT, initialStageHeight)
 
-#### Joining & pivoting to long data ####
+#### 9) Joining & pivoting to long data ####
 
 #try a little join
 
@@ -356,6 +357,12 @@ df_joined <- df_joined %>%
 
 df_joined <- df_joined %>%
   full_join(gauge_height_15, by = "DateTime_PT")
+
+
+#Lets make sure nothing is duplicated
+duplicates <- df_joined[duplicated(df_joined$DateTime_PT), ]
+#there are 20 duplicates, but all the data is the same.  Lets remove the first duplicate
+df_joined <- df_joined[!duplicated(df_joined[, "DateTime_PT"]), ]
 
 
 #lets pivot longer 
@@ -405,7 +412,7 @@ ggplot(df_long, aes(x = DateTime_PT, y = value))+
 
 
 
-#### Discharge Data Plotting ####
+#### 10) Discharge Data Plotting ####
 #Lets make sure everything is looking fine by plotting surface water elevation, field Q, and continuous Q together
 
 #Since I left in the quality flagged data, putting a box where the data was flagged in continuous discharge
@@ -434,6 +441,523 @@ ggplot(df_Q, aes(x = DateTime_PT, y = value))+
 
 #We can finish by deleting the folder of csvs before pushing to Github
 unlink("csvs", recursive = TRUE, force = TRUE)
+
+
+
+#### 11) Bring in USFS data to compare ####
+
+drive_find(n_max = 10) 
+
+# Download the desired file to the working directory
+drive_download("t003.2003.2025.discharge.csv", path = "t003.2003.2025.discharge.csv", overwrite = TRUE)
+
+USFS_discharge <- read.csv("t003.2003.2025.discharge.csv")
+
+#create columns needed
+USFS_discharge$lps <- USFS_discharge$T003_lps
+USFS_discharge$DateTime_PT <- USFS_discharge$Date_time_PT
+USFS_discharge$Stream <- "T001 USFS"
+
+#fix datetime
+USFS_discharge$DateTime_PT <- ymd_hms(USFS_discharge$DateTime_PT, tz = "America/Los_Angeles")
+
+#select just columns needed
+USFS_discharge <- USFS_discharge %>%
+  select(DateTime_PT, lps, Stream)
+
+
+
+#select continuous discharge from NEON data and get columns in shape
+
+df_joined$lps <- df_joined$dischargeContinuous_merged
+
+NEON_cont_discharge <- df_joined %>%
+  select(DateTime_PT, lps)
+
+NEON_cont_discharge$Stream <- "TECR NEON"
+
+
+
+merged <- rbind(USFS_discharge, NEON_cont_discharge)
+
+
+
+#lets cut off where the NEON data goes crazy...1500 lps seems reasonable?
+#lets just look at the years where we have NEON data
+merged_cleaned <- merged %>%
+  filter(lps < 1500) %>%
+  filter(DateTime_PT > "2018-10-01 01:00:00")
+
+
+#### 12) Plotting USFS/NEON discharge data together ####
+
+merged_plot <- ggplot(merged_cleaned, aes(DateTime_PT, lps, color = Stream)) + geom_line(size = 0.125, alpha = 0.8) +
+  scale_y_continuous(name = "Discharge (lps)", breaks = seq(0, 7000, by = 100)) +
+  scale_x_datetime(name = "Year", date_breaks = "1 year", date_labels = "%Y") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, size = 10),
+        axis.title.x = element_text(size = 14, face = "bold"),
+        axis.text.y = element_text(size = 10),
+        axis.title.y = element_text(size = 14, face = "bold")) +
+  coord_cartesian(expand = TRUE)
+merged_plot
+
+#save
+folder <-drive_get("T003_NEON_Discharge_Figures")
+
+ggsave(
+  "merged_plot_unclean.png",
+  plot = merged_plot,
+  width = 10,
+  height = 5,
+  dpi = 300
+)
+
+# Upload to Google Drive
+drive_upload(
+  media = "merged_plot_unclean.png",
+  path = folder,
+  name = "merged_plot_unclean.png",
+  overwrite = TRUE
+)
+
+
+#Make plots by year to be able to see better
+
+#make year column
+merged_cleaned$year <- year(merged_cleaned$DateTime_PT)
+
+#specify folder to upload to
+folder <-drive_get("T003_NEON_Discharge_Figures")
+
+#loop to create & upload annual discharge plots
+
+years <- 2018:2025
+
+for (y in years) {
+  
+  # Subset data
+  df_year <- merged_cleaned %>% filter(year == y)
+  
+  # Skip if no data
+  if (nrow(df_year) == 0) next
+  
+  # Create plot 
+  p <- ggplot(df_year, aes(x = DateTime_PT, y = lps, color = Stream)) +
+    geom_line(size = 0.5, alpha = 0.8) +
+    labs(
+      title = paste("Year:", y),
+      x = "Date",
+      y = "Liters/sec"
+    ) +
+    theme_minimal()
+  
+  # Save locally
+  filename <- paste0("t003_neon_", y, ".png")
+  
+  ggsave(
+    filename,
+    plot = p,
+    width = 10,
+    height = 5,
+    dpi = 300
+  )
+  
+  # Upload to Google Drive
+  drive_upload(
+    media = filename,
+    path = folder,
+    name = filename,
+    overwrite = TRUE
+  )
+  
+  # Optional: remove local file after upload
+  file.remove(filename)
+}
+
+
+
+#Lets get a rolling monthly correlation between USFS & NEON
+
+#pivot data wide
+wide <- merged %>%
+  select(DateTime_PT, Stream, lps) %>%
+  pivot_wider(names_from = Stream, values_from = lps)
+
+#pull out time series that overlap
+wide <- wide %>%
+  filter(DateTime_PT >= as.POSIXct("2018-11-01"),
+         DateTime_PT <= as.POSIXct("2023-09-30"))
+
+
+
+
+library(zoo)
+
+mat <- as.matrix(wide[, c("T001 USFS", "TECR NEON")])
+
+wide$roll_cor <- rollapply(
+  mat,
+  width = 2880,
+  FUN = function(x) {
+    
+    x <- x[complete.cases(x), , drop = FALSE]
+    
+    # if nothing left after removing NA
+    if (length(x) == 0 || nrow(x) < 50) return(NA_real_)
+    
+    cor(x[,1], x[,2])
+  },
+  by.column = FALSE,
+  align = "right",
+  fill = NA
+)
+
+
+#Plot it!
+ggplot(wide, aes(DateTime_PT, roll_cor)) +
+  geom_line(color = "darkgreen", linewidth = 0.7, na.rm = TRUE) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
+  coord_cartesian(ylim = c(-1, 1)) +
+  labs(
+    x = "Date",
+    y = "Rolling Correlation (USFS vs NEON)"
+  ) +
+  theme_classic()
+
+
+
+#### 13) More NEON Discharge Data Cleaning & Replotting ####
+
+#Alright, now we try to clean up the NEON data a little more with this information
+
+
+# Lets set any flagged data to NA, except for the areas of the data we're trying to salvage (between Oct 2020 and mid-March 2021 -- plots look, decent)
+
+contQ_clean <- contQ %>%
+  mutate(dischargeContinuous_merged = case_when(
+    dischargeFinalQF == 1 & 
+      !(DateTime_PT >= as.POSIXct("2020-05-01") & 
+          DateTime_PT <= as.POSIXct("2021-03-15")) ~ NA_real_,
+    
+    TRUE ~ dischargeContinuous_merged
+  ))
+
+#get rid of unrealistic spikes in flow.  TECR never exceeds 1000 lps during this time frame.
+contQ_clean <- contQ_clean %>%
+  mutate(
+    dischargeContinuous_merged = case_when(
+      dischargeContinuous_merged > 1000 ~ NA_real_,
+      TRUE ~ dischargeContinuous_merged
+    )
+  )
+
+#Summarize all data by 15 min intervals (they sampled every minute until 2021, then switched to every 15 minutes)
+
+contQ_clean_15 <- contQ_clean %>%
+  # Step 1: round down to nearest 15 minutes
+  mutate(DateTime_PT = floor_date(DateTime_PT, "15 minutes")) %>%
+  
+  # Step 2: group by the new 15-min timestamp.  This one removes NAs from the mean, but ask Alex if any 15 minute period with a NA should be summarized to NA. 
+  group_by(DateTime_PT) %>%
+  summarize(
+    dischargeContinuous_merged = mean(dischargeContinuous_merged, na.rm = TRUE))
+
+
+# Got a lot of NaNs by taking the mean of NAs.  Not sure it matters,but replace all NaNs with NAs for anything numeric (doing the whole dataframe breaks the datetime)
+contQ_clean_15 <- contQ_clean_15 %>%
+  mutate(across(where(is.numeric), ~ na_if(., NaN)))
+
+
+contQ_clean_15$lps <- contQ_clean_15$dischargeContinuous_merged
+
+contQ_clean_15 <- contQ_clean_15 %>%
+  select(DateTime_PT, lps)
+
+contQ_clean_15$Stream <- "TECR NEON"
+
+
+merged_cleaned <- rbind(USFS_discharge, contQ_clean_15)
+
+
+
+#lets just look at the years where we have NEON data
+merged_cleaned <- merged_cleaned %>%
+  filter(DateTime_PT > "2018-10-01 01:00:00")
+
+merged_plot <- ggplot(merged_cleaned, aes(DateTime_PT, lps, color = Stream)) + geom_line(size = 0.5, alpha = 0.5, na.rm = TRUE) +
+  scale_y_continuous(name = "Discharge (lps)", breaks = seq(0, 7000, by = 100)) +
+  scale_x_datetime(name = "Year", date_breaks = "1 year", date_labels = "%Y") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, size = 10),
+        axis.title.x = element_text(size = 14, face = "bold"),
+        axis.text.y = element_text(size = 10),
+        axis.title.y = element_text(size = 14, face = "bold")) +
+  coord_cartesian(expand = TRUE)+
+  theme_minimal()
+merged_plot
+
+#save
+folder <-drive_get("T003_NEON_Discharge_Figures_Cleaned")
+
+ggsave(
+  "merged_plot_clean.png",
+  plot = merged_plot,
+  width = 12,
+  height = 5,
+  dpi = 300
+)
+
+# Upload to Google Drive
+drive_upload(
+  media = "merged_plot_clean.png",
+  path = folder,
+  name = "merged_plot_clean.png",
+  overwrite = TRUE
+)
+
+#### Add NSE values to plot ####
+#read in NEON regression analysis doc (NSE values)
+NSE <- read.csv("https://docs.google.com/spreadsheets/d/17Nfbq686zDeYc97goKtkwnV44qK37Wluq7a7U0GViz8/export?format=csv")
+
+NSE$month_year <- as.POSIXct(
+  make_date(NSE$year, NSE$month, 1))
+
+NSE <- NSE %>%
+  select(month_year, regression_NSE, drift_status)
+
+merged_cleaned <- merged_cleaned %>%
+  mutate(month_year = floor_date(DateTime_PT, "month") %>% as.Date())
+
+merged_NSE <- merged_cleaned %>%
+  left_join(NSE, by = "month_year")
+
+
+NSE_plot <- ggplot() +
+
+  #add red lines for potential drift
+  geom_vline(
+    data = merged_NSE %>% filter(drift_status == "potential_drift"),
+    aes(xintercept = DateTime_PT),
+    color = "#ffb09c",
+    alpha = 0.01
+  ) +
+  
+  # USFS: fixed color
+  geom_line(
+    data = subset(merged_NSE, Stream == "T001 USFS"),
+    aes(DateTime_PT, lps),
+    color = "black",
+    size = 0.3,
+    alpha = 0.6,
+    na.rm = TRUE
+  ) +
+  
+  # NEON: colored by NSE
+  geom_line(
+    data = subset(merged_NSE, Stream == "TECR NEON"),
+    aes(DateTime_PT, lps, color = regression_NSE),
+    size = 0.3,
+    alpha = 0.8,
+    na.rm = TRUE
+  ) +
+  
+  scale_color_gradient(low = "red", high = "blue", na.value = "lightgreen") +
+  
+  scale_y_continuous(name = "Discharge (lps)") +
+  scale_x_datetime(name = "Year", date_breaks = "1 year", date_labels = "%Y") +
+  
+  theme_minimal()
+
+
+#save
+folder <-drive_get("T003_NEON_Discharge_Figures_Cleaned")
+
+ggsave(
+  "merged_plot_clean_NSE.png",
+  plot = NSE_plot,
+  width = 15,
+  height = 5,
+  dpi = 300
+)
+
+# Upload to Google Drive
+drive_upload(
+  media = "merged_plot_clean_NSE.png",
+  path = folder,
+  name = "merged_plot_clean_NSE.png",
+  overwrite = TRUE
+)
+
+
+
+
+
+#Make plots by year to be able to see better
+
+#make year column
+merged_cleaned$year <- year(merged_cleaned$DateTime_PT)
+#specify folder to upload to
+folder <-drive_get("T003_NEON_Discharge_Figures_Cleaned")
+
+#loop to create & upload annual discharge plots
+
+years <- 2018:2025
+
+for (y in years) {
+  
+  # Subset data
+  df_year <- merged_cleaned %>% filter(year == y)
+  
+  # Skip if no data
+  if (nrow(df_year) == 0) next
+  
+  # Create plot 
+  p <- ggplot(df_year, aes(x = DateTime_PT, y = lps, color = Stream)) +
+    geom_line(size = 0.5, alpha = 0.5) +
+    labs(
+      title = paste("Year:", y),
+      x = "Date",
+      y = "Liters/sec"
+    ) +
+    theme_minimal()
+  
+  # Save locally
+  filename <- paste0("t003_neon_", y, ".png")
+  
+  ggsave(
+    filename,
+    plot = p,
+    width = 10,
+    height = 5,
+    dpi = 300
+  )
+  
+  # Upload to Google Drive
+  drive_upload(
+    media = filename,
+    path = folder,
+    name = filename,
+    overwrite = TRUE
+  )
+  
+  # Optional: remove local file after upload
+  file.remove(filename)
+}
+
+
+
+
+#Check correlation
+
+
+#pivot data wide
+wide <- merged_cleaned %>%
+  select(DateTime_PT, Stream, lps) %>%
+  pivot_wider(names_from = Stream, values_from = lps)
+
+#pull out time series that overlap
+wide <- wide %>%
+  filter(DateTime_PT >= as.POSIXct("2018-11-01"),
+         DateTime_PT <= as.POSIXct("2023-09-30"))
+
+
+
+
+library(zoo)
+
+mat <- as.matrix(wide[, c("T001 USFS", "TECR NEON")])
+
+wide$roll_cor <- rollapply(
+  mat,
+  width = 5760, #two month rolling window,
+  FUN = function(x) {
+    
+    x <- x[complete.cases(x), , drop = FALSE]
+    
+    # if nothing left after removing NA
+    if (length(x) == 0 || nrow(x) < 50) return(NA_real_)
+    
+    cor(x[,1], x[,2])
+  },
+  by.column = FALSE,
+  align = "right",
+  fill = NA
+)
+
+
+#Plot it!
+corr.plot <- ggplot(wide, aes(DateTime_PT, roll_cor)) +
+  geom_line(color = "darkgreen", linewidth = 0.7, na.rm = TRUE) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
+  coord_cartesian(ylim = c(-1, 1)) +
+  labs(
+    x = "Date",
+    y = "Rolling 60 Day Correlation"
+  ) +
+  theme_classic()
+
+
+#save
+folder <-drive_get("T003_NEON_Discharge_Figures_Cleaned")
+
+ggsave(
+  "correlation_plot_clean.png",
+  plot = corr.plot,
+  width = 12,
+  height = 5,
+  dpi = 300
+)
+
+# Upload to Google Drive
+drive_upload(
+  media = "correlation_plot_clean.png",
+  path = folder,
+  name = "correlation_plot_clean.png",
+  overwrite = TRUE
+)
+
+
+
+#Make a combined plot
+library(patchwork)
+
+#set axes the same
+x_limits <- range(merged_cleaned$DateTime_PT, na.rm = TRUE)
+corr.plot <- corr.plot  + coord_cartesian(xlim = x_limits)
+NSE_plot <- NSE_plot + coord_cartesian(xlim = x_limits)
+
+combined_plot <- corr.plot / NSE_plot +
+  plot_layout(heights = c(1, 2))  # top smaller than bottom
+
+combined_plot
+
+
+#save
+folder <-drive_get("T003_NEON_Discharge_Figures_Cleaned")
+
+ggsave(
+  "combined_NSE_corr_plot.png",
+  plot = combined_plot,
+  width = 12,
+  height = 5,
+  dpi = 300
+)
+
+# Upload to Google Drive
+drive_upload(
+  media = "combined_NSE_corr_plot.png",
+  path = folder,
+  name = "combined_NSE_corr_plot.png",
+  overwrite = TRUE
+)
+
+
+#### Aggregate to Daily Means ####
+#now that we've sorted out cleaning the discharge data, lets get all the NEON data aggregated to daily means 
+
+
+
+
+
 
 
 
@@ -468,17 +992,6 @@ unlink("csvs", recursive = TRUE, force = TRUE)
 ### reduced field visits during the pandemic (2020-2021)
 
 
-
-
-
-
-
-
-
-
-
-#Is there a protocol for identifying outliers/problem data?
-#Gap filling? Use interpolation?
 
 
 
