@@ -950,6 +950,11 @@ drive_upload(
   overwrite = TRUE
 )
 
+#Get this place cleaned up before pushing
+
+file.remove(list.files(pattern = "\\.png$"))
+file.remove(list.files(pattern = "\\.csv$"))
+
 
 #### Aggregate to Daily Means ####
 #now that we've sorted out cleaning the discharge data, lets get all the NEON data aggregated to daily means 
