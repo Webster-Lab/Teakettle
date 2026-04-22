@@ -2,6 +2,7 @@
 # The following code is for data compilation and plotting of USFS chem data for T003. 
 # The files used include KRFinalDataSet excels (with chemistries post-lab) and field data from the Access database. 
 
+#### Load libraries ####
 library(dplyr)
 library(tidyr)
 library(ggplot2)
@@ -10,8 +11,7 @@ library(openxlsx)
 library(lubridate)
 library(hms)
 
-
-# Get folder ID from URL if needed
+#### Download and merge lab chem data ####
 folder_id <- googledrive::as_id("https://drive.google.com/drive/folders/1suit0uVMgR5Rq2RM8VWa0tfDaBpPMFHC")
 
 # List all files in the folder
@@ -47,10 +47,7 @@ chems <- bind_rows(data_list)
 
 
 
-
-
-
-# Get folder ID from URL if needed
+#### Download and merge field chem data ####
 folder_id <- googledrive::as_id("https://drive.google.com/drive/folders/14gJM-JhuzwA4-26NgC4h2-6yIZ4aQ-ou")
 
 # List all files in the folder
@@ -95,7 +92,7 @@ data_list <- lapply(files, function(f) {
   return(df)
 })
 
-# Combine all data frames
+#Combine all data frames
 field_chems <- bind_rows(data_list)
 
 #filter for just data from T003
@@ -103,9 +100,18 @@ field_chems <- field_chems %>%
   filter(Site == "T003") %>%
   select(SampleID, Site, SampleType, Date, Time, Volume, pH, EC, Temp)
 
+field_chems$pH <- as.numeric(field_chems$pH)
+field_chems$EC <- as.numeric(field_chems$EC)
+field_chems$Temp <- as.numeric(field_chems$Temp)
+field_chems$SampleID <- as.numeric(field_chems$SampleID)
+
+
+
+
+#### Join lab & field data, format date-time ####
 
 #left join the lab data to the field chem data for T003
-chems$SampleID <- chems$Sample
+chems$SampleID <- as.numeric(chems$Sample)
 joined_chems <- left_join(field_chems, chems, by = "SampleID")
 
 
@@ -116,25 +122,48 @@ joined_chems$Time <- hms::parse_hm(joined_chems$Time)
 joined_chems$Date_time <- as.POSIXct(joined_chems$Date) + as.numeric(joined_chems$Time)
 
 # Set timezone
-attr(joined_chems$Date_time, "tzone") <- "America/Los_Angeles"
+attr(joined_chems$Date_time, "tzone") <- "Etc/GMT+8"
 
 joined_chems <- joined_chems %>%
   select(-c(Site, SampleType, Date, Time, Volume, Sample, Field.ID, X2))
 
-###Join long and pivot!
+joined_chems$Date_Time_PT <- joined_chems$Date_time
+
+#round to the closet 15 min
+
+joined_chems$Date_Time_PT <- round_date(
+  joined_chems$Date_Time_PT,
+  unit = "15 minutes"
+)
+
+#OKAY TEMPORARY FIX: Make MRL and ND 0s.  This needs to be corrected long-term. 
+
+chem_cols <- c("Alkalinity", "Chloride", "Nitrate", "Phosphate", "Sulfate", "Ammonium", "Calcium", "Magnesium", "Potassium", "Sodium")  # change to yours
+
+joined_chems[chem_cols] <- lapply(joined_chems[chem_cols], function(x) {
+  x[x %in% c("MRL", "ND")] <- 0
+  as.numeric(x)
+})
+
+joined_chems <- joined_chems %>%
+  select(-Date_time)
+
+# Join long and pivot!
 
 #lets pivot longer 
 df_long <- joined_chems %>%
   pivot_longer(
-    cols = -Date_time,
+    cols = c("pH", "EC", "Temp", "Alkalinity", "Chloride", "Nitrate", "Phosphate", "Sulfate", "Ammonium", "Calcium", "Magnesium", "Potassium", "Sodium"),
     names_to = "variable",
     values_to = "value"
   ) %>%
-  arrange(Date_time)
+  arrange(Date_Time_PT)
 
 df_long$value <- as.numeric(df_long$value)
 
-chems_faceted <- ggplot(df_long, aes(x = Date_time, y = value))+
+
+#### Make faceted chem plot ####
+chems_faceted <- ggplot(df_long, aes(x = Date_Time_PT, y = value))+
   geom_point()+
   geom_line()+
   facet_wrap(~ variable, scales = "free_y")+
@@ -157,14 +186,132 @@ drive_upload(
 
 
 
-df_temp <- df_long %>%
-  filter(variable == "Temp") %>%
-  arrange(Date_time)
+#### Bring in ISCO data (15 min temperature and turbidity) ####
 
-ggplot(df_temp, aes(x = Date_time, y = value))+
-  geom_point()+
-  geom_line()+
-  theme_minimal()
+drive_find(n_max = 10) 
+
+# Download the desired file to the working directory
+#turbidity data 2006-2025
+drive_download("Compiled_turb_data.csv", path = "Compiled_turb_data.csv", overwrite = TRUE)
+turb <- read.csv("Compiled_turb_data.csv")
+
+#temp data 2006-2025
+drive_download("Compiled_temp_data.csv", path = "Compiled_temp_data.csv", overwrite = TRUE)
+temp <- read.csv("Compiled_temp_data.csv")
+
+#format date/time.  These times are in Pacific time but do not shift for daylights savings, so timezone is ETC/GMT+8
+turb$Date_Time_PT <- as.POSIXct(turb$Date_Time, format="%m/%d/%Y %H:%M", tz="Etc/GMT+8")
+temp$Date_Time_PT <- as.POSIXct(temp$Date_Time, format="%m/%d/%Y %H:%M", tz="Etc/GMT+8")
+
+#merge temp and turb
+
+temp_turb <- full_join(temp, turb, by = "Date_Time_PT")
+
+temp_turb <- temp_turb %>%
+  select(Date_Time_PT, Temperature, Turbidity_NTU)
+
+#### Bring in discharge data ####
+
+drive_download("t003.2003.2025.discharge.csv", path = "t003.2003.2025.discharge.csv", overwrite = TRUE)
+discharge <- read.csv("t003.2003.2025.discharge.csv")
+
+#this one I had converted to "America/Los Angeles" time so that it did switch for daylights savings
+discharge$Date_Time_PT <- ymd_hms(
+  discharge$Date_time_PT,
+  tz = "America/Los_Angeles"
+)
+
+#I guess we'll switch it back to match the ISCO data.  Should really get consistent with this. 
+discharge$Date_Time_PT <- with_tz(
+  discharge$Date_Time_PT,
+  "Etc/GMT+8"
+)
+
+discharge <- discharge %>%
+  select(Date_Time_PT, T003_lps)
+
+#### Merge everything all together ####
+merged <- left_join(discharge, temp_turb, by = "Date_Time_PT")
+merged <- left_join(merged, joined_chems, by = "Date_Time_PT")
+
+merged <- merged %>%
+  select( -SampleID)
+
+
+#make long for plotting
+merged_long <- merged %>%
+  pivot_longer(cols = c(T003_lps, Temperature, Turbidity_NTU, pH, EC, Temp, Alkalinity, Chloride, Nitrate, Phosphate, Sulfate, Ammonium, Calcium, Potassium, Sodium, Magnesium),
+               names_to = "variable", values_to = "value")
+
+
+
+#Make time series plots for each different variable vs. discharge
+
+vars_to_plot <- setdiff(unique(merged_long$variable), "T003_lps")
+
+drive_folder <- as_id("1UboFvbCMv10VA8p3KuHIgIGGG4v_s-DW")
+
+for (v in vars_to_plot) {
+  
+  df_sub <- merged_long %>%
+    filter(variable %in% c("T003_lps", v)) %>%
+    group_by(Date_Time_PT, variable) %>%
+    summarise(value = mean(value, na.rm = TRUE), .groups = "drop")
+  
+  df_sub <- df_sub %>%
+    arrange(Date_Time_PT)
+  
+    p <- ggplot(df_sub, aes(Date_Time_PT, value)) +
+    
+    geom_line(data = df_sub %>% filter(variable == "T003_lps"),
+              color = "blue3", linewidth = 0.6) +
+    
+      #force lines to link different grab samples that have NA values between
+      geom_line(
+        data = df_sub %>% filter(variable == v & !is.na(value)),
+        color = "firebrick",
+        linewidth = 0.3
+      ) + 
+    
+    geom_point(data = df_sub %>% filter(variable == v),
+               color = "firebrick", size = 0.6, alpha = 0.6, na.rm = TRUE) +
+    
+      #free the y axes and make a single column of stacked figs
+    facet_wrap(~variable, scales = "free_y", ncol = 1) +
+    
+    labs(
+      title = paste("T003 Discharge vs", v),
+      x = "Time",
+      y = "Value",
+      color = "Variable"
+    ) +
+      
+      scale_x_datetime(
+        date_breaks = "1 year",
+        date_labels = "%Y"
+      )+
+    
+    theme_minimal()
+  
+  # save locally
+  file_name <- paste0("T003_discharge_vs_", v, ".png")
+  temp_file <- file.path(tempdir(), file_name)
+  
+  ggsave(temp_file, plot = p, width = 15, height = 6)
+  
+  # upload to Google Drive
+  drive_upload(
+    media = temp_file,
+    path = drive_folder,
+    name = file_name,
+    overwrite = TRUE
+  )
+}
+
+
+
+
+
 
 
 #We can finish by deleting the folders of excels before pushing to Github
@@ -175,3 +322,5 @@ unlink("Field_Chems", recursive = TRUE, force = TRUE)
 png_files <- list.files(pattern = "\\.png$")  # all PNGs in working directory
 file.remove(png_files)
 
+csv_files <- list.files(pattern = "\\.csv$")
+file.remove(csv_files)
