@@ -230,7 +230,7 @@ discharge$Date_Time_PT <- with_tz(
 discharge <- discharge %>%
   select(Date_Time_PT, T003_lps)
 
-#### Merge everything all together ####
+#### Merge everything all together & upload data ####
 merged <- left_join(discharge, temp_turb, by = "Date_Time_PT")
 merged <- left_join(merged, joined_chems, by = "Date_Time_PT")
 
@@ -238,12 +238,23 @@ merged <- merged %>%
   select( -SampleID)
 
 
+#lets save this dataset so we have a version on the googledrive
+write.csv(merged, "USFS_chem_discharge_data_sortaclean.csv", row.names = FALSE)
+
+drive_upload(
+  media = "USFS_chem_discharge_data_sortaclean.csv",
+  path = as_id("1yp3OUqcn7_jnWTgrRLorTvlw-DiJuooC"),
+  name = "USFS_chem_discharge_data_sortaclean.csv",
+  overwrite = TRUE
+)
+
+
 #make long for plotting
 merged_long <- merged %>%
   pivot_longer(cols = c(T003_lps, Temperature, Turbidity_NTU, pH, EC, Temp, Alkalinity, Chloride, Nitrate, Phosphate, Sulfate, Ammonium, Calcium, Potassium, Sodium, Magnesium),
                names_to = "variable", values_to = "value")
 
-
+#### Make chemistry time-series plots ####
 
 #Make time series plots for each different variable vs. discharge
 
@@ -312,7 +323,7 @@ for (v in vars_to_plot) {
 
 
 
-
+#### Clean up ####
 
 #We can finish by deleting the folders of excels before pushing to Github
 unlink("Excels", recursive = TRUE, force = TRUE)
