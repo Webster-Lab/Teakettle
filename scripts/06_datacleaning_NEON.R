@@ -11,6 +11,7 @@ library(ggplot2)
 library(lubridate)
 library(googledrive)
 library(neonUtilities)
+library(plotly)
 
 
 #### Download data ####
@@ -449,9 +450,9 @@ unlink("csvs", recursive = TRUE, force = TRUE)
 drive_find(n_max = 10) 
 
 # Download the desired file to the working directory
-drive_download("t003.2003.2025.discharge.csv", path = "t003.2003.2025.discharge.csv", overwrite = TRUE)
+drive_download("t003.2003.2025.discharge.15min.csv", path = "t003.2003.2025.discharge.15min.csv", overwrite = TRUE)
 
-USFS_discharge <- read.csv("t003.2003.2025.discharge.csv")
+USFS_discharge <- read.csv("t003.2003.2025.discharge.15min.csv")
 
 #create columns needed
 USFS_discharge$lps <- USFS_discharge$T003_lps
@@ -648,8 +649,32 @@ contQ_clean <- contQ_clean %>%
     dischargeContinuous_merged = case_when(
       dischargeContinuous_merged > 1000 ~ NA_real_,
       TRUE ~ dischargeContinuous_merged
-    )
-  )
+    ))
+
+#lets cut out where the system seems to break in 2023, as well as this messy bit when it is first set up in 2018. 
+contQ_clean <- contQ_clean %>%
+  mutate(dischargeContinuous_merged = case_when(
+    DateTime_PT <= as.POSIXct("2018-12-10") ~ NA_real_,
+    TRUE ~ dischargeContinuous_merged
+  ))
+
+contQ_clean <- contQ_clean %>%
+  mutate(dischargeContinuous_merged = case_when(
+    DateTime_PT >= as.POSIXct("2023-03-10") & DateTime_PT <= as.POSIXct("2023-04-01") ~ NA_real_,
+    TRUE ~ dischargeContinuous_merged
+  ))
+
+#Let's also cut out the region that has both poor gauge-height NSE and poor correlation with USFS data -- something's probably up here
+contQ_clean <- contQ_clean %>%
+  mutate(dischargeContinuous_merged = case_when(
+    DateTime_PT >= as.POSIXct("2021-05-01") & DateTime_PT <= as.POSIXct("2021-07-15") ~ NA_real_,
+    TRUE ~ dischargeContinuous_merged
+  ))
+
+
+
+
+
 
 #Summarize all data by 15 min intervals (they sampled every minute until 2021, then switched to every 15 minutes)
 
@@ -666,6 +691,8 @@ contQ_clean_15 <- contQ_clean %>%
 # Got a lot of NaNs by taking the mean of NAs.  Not sure it matters,but replace all NaNs with NAs for anything numeric (doing the whole dataframe breaks the datetime)
 contQ_clean_15 <- contQ_clean_15 %>%
   mutate(across(where(is.numeric), ~ na_if(., NaN)))
+
+
 
 
 contQ_clean_15$lps <- contQ_clean_15$dischargeContinuous_merged
@@ -956,8 +983,257 @@ file.remove(list.files(pattern = "\\.png$"))
 file.remove(list.files(pattern = "\\.csv$"))
 
 
+
+
+
 #### Aggregate to Daily Means ####
 #now that we've sorted out cleaning the discharge data, lets get all the NEON data aggregated to daily means 
+
+NEON.discharge.daily <- contQ_clean_15 %>%
+  
+  mutate(date = as_date(DateTime_PT)) %>% 
+  group_by(date) %>%
+  summarise(
+    mean_lps = mean(lps, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+#change NaN to NA
+NEON.discharge.daily <- NEON.discharge.daily %>%
+mutate(across(where(is.numeric), ~ na_if(., NaN)))
+
+#### Build model that predicts TECR (NEON) flow from T001 (USFS) data
+
+
+#read in USFS daily aggregated data
+# Download the desired file to the working directory
+drive_download("t003.daily.discharge.csv", path = "t003.daily.discharge.csv", overwrite = TRUE)
+
+USFS.discharge.daily <- read.csv("t003.daily.discharge.csv")
+
+
+#first, some housekeeping to get everything in the right format and named nicely
+USFS.discharge.daily$date <- as.Date(USFS.discharge.daily$date)
+
+USFS.discharge.daily <- USFS.discharge.daily %>%
+ rename(T001_lps = mean_lps)
+
+NEON.discharge.daily <- NEON.discharge.daily %>%
+  rename(TECR_lps = mean_lps)
+
+#set date cutoffs
+start <- as.Date("2018-11-15")
+end <- as.Date("2025-07-09")
+
+#Join TECR & T001 data into the same dataframe
+merged_daily_discharge <- full_join(USFS.discharge.daily, NEON.discharge.daily, by = "date") %>%
+  filter(date >= start, date <= end)
+
+#filter only for the data that doesn't have NAs
+model_data <- merged_daily_discharge %>%
+  filter(!is.na(TECR_lps), !is.na(T001_lps))
+
+
+#### Create and check models to fit relationship between TECR & T001 ####
+
+#First, just a linear model
+model <- lm(TECR_lps ~ T001_lps, data = model_data)
+summary(model)
+
+#Next, lets try the log-log model 
+log_model <- lm(log(TECR_lps) ~ log(T001_lps), data = model_data)
+summary(log_model)
+
+#create predictions
+merged_daily_pred <- merged_daily_discharge %>%
+  mutate(
+    TECR_pred = predict(model, newdata = merged_daily_discharge),
+    TECR_pred_log = exp(predict(log_model, newdata = merged_daily_discharge))
+  )
+
+#create predicted values and fill gaps, using both models.
+merged_daily_pred <- merged_daily_pred %>%
+  mutate(
+    predicted = if_else(is.na(TECR_lps) & !is.na(T001_lps),
+                        "yes", "no"),
+    
+    TECR_filled = if_else(predicted == "yes", TECR_pred, TECR_lps),
+    TECR_filled_log = if_else(predicted == "yes", TECR_pred_log, TECR_lps)
+  )
+
+merged_daily_pred <- merged_daily_pred %>%
+  mutate(
+    TECR_lin_plot = if_else(predicted == "yes", TECR_filled, NA_real_),
+    TECR_log_plot = if_else(predicted == "yes", TECR_filled_log, NA_real_)
+  )
+    
+  
+#arrange by date in case something funky happens
+merged_daily_pred <- merged_daily_pred %>%
+  arrange(date)
+
+#okay lets make a plotly plot that we zoom around in and look at how these models did
+p <- ggplot(merged_daily_pred, aes(x = date)) +
+  
+  # T001
+  geom_line(aes(y = T001_lps, color = "T001"), linewidth = 0.7, alpha = 0.7) +
+  
+  # observed TECR (no connections across gaps)
+  geom_line(
+    aes(y = if_else(predicted == "no", TECR_lps, NA_real_), color = "Observed TECR"),
+    linewidth = 0.7, alpha = 0.5
+  ) +
+  
+  # linear model (already broken by NA)
+  geom_line(
+    aes(y = TECR_lin_plot, color = "Linear fill"),
+    linewidth = 0.7, alpha = 0.7
+  ) +
+  
+  # log model (already broken by NA)
+  geom_line(
+    aes(y = TECR_log_plot, color = "Log fill"),
+    linewidth = 0.7, alpha = 0.7
+  ) +
+
+   scale_color_manual(
+    values = c(
+      "T001" = "black",
+      "Observed TECR" = "green4",
+      "Linear fill" = "red3",
+      "Log fill" = "orange"
+    )
+  )+
+  
+  scale_x_date( #set to monthly x axis ticks and start in late 2018 when NEON data starts
+    limits = c(as.Date("2018-10-01"), NA),
+    date_breaks = "1 month",
+    date_labels = "%Y-%m"
+  ) +
+  
+  
+  labs(x = "Date", y = "Discharge (L/s)") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)
+  )
+
+p <- ggplotly(p)
+p <- config(p, scrollZoom = TRUE)
+p
+
+
+#save it as a html widget & upload to drive
+library(htmlwidgets)
+saveWidget(p, "model_predicted_discharge.html", selfcontained = TRUE)
+
+drive_upload(
+  "model_predicted_discharge.html",
+  path = as_id("1C9UR5dXNSTNFGqfY5giEvWz3ZVE1nxYF")
+)
+
+#### Model Comparisons ####
+
+#lets compare the linear vs log-log model
+
+#first just take timepoints that has real values 
+eval_data <- merged_daily_pred %>%
+  filter(!is.na(TECR_lps))
+
+#Check the Root Mean Square Error for each model.  The lower the number the better the model fit. The linear model is slightly better at this.
+#This means the typical error in the model is about 18 L/S.  It is sensitive to flood peaks and extreme flows. 
+rmse <- function(obs, pred) sqrt(mean((obs - pred)^2))
+
+rmse_lin <- rmse(eval_data$TECR_lps, eval_data$TECR_pred)
+rmse_log <- rmse(eval_data$TECR_lps, eval_data$TECR_pred_log)
+
+#Check the NSE for each model. This is the Nash-Sutcliffe Efficiency. 1 is perfect fit, close to 0 is weak, negative is worse than the mean
+#NSE mostly evaluates how well the model captures high-flow dynamics. Linear model is slightly better at this.
+
+nse <- function(obs, pred) {
+  ok <- complete.cases(obs, pred)
+  obs <- obs[ok]
+  pred <- pred[ok]
+  
+  1 - sum((obs - pred)^2) / sum((obs - mean(obs))^2)
+}
+
+nse_lin <- nse(eval_data$TECR_lps, eval_data$TECR_pred)
+nse_log <- nse(eval_data$TECR_lps, eval_data$TECR_pred_log)
+
+#Next, check log NSE. This allows us to evaluate how well the model predicts lower or baseline flows
+
+nse_logscale_lin <- nse(log(eval_data$TECR_lps),
+                    log(eval_data$TECR_pred))
+nse_logscale_log <- nse(log(eval_data$TECR_lps),
+                    log(eval_data$TECR_pred_log))
+
+#make labels of all these values for the plot
+label_lin <- paste0(
+  "Root Mean Square Error = ", round(rmse_lin, 2), "\n",
+  "Nash-Sutcliffe Efficiency = ", round(nse_lin, 3), "\n",
+  "log NSE (for low flows) = ", round(nse_logscale_lin, 3)
+)
+
+label_log <- paste0(
+  "Root Mean Square Error = ", round(rmse_log, 2), "\n",
+  "Nash-Sutcliffe Efficiency = ", round(nse_log, 3), "\n",
+  "log NSE (for low flows) = ", round(nse_logscale_log, 3)
+)
+
+
+#next let's plot a simple little comparison plot
+
+png("model_comparison.png", width = 1200, height = 600)
+
+par(mfrow = c(1, 2))
+
+# Linear model
+plot(eval_data$TECR_lps, eval_data$TECR_pred,
+     col = "red", pch = 16,
+     xlab = "Observed", ylab = "Predicted",
+     main = "Linear model",
+     xlim = lim, ylim = lim)
+
+abline(0, 1)
+
+legend("topleft",
+       legend = label_lin,
+       bty = "n",
+       cex = 0.8)
+
+# Log model
+plot(eval_data$TECR_lps, eval_data$TECR_pred_log,
+     col = "orange", pch = 16,
+     xlab = "Observed", ylab = "Predicted",
+     main = "Log model",
+     xlim = lim, ylim = lim)
+
+abline(0, 1)
+
+legend("topleft",
+       legend = label_log,
+       bty = "n",
+       cex = 0.8)
+
+dev.off()
+
+
+#upload to googledrive
+drive_upload(
+  "model_comparison.png",
+  path = as_id("1C9UR5dXNSTNFGqfY5giEvWz3ZVE1nxYF")
+)
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -977,6 +1253,7 @@ file.remove(list.files(pattern = "\\.csv$"))
   #token = "YOUR_TOKEN_HERE")
 #issues_filtered <- issues %>%
 #  filter(grepl("TECR|All", locationAffected, ignore.case = TRUE))
+
 
 
 
