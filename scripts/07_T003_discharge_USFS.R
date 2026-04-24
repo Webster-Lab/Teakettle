@@ -98,7 +98,7 @@ write_csv(t003.2020.2025, tmp)
 drive_upload(
   media = tmp,
   path = folder,
-  name = "t003.2003.2025.discharge.csv",
+  name = "t003.2003.2025.discharge.15min.csv",
   overwrite = TRUE
 )
 
@@ -190,10 +190,31 @@ for (y in years) {
 
 
 
+#### Aggregate data to daily values ####
+
+t003.daily <- t003.2003.2025 %>%
+
+  mutate(date = as_date(Date_time_PT)) %>%  
+  group_by(date) %>%
+  summarise(
+    mean_lps = mean(T003_lps, na.rm = TRUE),
+    .groups = "drop"
+  )
 
 
+#export daily data to google drive
 
+folder <- drive_get("KREW_compiled_cleaned_data")
 
+tmp <- tempfile(fileext = ".csv")
+write_csv(t003.daily, tmp)
+
+drive_upload(
+  media = tmp,
+  path = folder,
+  name = "t003.daily.discharge.csv",
+  overwrite = TRUE
+)
 
 
 
