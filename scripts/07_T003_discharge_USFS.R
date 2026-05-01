@@ -93,7 +93,7 @@ missing_times
 folder <- drive_get("KREW_compiled_cleaned_data")
 
 tmp <- tempfile(fileext = ".csv")
-write_csv(t003.2020.2025, tmp)
+write_csv(t003.2003.2025, tmp)
 
 drive_upload(
   media = tmp,
