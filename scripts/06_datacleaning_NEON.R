@@ -1,7 +1,10 @@
 #### READ ME ####
-# This purpose of this script is to clean, consolidate, and plot NEON data from the TECR site
+# This purpose of this script is to clean, consolidate, plot, and aggregate NEON data from the TECR site
 # It utilizes the "merged" datasets from the "Merged datasets" folder in Google Drive. 
 # It includes date-time formatting, aggregating/rounding to 15 min intervals, changing QC-flagged data to NA, joining data into a single long dataframe
+# Time periods with erratic or suspicious discharge data were changed to NA values
+# Discharge data is then merged with USFS T001 data, and NEON gaps are filled with a linear model based on relationship to T001
+# All NEON data is aggregated to daily values (chem and discharge) and uploaded to the GoogleDrive in the Cleaned & Merged folder
 
 #### Libraries ####
 
@@ -651,7 +654,17 @@ contQ_clean <- contQ_clean %>%
       TRUE ~ dischargeContinuous_merged
     ))
 
-#lets cut out where the system seems to break in 2023, as well as this messy bit when it is first set up in 2018. 
+
+#get rid of any 0's or negative values.
+contQ_clean <- contQ_clean %>%
+  mutate(
+    dischargeContinuous_merged = case_when(
+      dischargeContinuous_merged <= 0 ~ NA_real_,
+      TRUE ~ dischargeContinuous_merged
+    ))
+
+
+#lets cut out where the system seems to break in 2023, as well as this messy bit when it is first set up in 2018. We're also cutting a weird spike in Jan/Feb 2019 that is not replicated in the USFS data.
 contQ_clean <- contQ_clean %>%
   mutate(dischargeContinuous_merged = case_when(
     DateTime_PT <= as.POSIXct("2018-12-10") ~ NA_real_,
@@ -663,6 +676,13 @@ contQ_clean <- contQ_clean %>%
     DateTime_PT >= as.POSIXct("2023-03-10") & DateTime_PT <= as.POSIXct("2023-04-01") ~ NA_real_,
     TRUE ~ dischargeContinuous_merged
   ))
+
+contQ_clean <- contQ_clean %>%
+  mutate(dischargeContinuous_merged = case_when(
+    DateTime_PT >= as.POSIXct("2019-01-01") & DateTime_PT <= as.POSIXct("2019-02-12") ~ NA_real_,
+    TRUE ~ dischargeContinuous_merged
+  ))
+
 
 #Let's also cut out the region that has both poor gauge-height NSE and poor correlation with USFS data -- something's probably up here
 contQ_clean <- contQ_clean %>%
@@ -977,11 +997,6 @@ drive_upload(
   overwrite = TRUE
 )
 
-#Get this place cleaned up before pushing
-
-file.remove(list.files(pattern = "\\.png$"))
-file.remove(list.files(pattern = "\\.csv$"))
-
 
 
 
@@ -1120,7 +1135,7 @@ p <- ggplot(merged_daily_pred, aes(x = date)) +
 
 p <- ggplotly(p)
 p <- config(p, scrollZoom = TRUE)
-p
+
 
 
 #save it as a html widget & upload to drive
@@ -1184,6 +1199,7 @@ label_log <- paste0(
 
 #next let's plot a simple little comparison plot
 
+
 png("model_comparison.png", width = 1200, height = 600)
 
 par(mfrow = c(1, 2))
@@ -1192,8 +1208,7 @@ par(mfrow = c(1, 2))
 plot(eval_data$TECR_lps, eval_data$TECR_pred,
      col = "red", pch = 16,
      xlab = "Observed", ylab = "Predicted",
-     main = "Linear model",
-     xlim = lim, ylim = lim)
+     main = "Linear model")
 
 abline(0, 1)
 
@@ -1206,8 +1221,7 @@ legend("topleft",
 plot(eval_data$TECR_lps, eval_data$TECR_pred_log,
      col = "orange", pch = 16,
      xlab = "Observed", ylab = "Predicted",
-     main = "Log model",
-     xlim = lim, ylim = lim)
+     main = "Log model")
 
 abline(0, 1)
 
@@ -1228,6 +1242,139 @@ drive_upload(
 
 
 
+
+
+#### Chem Time Series Plots ####
+#Okay, let's make time series plots of all the chem data!
+
+#Get a common column to merge
+merged_daily_pred$DateTime_PT <- as.POSIXct(merged_daily_pred$date, tz = "America/Los_Angeles")
+
+#do a full merge by DateTimePT. Note, we're using the daily discharge data but still just plotting chem at 15 minutes, or whatever interval it was collected on
+chem_discharge_merge <- full_join(merged_daily_pred, df_joined, by = "DateTime_PT")
+
+#establish analytes of interest
+analytes <- c("specificConductance", "dissolvedOxygen", "adj_N_mean", "surfacewaterTempMean", "pH", "chlorophyll", "turbidity", "fDOM", "d18OWater", "d2HWater", "finalDischarge")
+
+#establish drive folder to save plots in
+drive_folder <- "1LQD3xHxpFOwrU6m1H4Xkp27ch77qFgEU"
+
+
+#Alrighty pop that loop in to make a bunch of figs featuring analytes + discharge data
+
+for (analyte in analytes) {
+  
+  # Filter out NA values for this analyte
+  plot_data_top <- chem_discharge_merge %>%
+    filter(!is.na(.data[[analyte]])) %>%
+    arrange(DateTime_PT)
+  
+  plot_data_bottom <- chem_discharge_merge %>%
+    filter(!is.na(TECR_filled)) %>%
+    arrange(DateTime_PT)
+  
+  # Top plot (the analyte of choice)
+  p_top <- ggplot(plot_data_top, aes(x = DateTime_PT, y = .data[[analyte]])) +
+    geom_line(color = "firebrick") +
+    geom_point(size = 1, color = "firebrick") +
+    labs(title = paste(analyte, "vs Discharge"), y = analyte) +
+    theme_minimal()
+  
+  # Bottom plot (NEON discharge data (the TECR filled data using the linear model))
+  p_bottom <- ggplot(plot_data_bottom, aes(x = DateTime_PT, y = TECR_filled)) +
+    geom_line(color = "steelblue") +
+    geom_point(aes(color = predicted), size = 1) +
+    scale_color_manual(
+      values = c("no" = "steelblue", "yes" = "orange"),
+      name = "Predicted"
+    ) +
+    labs(y = "Discharge (TECR_filled)", x = "DateTime") +
+    theme_minimal()
+  
+  # Combine to one fig that shares an x axis
+  p_combined <- subplot(
+    ggplotly(p_top),
+    ggplotly(p_bottom),
+    nrows = 2,
+    shareX = TRUE
+  )
+  
+  p_combined <- config(p_combined, scrollZoom = TRUE)
+  
+  html_file <- paste0(analyte, "_discharge_plot.html")
+  htmlwidgets::saveWidget(p_combined, file = html_file, selfcontained = TRUE)
+  
+  drive_upload(
+    media = html_file,
+    path = as_id(drive_folder),
+    name = html_file,
+    overwrite = TRUE
+  )
+  
+  #clean clean clean
+  rm(p_top, p_bottom, p_combined, plot_data_top, plot_data_bottom)
+  gc()
+}
+
+
+#### Aggregate analytes to daily & merge with discharge ####
+
+#create date column
+chem_daily <- df_joined %>%
+  mutate(date = as.Date(DateTime_PT))
+  
+
+#select analyte columns of interest
+chem_daily <- chem_daily %>%
+  select(date, adj_N_mean, surfacewaterTempMean, specificConductance, dissolvedOxygen, pH, chlorophyll, turbidity, fDOM, d18OWater, d2HWater)
+
+#summarise by day
+chem_daily <- chem_daily %>%
+  group_by(date) %>%
+  summarise(
+    across(everything(), ~mean(.x, na.rm = TRUE)),
+    .groups = "drop"
+  )
+#make the NaN's into NAs
+chem_daily <- chem_daily %>%
+  mutate(across(where(is.numeric), ~ifelse(is.nan(.x), NA, .x)))
+
+
+#select linear-model filled discharge and other columns we want
+predicted_discharge <- merged_daily_pred %>%
+  select(date, TECR_filled, predicted)
+
+#do a full join of discharge and chem data
+NEON_daily <- full_join(predicted_discharge, chem_daily, by = "date")
+
+#add in units to variable names.  Maybe this is annoying, maybe not
+NEON_daily <- NEON_daily %>%
+  rename(TECR_discharge_lps = TECR_filled, model_predicted = predicted, NO3_N_mg_L = adj_N_mean, SurfaceWaterTemp_C = surfacewaterTempMean, 
+         specificConductance_uS_cm = specificConductance, dissolvedOxygen_mg_L = dissolvedOxygen, chlorophyll_ug_L = chlorophyll, turbidity_FNU = turbidity, 
+         fDOM_QSU = fDOM, d18OWater_per_mil = d18OWater, d2HWater_per_mil = d2HWater ) 
+
+#pull out a weird handful of days of empty data in 2018
+NEON_daily <- NEON_daily %>%
+  filter(date > "2018-11-14")
+
+csv_file <- "NEON_daily_chem_discharge.csv"
+write.csv(NEON_daily, file = csv_file, row.names = FALSE)
+
+drive_upload(
+  media = csv_file,
+  path = as_id("1-e76PCqZ8twNHJk9yjvbUWzAEXIcP7Gd"),
+  name = csv_file,
+  overwrite = TRUE
+)
+
+
+
+
+#### CLEAN UP ####
+
+file.remove(list.files(pattern = "\\.png$"))
+file.remove(list.files(pattern = "\\.csv$"))
+file.remove(list.files(pattern = "\\.html$"))
 
 
 
@@ -1253,10 +1400,6 @@ drive_upload(
   #token = "YOUR_TOKEN_HERE")
 #issues_filtered <- issues %>%
 #  filter(grepl("TECR|All", locationAffected, ignore.case = TRUE))
-
-
-
-
 
 
 #Results pasted below:
