@@ -212,8 +212,8 @@ temp_turb <- temp_turb %>%
 
 #### Bring in discharge data ####
 
-drive_download("t003.2003.2025.discharge.csv", path = "t003.2003.2025.discharge.csv", overwrite = TRUE)
-discharge <- read.csv("t003.2003.2025.discharge.csv")
+drive_download("t003.2003.2025.discharge.15min.csv", path = "t003.2003.2025.discharge.15min.csv", overwrite = TRUE)
+discharge <- read.csv("t003.2003.2025.discharge.15min.csv")
 
 #this one I had converted to "America/Los Angeles" time so that it did switch for daylights savings
 discharge$Date_Time_PT <- ymd_hms(
@@ -239,14 +239,14 @@ merged <- merged %>%
 
 
 #lets save this dataset so we have a version on the googledrive
-write.csv(merged, "USFS_chem_discharge_data_sortaclean.csv", row.names = FALSE)
+#write.csv(merged, "USFS_chem_discharge_data_sortaclean.csv", row.names = FALSE)
 
-drive_upload(
-  media = "USFS_chem_discharge_data_sortaclean.csv",
-  path = as_id("1yp3OUqcn7_jnWTgrRLorTvlw-DiJuooC"),
-  name = "USFS_chem_discharge_data_sortaclean.csv",
-  overwrite = TRUE
-)
+#drive_upload(
+ # media = "USFS_chem_discharge_data_sortaclean.csv",
+ # path = as_id("1yp3OUqcn7_jnWTgrRLorTvlw-DiJuooC"),
+#  name = "USFS_chem_discharge_data_sortaclean.csv",
+ # overwrite = TRUE
+#)
 
 
 #make long for plotting
@@ -318,6 +318,39 @@ for (v in vars_to_plot) {
     overwrite = TRUE
   )
 }
+
+
+
+#### Aggregate all values to daily ####
+
+#create date column
+USFS_daily <- merged %>%
+  mutate(date = as.Date(Date_Time_PT)) %>%
+  select(-Date_Time_PT)
+
+#summarise by day
+USFS_daily <- USFS_daily %>%
+  group_by(date) %>%
+  summarise(
+    across(everything(), ~mean(.x, na.rm = TRUE)),
+    .groups = "drop"
+  )
+
+#make the NaN's into NAs
+USFS_daily <- USFS_daily %>%
+  mutate(across(where(is.numeric), ~ifelse(is.nan(.x), NA, .x)))
+
+
+csv_file <- "USFS_daily_chem_discharge.csv"
+write.csv(USFS_daily, file = csv_file, row.names = FALSE)
+
+drive_upload(
+  media = csv_file,
+  path = as_id("1Yen9QpL6t9DjYTCq9wsjSdnPn2eDajCV"),
+  name = csv_file,
+  overwrite = TRUE
+)
+
 
 
 
