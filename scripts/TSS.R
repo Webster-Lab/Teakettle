@@ -59,6 +59,15 @@ TSS$C_mg_per_L <- (TSS$C_Content/TSS$Sample_vol_mL) *1000
 
 
 
+#Save TSS calculations to file on google drive
+
+write_csv(TSS, "TSS_calculations.csv")   
+
+drive_upload("TSS_calculations.csv",
+             path = as_id("1-DBXgOD1P1RQW9xQXGKz4JIz_ARH-VQ9"),   
+             name = "TSS_calculations.csv")
+
+
 #Next let's plot these up
 #First, all plot's together 
 TSS <- TSS |>
@@ -204,7 +213,6 @@ p
 
 
 
-
 #merge TSS and Q and see if they relate:
 
 folder <- as_id("1TBqljxX63FxM2Hw6GL6DBPW6ZGkPPktC")
@@ -305,6 +313,18 @@ p <- ggplot(merged_TSS_Q, aes(x = Q, y = C_mg_per_L,
 p
 
 ggsave("plots/TOC_vs_Q.png", p, width = 10, height = 5, dpi = 300)
+
+#What about POC vs Q in individual streams?
+
+p <- ggplot(merged_TSS_Q, aes(x = Q, y = C_mg_per_L, color = Year)) +
+  geom_point(size = 3.5, alpha = 0.8, stroke = 0.4, na.rm = TRUE) +
+  facet_wrap(~Site, scales = "free")
+p
+
+p <- ggplot(merged_TSS_Q, aes(x = Q, y = TSS_mg_per_L, color = Year)) +
+  geom_point(size = 3.5, alpha = 0.8, stroke = 0.4, na.rm = TRUE) +
+  facet_wrap(~Site, scales = "free")
+p
 
 #Alrighty delete all the csvs we downloaded to clean up the repo before committing and pushing
 # List all CSV files in the current working directory (repo root)
