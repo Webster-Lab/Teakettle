@@ -9,8 +9,14 @@
 ##############
 library(googledrive) 
 library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(patchwork)
 
-## Part 1: Merging and Timestamps
+#########################################
+##### Part 1: File Merging and Timestamps ####
+#########################################
+
 
 ###################################
 ## Clear folders that we will use ##
@@ -20,7 +26,7 @@ files <- list.files(path = "googledrive", full.names = TRUE)
 file.remove(files)
 
 #####################
-#### Import Data ####
+#### Import PT Data ####
 #####################
 # set up Google Drive folder
 pt <- googledrive::as_id("1_f7I40tZq0trjxeIqOctxAzBfXi3Wg6j")
@@ -38,7 +44,7 @@ pt_list <- lapply(seq_along(pt_files$name), function(i) {
   
   googledrive::drive_download(file = pt_files$id[i], path = path, overwrite = TRUE)
   
-  # find the header row: the first line containing "Date"
+  # find the header row: the first line containing "Date".  This varies for different data files
   lines <- readLines(path, n = 40, warn = FALSE)
   hdr_row <- grep("Date", lines)[1]
   message(pt_files$name[i], ": header on row ", hdr_row)
@@ -78,8 +84,8 @@ for (i in seq_along(pt_list)) {
   # combine Date and Time columns into a new DateTime column
   df$DateTime <- paste(df$Date, df$Time, sep = " ")
   
-  # convert the DateTime column to POSIXct.  We're using PST 
-  df$DateTime <- as.POSIXct(df$DateTime, format = "%Y-%m-%d %H:%M:%S", tz = "Etc/GMT+8")
+  # convert the DateTime column to POSIXct.  We're using PST -- easier for handling daylights savings time
+  df$DateTime <- as.POSIXct(df$DateTime, format = "%Y-%m-%d %H:%M:%S", tz = "Etc/GMT+7")
   df$DateTime <- round_date(df$DateTime, "15 minutes")
   # update the data frame in the list
   pt_list[[i]] <- df
@@ -114,9 +120,9 @@ combined_by_site <- lapply(pt_list_by_site, function(site_data_list) {
     distinct(DateTime, .keep_all = TRUE) # remove duplicates
 })
 
-### Ok for some reason, from October to May, the pressure is in KPa so I need to convert that.
+### Ok for some reason, from October to May, the pressure is in KPa so I need to convert that to meters for consistency
 
-cutoff <- as.POSIXct("2026-05-19 10:45:00", tz = "Etc/GMT+8")
+cutoff <- as.POSIXct("2026-05-19 10:45:00", tz = "Etc/GMT+7")
 
 combined_by_site <- lapply(combined_by_site, function(df) {
   df %>%
@@ -149,12 +155,14 @@ lapply(names(combined_by_site), function(site) {
 
 
 
-###############
+#####################################################
 ### Now for the Air PT (these are HOBO logger files)
+######################################################
 
+#define folder
 pt <- googledrive::as_id("https://drive.google.com/drive/folders/1_f7I40tZq0trjxeIqOctxAzBfXi3Wg6j")
 
-# List and filter CSV files with "pt" in their names
+# List and filter CSV files with "Baro" in their names so we know they are air PTs
 pt_files <- googledrive::drive_ls(path = pt, type = "csv")
 pt_files <- pt_files[grepl("Baro", pt_files$name), ]
 
@@ -170,7 +178,7 @@ pt_list <- lapply(seq_along(pt_files$name), function(i) {
 })
 
 
-#Clean up files and edit names to match Solonist data
+#Clean up files and edit names
 pt_list <- lapply(pt_list, function(df) {
   df %>%
     select(DateTime = 2, AIR_LEVEL = 3, AIR_TEMPERATURE = 4)
@@ -180,18 +188,13 @@ pt_list <- lapply(pt_list, function(df) {
 names(pt_list) <- pt_files$name
 
 
-#### Format date column ####
-
-
+#### Format datetime column.  We also want these in ETC GMT+7 to match ####
 library(lubridate)
 
-# Peek at the raw strings (run before converting)
-lapply(pt_list, function(df) head(df$DateTime, 3))
-
-# Parser that handles 12-hour (AM/PM) and 24-hour strings in the same file
+# Parser that handles 12-hour (AM/PM) and 24-hour strings in the same file.  Why we have so many different formats, I will never know
 parse_hobo_dt <- function(x) {
   x <- trimws(as.character(x))
-  out <- as.POSIXct(rep(NA_real_, length(x)), origin = "1970-01-01", tz = "Etc/GMT+8")
+  out <- as.POSIXct(rep(NA_real_, length(x)), origin = "1970-01-01", tz = "Etc/GMT+7")
   
   ampm <- grepl("AM|PM", x, ignore.case = TRUE)
   
@@ -199,7 +202,7 @@ parse_hobo_dt <- function(x) {
   out[ampm] <- parse_date_time(
     x[ampm],
     orders = c("mdy IMS p", "mdy IM p", "Ymd IMS p", "Ymd IM p"),
-    tz = "Etc/GMT+8"
+    tz = "Etc/GMT+7"
   )
   
   # rows without AM/PM -> 24-hour clock or date-only
@@ -207,7 +210,7 @@ parse_hobo_dt <- function(x) {
     x[!ampm],
     orders = c("Ymd HMS", "Ymd HM", "Ymd",
                "mdy HMS", "mdy HM", "mdy"),
-    tz = "Etc/GMT+8"
+    tz = "Etc/GMT+7"
   )
   out
 }
@@ -220,7 +223,7 @@ pt_list <- lapply(pt_list, function(df) {
 })
 
 
-# combine the 3 files
+# combine the 3 baro files
 Air_pt_combined <- bind_rows(pt_list) %>%
   distinct(DateTime, .keep_all = TRUE) %>%   # remove duplicate timestamps
   arrange(DateTime)                          # chronological order
@@ -229,17 +232,12 @@ Air_pt_combined <- bind_rows(pt_list) %>%
 # save locally
 write.csv(Air_pt_combined, "BaroTEAK01.csv", row.names = FALSE, quote = FALSE)
 
-# upload to Google Drive (only if you still want this)
+# upload the combined file to Google Drive
 library(googledrive)
 drive_put(
   media = "BaroTEAK01.csv",
   path  = as_id("1xeV94kM-TyYwhJ01kMSZxmseqe05eESp")
 )
-
-
-
-
-
 
 
 
@@ -252,7 +250,7 @@ drive_put(
 air_data <- Air_pt_combined
 
 #####################################
-#### Change all units to meters and round to 15 min ####
+#### Change all units to meters and round to every 15 min ####
 #####################################
 ## air pressure in kPa to m
 #1 kPa = 0.101972 m
@@ -263,29 +261,17 @@ air_data <- air_data %>%
 
 
 
-#####################
-#### Plot curves ####
-#####################
-  p <- ggplot(data = air_data, aes(x = DateTime, y = LEVEL_air.m)) + 
-    geom_line() 
-  # display the plot in the plot panel
-  print(p)
-
-
-
 ######################################
 #### Merging PT with Air pressure ####
 ######################################
   
+#again, we want this rounded to every 15 minutes
+
   combined_with_air <- lapply(combined_by_site, function(site_df) {
     site_df %>%
       mutate(DateTime = round_date(DateTime, "15 minutes")) %>%
       left_join(air_data, by = "DateTime")
   })
-  
-  
-  
-  
   
   
 ########################################
@@ -298,9 +284,14 @@ air_data <- air_data %>%
     df %>%
       mutate(LEVEL_comp.m = LEVEL - LEVEL_air.m)
   })
+  
 
-  
-  
+
+#####################################
+#### Plot it up! #####################
+######################################
+
+
   all_sites <- bind_rows(combined_with_air, .id = "Site")
   
   # 1. Compensated water level (the final product)
@@ -322,35 +313,237 @@ air_data <- air_data %>%
   ggsave("PT.png", p, width = 16, height = 8, dpi = 300)
   
   
-#########################################
-#### Save compensated files to Drive ####
-#########################################
-# loop through each data frame in the list
-for (i in seq_along(compensated_list)) {
-  # access the current data frame
-  df <- compensated_list[[i]]
   
-  # save new data frame
-  write.csv(df, paste0("data/", names(compensated_list)[i]), row.names=FALSE, quote=FALSE)
+  #########################################
+  #### Save compensated files to Drive ####
+  #########################################
+  # loop through each data frame in the list
+  for (i in seq_along(combined_with_air)) {
+    # access the current data frame
+    df <- combined_with_air[[i]]
+    
+    # save new data frame
+    write.csv(df, paste0("", names(combined_with_air)[i]), row.names=FALSE, quote=FALSE)
+    
+    # define the local folder path and the target folder ID in Google Drive
+    file <- paste0("", names(combined_with_air)[i])
+    # this is the "compensated" folder
+    drive_folder_id <- "1SGEuQCL4Men6CX1L3rttQdkK_XFDvasS"
+    
+    # upload file to the specified Google Drive folder
+    drive_put(
+      media = file,
+      path = as_id(drive_folder_id)
+    )
+  }
   
-  # define the local folder path and the target folder ID in Google Drive
-  file <- paste0("data/", names(compensated_list)[i])
-  # this is the "compensated" folder
-  drive_folder_id <- "1SAtC_CJd6KC2yWtJB_VdTebMBDSjy-Pk"
+
   
-  # upload file to the specified Google Drive folder
-  drive_put(
-    media = file,
-    path = as_id(drive_folder_id)
+  ################################################
+  ######## Fix Sensor Offets (moving PT) #########
+  ###############################################
+  
+  
+  #### Manuela's reusable sensor-move offset fn ####
+  
+  apply_offset <- function(df, level_col, move_time, window_hours = 3) {
+    window_secs <- window_hours * 3600
+    
+    before <- df %>%
+      filter(DateTime >= move_time - window_secs, DateTime < move_time) %>%
+      summarise(m = mean(.data[[level_col]], na.rm = TRUE)) %>% pull(m)
+    
+    after <- df %>%
+      filter(DateTime >= move_time, DateTime < move_time + window_secs) %>%
+      summarise(m = mean(.data[[level_col]], na.rm = TRUE)) %>% pull(m)
+    
+    offset <- after - before
+    if (is.na(offset)) stop("No data in the before/after window at ", format(move_time))
+    
+    df[[level_col]] <- if_else(df$DateTime >= move_time,
+                               df[[level_col]] - offset,
+                               df[[level_col]])
+    df
+  }
+  
+
+  
+  
+  #TEAK01
+  
+  TEAK01_out_of_water_points <- as.POSIXct(c(
+    "2026-05-19 10:30:00",
+    "2026-05-19 10:45:00",
+    "2026-05-19 11:00:00",
+    "2026-05-19 11:15:00",
+    
+    "2026-05-25 09:45:00",
+    "2026-05-25 10:00:00",
+    "2026-05-25 10:15:00",
+    "2026-05-25 10:30:00" ), tz = "Etc/GMT+7")
+  
+  combined_with_air$TEAK01$LEVEL_comp.m[combined_with_air$TEAK01$DateTime %in% TEAK01_out_of_water_points] <- NA
+  
+  cut_start <- as.POSIXct("2025-10-26 16:00:00", tz = "Etc/GMT+7")
+  
+  combined_with_air$TEAK01$LEVEL_comp.m[
+    combined_with_air$TEAK01$DateTime < cut_start
+  ] <- NA
+  
+  combined_with_air$TEAK01$Final_Corrected_Lvl <- combined_with_air$TEAK01$LEVEL_comp.m
+  
+  move_time1 <- as.POSIXct("2026-05-19 10:30:00", tz = "Etc/GMT+7")
+  move_time2 <- as.POSIXct("2026-05-25 09:45:00", tz = "Etc/GMT+7")
+  
+  combined_with_air$TEAK01 <- apply_offset(combined_with_air$TEAK01, "Final_Corrected_Lvl", move_time1)
+  combined_with_air$TEAK01 <- apply_offset(combined_with_air$TEAK01, "Final_Corrected_Lvl", move_time2)
+  
+  ggplot(combined_with_air$TEAK01, aes(x = DateTime, y = Final_Corrected_Lvl)) +
+    geom_line() +
+    ggtitle(paste( "final corrected level"))
+
+
+  
+  #OUTLET
+  
+  
+  OUT_out_of_water_points <- as.POSIXct(c(
+    "2026-05-19 09:00:00",
+    "2026-05-19 09:30:00",
+    "2026-05-19 09:45:00",
+    "2026-05-19 10:00:00",
+    "2026-05-19 10:15:00",
+    "2026-05-19 10:30:00",
+    
+    "2026-05-25 08:45:00",
+    
+    "2026-09-01 09:00:00"), tz = "Etc/GMT+7")
+  
+  combined_with_air$Outlet$LEVEL_comp.m[combined_with_air$Outlet$DateTime %in% OUT_out_of_water_points] <- NA
+  
+  cut_start <- as.POSIXct("2025-10-26 17:45:00", tz = "Etc/GMT+7")
+  
+  combined_with_air$Outlet$LEVEL_comp.m[
+    combined_with_air$Outlet$DateTime < cut_start
+  ] <- NA
+  
+  combined_with_air$Outlet$Final_Corrected_Lvl <- combined_with_air$Outlet$LEVEL_comp.m
+  
+  move_time3 <- as.POSIXct("2026-05-19 09:00:00", tz = "Etc/GMT+7")
+  move_time4 <- as.POSIXct("2026-05-25 08:45:00", tz = "Etc/GMT+7")
+  
+  combined_with_air$Outlet <- apply_offset(combined_with_air$Outlet, "Final_Corrected_Lvl", move_time3)
+  combined_with_air$Outlet <- apply_offset(combined_with_air$Outlet, "Final_Corrected_Lvl", move_time4)
+  
+  ggplot(combined_with_air$Outlet, aes(x = DateTime, y = Final_Corrected_Lvl)) +
+    geom_line() +
+    ggtitle(paste( "final corrected level"))
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  ################################################
+  ######### Merge PT data with field Q data ########
+  ###############################################
+
+  #Get Q data ready
+  file <- drive_get("2026_Q")
+  
+  drive_download(
+    file,
+    path = "Q.csv",
+    type = "csv",
+    overwrite = TRUE
   )
-}
+  
+  Q <- read.csv ("Q.csv")
+  
+  #Pull out bad slugs, filter for the sites we want, and format DateTime
+  Q_PT_sites <- Q %>%
+    filter(DataID %in% c("TEAK01", "OUT")) %>%
+    filter(flag != "not good") %>%
+    mutate(
+      Date = as.Date(Date, format = "%m/%d/%Y"),
+      DateTime = parse_date_time(
+        paste(Date, Time),
+        orders = c("Y-m-d H:M:S", "Y-m-d H:M")
+      )
+    ) %>%
+    filter(Date > as.Date("2025-10-01"))
+
+  
+  #convert from L/s to m3/s
+  Q_PT_sites$Q_m3s <- as.numeric(Q_PT_sites$Q) / 1000
+  
+  
+  #Merge it together with PT data
+  
+  # Rename the list element (Outlet -> OUT)
+  names(combined_with_air)[names(combined_with_air) == "Outlet"] <- "OUT"
+  
+  # Stack, using the list names as DataID
+  loggers <- bind_rows(combined_with_air, .id = "DataID") %>%
+    select(-Date, -Time, -ms)   # avoid clashing with injections' Date/Time
+  
+  # Match DateTime type/timezone in both
+  tz_use <- "America/Denver"   # change to your logger timezone
+  loggers    <- loggers    %>% mutate(DateTime = force_tz(as.POSIXct(DateTime), tz_use))
+  Q_PT_sites <- Q_PT_sites %>% mutate(DateTime = force_tz(as.POSIXct(DateTime), tz_use))
+  
+  # Join
+  joined <- Q_PT_sites %>%
+    left_join(loggers, by = c("DataID", "DateTime"))
+  
+  
+  
+  #How does it look?
 
 
-# See what would be deleted first
-csvs <- list.files(pattern = "\\.csv$", full.names = TRUE, ignore.case = TRUE)
-csvs
+  
+  tz_use  <- "Etc/GMT+8"   # same as before
+  t_start <- as.POSIXct("2026-05-01 00:00:00", tz = tz_use)
+  t_end   <- as.POSIXct("2026-10-01 00:00:00", tz = tz_use)
+  
+  plot_site <- function(site) {
+    lv <- loggers    %>% filter(DataID == site, LEVEL_comp.m > 0,
+                                DateTime >= t_start, DateTime < t_end)
+    q  <- Q_PT_sites %>% filter(DataID == site, Q_m3s > 0,
+                                DateTime >= t_start, DateTime < t_end)
+    
+    k <- max(lv$LEVEL_comp.m) / max(q$Q_m3s)
+    
+    ggplot() +
+      geom_line(data = lv, aes(DateTime, LEVEL_comp.m), color = "steelblue") +
+      geom_point(data = q,  aes(DateTime, Q_m3s * k), color = "firebrick", size = 2.5) +
+      scale_y_continuous(
+        name = "LEVEL_comp (m)",
+        sec.axis = sec_axis(~ . / k, name = "Q (m³/s)")
+      ) +
+      scale_x_datetime(limits = c(t_start, t_end), date_breaks = "1 month",
+                       date_labels = "%b") +
+      labs(title = site, x = NULL) +
+      theme_bw() +
+      theme(
+        axis.title.y.left  = element_text(color = "steelblue"),
+        axis.title.y.right = element_text(color = "firebrick")
+      )
+  }
+  
+  sites <- unique(Q_PT_sites$DataID)
+  wrap_plots(lapply(sites, plot_site), ncol = 1)
 
-# Delete them
-file.remove(csvs)
+
+#file.remove(list.files(pattern = "\\.png$", ignore.case = TRUE))
+file.remove(list.files(pattern = "\\.csv$", ignore.case = TRUE))
+
+#also clear out google drive downloads
+
+files <- list.files(path = "googledrive", full.names = TRUE)
+file.remove(files)
 
 
