@@ -347,6 +347,10 @@ drive_put(media = "biomass_change_map.png",
 
 
 
+
+
+#add gridpoints transects -- check this
+
 grid_pts <- grid_fuels_sf %>%
   transmute(id = as.character(Plot), biomass_change, survey = "Grid plots (2022-2026)")
 
