@@ -1,0 +1,1003 @@
+<?xml version="1.0" ?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xalan="http://xml.apache.org/xalan" xsi="http://www.w3.org/2001/XMLSchema-instance" creator="Esri" version="1.1">
+  <wpt lon="-119.0359344" lat="36.95226263">
+    <ele> </ele>
+    <name>1</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.035034" lat="36.95228632">
+    <ele> </ele>
+    <name>2</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.034145" lat="36.95229648">
+    <ele> </ele>
+    <name>3</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0332622" lat="36.95232421">
+    <ele> </ele>
+    <name>4</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0323708" lat="36.95232236">
+    <ele> </ele>
+    <name>5</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0314737" lat="36.95235512">
+    <ele> </ele>
+    <name>6</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0305813" lat="36.95237116">
+    <ele> </ele>
+    <name>7</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0296904" lat="36.95238637">
+    <ele> </ele>
+    <name>8</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0287936" lat="36.95239056">
+    <ele> </ele>
+    <name>9</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0279246" lat="36.95240695">
+    <ele> </ele>
+    <name>10</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0270169" lat="36.9524303">
+    <ele> </ele>
+    <name>11</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0261421" lat="36.9524233">
+    <ele> </ele>
+    <name>12</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0252445" lat="36.952452">
+    <ele> </ele>
+    <name>13</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0243671" lat="36.95244551">
+    <ele> </ele>
+    <name>14</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0234424" lat="36.95248228">
+    <ele> </ele>
+    <name>15</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0225598" lat="36.95249999">
+    <ele> </ele>
+    <name>16</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0216423" lat="36.95252305">
+    <ele> </ele>
+    <name>17</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0207809" lat="36.95252208">
+    <ele> </ele>
+    <name>18</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0359557" lat="36.95297748">
+    <ele> </ele>
+    <name>19</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0350677" lat="36.95299967">
+    <ele> </ele>
+    <name>20</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0341926" lat="36.95299448">
+    <ele> </ele>
+    <name>21</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0332618" lat="36.9530426">
+    <ele> </ele>
+    <name>22</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0324258" lat="36.9530739">
+    <ele> </ele>
+    <name>23</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0314732" lat="36.95308885">
+    <ele> </ele>
+    <name>24</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0305982" lat="36.95309209">
+    <ele> </ele>
+    <name>25</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.029755" lat="36.95312336">
+    <ele> </ele>
+    <name>26</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.028922" lat="36.95336841">
+    <ele> </ele>
+    <name>27</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0278931" lat="36.9531391">
+    <ele> </ele>
+    <name>28</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.027033" lat="36.95315581">
+    <ele> </ele>
+    <name>29</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.026146" lat="36.95315352">
+    <ele> </ele>
+    <name>30</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.025251" lat="36.95317325">
+    <ele> </ele>
+    <name>31</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0243464" lat="36.95318446">
+    <ele> </ele>
+    <name>32</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0234749" lat="36.95319486">
+    <ele> </ele>
+    <name>33</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.022579" lat="36.95322237">
+    <ele> </ele>
+    <name>34</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0216774" lat="36.95323278">
+    <ele> </ele>
+    <name>35</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0359584" lat="36.95369254">
+    <ele> </ele>
+    <name>36</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0350864" lat="36.95369052">
+    <ele> </ele>
+    <name>37</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0341918" lat="36.9537408">
+    <ele> </ele>
+    <name>38</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.033283" lat="36.95370444">
+    <ele> </ele>
+    <name>39</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0324237" lat="36.95373142">
+    <ele> </ele>
+    <name>40</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0315052" lat="36.95378095">
+    <ele> </ele>
+    <name>41</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0306483" lat="36.95380019">
+    <ele> </ele>
+    <name>42</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.029823" lat="36.9537873">
+    <ele> </ele>
+    <name>43</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0288473" lat="36.95384555">
+    <ele> </ele>
+    <name>44</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0279287" lat="36.95381362">
+    <ele> </ele>
+    <name>45</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0270592" lat="36.95385871">
+    <ele> </ele>
+    <name>46</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0261526" lat="36.95386593">
+    <ele> </ele>
+    <name>47</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0252841" lat="36.95388571">
+    <ele> </ele>
+    <name>48</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0243843" lat="36.95389862">
+    <ele> </ele>
+    <name>49</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0234955" lat="36.95392316">
+    <ele> </ele>
+    <name>50</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0226032" lat="36.95392567">
+    <ele> </ele>
+    <name>51</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0360066" lat="36.95441916">
+    <ele> </ele>
+    <name>52</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0351229" lat="36.9544009">
+    <ele> </ele>
+    <name>53</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0342292" lat="36.95445405">
+    <ele> </ele>
+    <name>54</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0333233" lat="36.95445929">
+    <ele> </ele>
+    <name>55</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0324163" lat="36.9545117">
+    <ele> </ele>
+    <name>56</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0314631" lat="36.95447771">
+    <ele> </ele>
+    <name>57</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0306426" lat="36.95450281">
+    <ele> </ele>
+    <name>58</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0297578" lat="36.9545428">
+    <ele> </ele>
+    <name>59</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0288822" lat="36.95457566">
+    <ele> </ele>
+    <name>60</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0279667" lat="36.95456293">
+    <ele> </ele>
+    <name>61</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0270902" lat="36.95457471">
+    <ele> </ele>
+    <name>62</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0261863" lat="36.95458281">
+    <ele> </ele>
+    <name>63</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0253034" lat="36.95461237">
+    <ele> </ele>
+    <name>64</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0244044" lat="36.95463068">
+    <ele> </ele>
+    <name>65</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0235183" lat="36.95463713">
+    <ele> </ele>
+    <name>66</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0360191" lat="36.95514378">
+    <ele> </ele>
+    <name>67</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0351125" lat="36.95515355">
+    <ele> </ele>
+    <name>68</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0342344" lat="36.955174">
+    <ele> </ele>
+    <name>69</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.033336" lat="36.95517896">
+    <ele> </ele>
+    <name>70</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0324492" lat="36.9551973">
+    <ele> </ele>
+    <name>71</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0315538" lat="36.95521755">
+    <ele> </ele>
+    <name>72</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0306706" lat="36.95522344">
+    <ele> </ele>
+    <name>73</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0297908" lat="36.95520644">
+    <ele> </ele>
+    <name>74</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0288882" lat="36.95526273">
+    <ele> </ele>
+    <name>75</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0279754" lat="36.95528983">
+    <ele> </ele>
+    <name>76</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0271149" lat="36.95529735">
+    <ele> </ele>
+    <name>77</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0261988" lat="36.95530244">
+    <ele> </ele>
+    <name>78</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0351333" lat="36.95590018">
+    <ele> </ele>
+    <name>79</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0342323" lat="36.95589848">
+    <ele> </ele>
+    <name>80</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0333482" lat="36.95588411">
+    <ele> </ele>
+    <name>81</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0324725" lat="36.95591296">
+    <ele> </ele>
+    <name>82</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0315719" lat="36.95592895">
+    <ele> </ele>
+    <name>83</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0306787" lat="36.95596181">
+    <ele> </ele>
+    <name>84</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0298344" lat="36.95596665">
+    <ele> </ele>
+    <name>85</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0289264" lat="36.95601668">
+    <ele> </ele>
+    <name>86</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0279706" lat="36.95597688">
+    <ele> </ele>
+    <name>87</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.027101" lat="36.95597476">
+    <ele> </ele>
+    <name>88</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0262162" lat="36.95600148">
+    <ele> </ele>
+    <name>89</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0351463" lat="36.95659141">
+    <ele> </ele>
+    <name>90</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0342594" lat="36.9565885">
+    <ele> </ele>
+    <name>91</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0333703" lat="36.95660824">
+    <ele> </ele>
+    <name>92</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.032494" lat="36.9566517">
+    <ele> </ele>
+    <name>93</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0315952" lat="36.95664613">
+    <ele> </ele>
+    <name>94</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0307078" lat="36.95666431">
+    <ele> </ele>
+    <name>95</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0298262" lat="36.95666517">
+    <ele> </ele>
+    <name>96</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0289992" lat="36.95699902">
+    <ele> </ele>
+    <name>97</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0279947" lat="36.95666768">
+    <ele> </ele>
+    <name>98</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0271639" lat="36.95672855">
+    <ele> </ele>
+    <name>99</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0262559" lat="36.95672932">
+    <ele> </ele>
+    <name>100</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0351799" lat="36.9572949">
+    <ele> </ele>
+    <name>101</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0342889" lat="36.95731315">
+    <ele> </ele>
+    <name>102</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0333956" lat="36.95732058">
+    <ele> </ele>
+    <name>103</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0325223" lat="36.95734103">
+    <ele> </ele>
+    <name>104</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0316041" lat="36.95736608">
+    <ele> </ele>
+    <name>105</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0307032" lat="36.95738885">
+    <ele> </ele>
+    <name>106</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0298107" lat="36.95740408">
+    <ele> </ele>
+    <name>107</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0289343" lat="36.95741219">
+    <ele> </ele>
+    <name>108</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0280319" lat="36.95741802">
+    <ele> </ele>
+    <name>109</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0271506" lat="36.95744022">
+    <ele> </ele>
+    <name>110</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0262546" lat="36.95746448">
+    <ele> </ele>
+    <name>111</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.035205073" lat="36.958009627">
+    <ele> </ele>
+    <name>112</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0342994" lat="36.95802314">
+    <ele> </ele>
+    <name>113</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0334051" lat="36.95803502">
+    <ele> </ele>
+    <name>114</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0325277" lat="36.95807211">
+    <ele> </ele>
+    <name>115</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0316371" lat="36.95809289">
+    <ele> </ele>
+    <name>116</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0307381" lat="36.95808159">
+    <ele> </ele>
+    <name>117</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0298469" lat="36.95809988">
+    <ele> </ele>
+    <name>118</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0289369" lat="36.95813723">
+    <ele> </ele>
+    <name>119</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.028069" lat="36.95813854">
+    <ele> </ele>
+    <name>120</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0271631" lat="36.95814946">
+    <ele> </ele>
+    <name>121</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0262717" lat="36.95815981">
+    <ele> </ele>
+    <name>122</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0343074" lat="36.95873013">
+    <ele> </ele>
+    <name>123</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.033429" lat="36.95875858">
+    <ele> </ele>
+    <name>124</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0325702" lat="36.95877831">
+    <ele> </ele>
+    <name>125</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0316442" lat="36.95879495">
+    <ele> </ele>
+    <name>126</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0307533" lat="36.95880231">
+    <ele> </ele>
+    <name>127</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0298631" lat="36.95881162">
+    <ele> </ele>
+    <name>128</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0289556" lat="36.958845">
+    <ele> </ele>
+    <name>129</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0280971" lat="36.95884822">
+    <ele> </ele>
+    <name>130</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0271697" lat="36.95884715">
+    <ele> </ele>
+    <name>131</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0343328" lat="36.95945844">
+    <ele> </ele>
+    <name>132</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0334424" lat="36.95948855">
+    <ele> </ele>
+    <name>133</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0325745" lat="36.95949138">
+    <ele> </ele>
+    <name>134</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0316968" lat="36.95951494">
+    <ele> </ele>
+    <name>135</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0307898" lat="36.95951873">
+    <ele> </ele>
+    <name>136</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0299061" lat="36.95955091">
+    <ele> </ele>
+    <name>137</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0289905" lat="36.95954506">
+    <ele> </ele>
+    <name>138</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0281207" lat="36.95957065">
+    <ele> </ele>
+    <name>139</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0271979" lat="36.95959718">
+    <ele> </ele>
+    <name>140</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0343379" lat="36.96015585">
+    <ele> </ele>
+    <name>141</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0334645" lat="36.96018555">
+    <ele> </ele>
+    <name>142</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0325757" lat="36.96021051">
+    <ele> </ele>
+    <name>143</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.031694" lat="36.96020191">
+    <ele> </ele>
+    <name>144</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0307823" lat="36.96028317">
+    <ele> </ele>
+    <name>145</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0298718" lat="36.96027668">
+    <ele> </ele>
+    <name>146</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0289799" lat="36.96024504">
+    <ele> </ele>
+    <name>147</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0281235" lat="36.96028766">
+    <ele> </ele>
+    <name>148</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.034381" lat="36.96085737">
+    <ele> </ele>
+    <name>149</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0334926" lat="36.96089344">
+    <ele> </ele>
+    <name>150</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0325849" lat="36.96092138">
+    <ele> </ele>
+    <name>151</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0317092" lat="36.96092915">
+    <ele> </ele>
+    <name>152</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0308102" lat="36.96094985">
+    <ele> </ele>
+    <name>153</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0299398" lat="36.96097187">
+    <ele> </ele>
+    <name>154</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0290423" lat="36.96098331">
+    <ele> </ele>
+    <name>155</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0344274" lat="36.96160315">
+    <ele> </ele>
+    <name>156</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0335098" lat="36.96162569">
+    <ele> </ele>
+    <name>157</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0325999" lat="36.9615943">
+    <ele> </ele>
+    <name>158</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0317244" lat="36.96166464">
+    <ele> </ele>
+    <name>159</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0308394" lat="36.96167016">
+    <ele> </ele>
+    <name>160</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0299369" lat="36.96168686">
+    <ele> </ele>
+    <name>161</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0290769" lat="36.96170515">
+    <ele> </ele>
+    <name>162</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.033567" lat="36.96234658">
+    <ele> </ele>
+    <name>163</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0326163" lat="36.96234329">
+    <ele> </ele>
+    <name>164</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0317203" lat="36.9623745">
+    <ele> </ele>
+    <name>165</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0308447" lat="36.96239331">
+    <ele> </ele>
+    <name>166</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0299252" lat="36.96242379">
+    <ele> </ele>
+    <name>167</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0290908" lat="36.96241771">
+    <ele> </ele>
+    <name>168</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0335423" lat="36.96305649">
+    <ele> </ele>
+    <name>169</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0326332" lat="36.96307503">
+    <ele> </ele>
+    <name>170</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0317577" lat="36.96308419">
+    <ele> </ele>
+    <name>171</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0308785" lat="36.96310584">
+    <ele> </ele>
+    <name>172</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0299822" lat="36.96309205">
+    <ele> </ele>
+    <name>173</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0290965" lat="36.96312262">
+    <ele> </ele>
+    <name>174</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0326648" lat="36.96377742">
+    <ele> </ele>
+    <name>175</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0317722" lat="36.96380556">
+    <ele> </ele>
+    <name>176</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0309039" lat="36.96379207">
+    <ele> </ele>
+    <name>177</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0299975" lat="36.96383088">
+    <ele> </ele>
+    <name>178</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0291114" lat="36.9638428">
+    <ele> </ele>
+    <name>179</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0327031" lat="36.96449062">
+    <ele> </ele>
+    <name>180</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0317886" lat="36.96450229">
+    <ele> </ele>
+    <name>181</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0309072" lat="36.9645315">
+    <ele> </ele>
+    <name>182</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.030027" lat="36.96457136">
+    <ele> </ele>
+    <name>183</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0291286" lat="36.96456161">
+    <ele> </ele>
+    <name>184</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0282546" lat="36.96457345">
+    <ele> </ele>
+    <name>185</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0318311" lat="36.96522602">
+    <ele> </ele>
+    <name>186</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0309234" lat="36.96525083">
+    <ele> </ele>
+    <name>187</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.030047" lat="36.96526835">
+    <ele> </ele>
+    <name>188</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0291509" lat="36.96527689">
+    <ele> </ele>
+    <name>189</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0282503" lat="36.96531019">
+    <ele> </ele>
+    <name>190</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.027359" lat="36.96531734">
+    <ele> </ele>
+    <name>191</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0309344" lat="36.96596275">
+    <ele> </ele>
+    <name>192</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0300587" lat="36.9659876">
+    <ele> </ele>
+    <name>193</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0291683" lat="36.96600566">
+    <ele> </ele>
+    <name>194</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0282654" lat="36.96600184">
+    <ele> </ele>
+    <name>195</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0273839" lat="36.96602209">
+    <ele> </ele>
+    <name>196</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.030096" lat="36.96668082">
+    <ele> </ele>
+    <name>197</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0291706" lat="36.96672215">
+    <ele> </ele>
+    <name>198</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0283224" lat="36.96674842">
+    <ele> </ele>
+    <name>199</name>
+    <desc> </desc>
+  </wpt>
+  <wpt lon="-119.0301031" lat="36.96743029">
+    <ele> </ele>
+    <name>200</name>
+    <desc> </desc>
+  </wpt>
+</gpx>

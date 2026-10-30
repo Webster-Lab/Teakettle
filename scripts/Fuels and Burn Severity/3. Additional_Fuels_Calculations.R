@@ -3,7 +3,7 @@
 #Last Updated: 2026-10-20
 #Copied from Hurteau Lab NAS 
 
-### Packages & Working Directory ####
+### Packages ####
 
 
 library(dplyr)
@@ -18,6 +18,8 @@ library(googledrive)
 #Download from Google Drive
 drive_auth()
 
+
+
 #designate where to store outputs and create upload function
 google_drive_outputs <- drive_get(as_id("1kAl5ASxI4XlM5YA3sXrcRfdk0joRFkYC"))
 
@@ -28,6 +30,8 @@ upload_output <- function(path, folder = google_drive_outputs) {
             name = basename(path))
 }
 
+
+#Identify and download compiled Qced fuel data
 
 folder <- as_id("12iF1t9FRETTb08eRjNvXjJkYHZGOTMeu")
 files <- drive_ls(folder)
