@@ -1,33 +1,32 @@
-##===================================================================
+## PT Data ===================================================================
   ## Project: TEAKETTLE
   ## Script to format all the Pressure Transducer (Level Logger) to a cleaner state and upload them back to Drive
   ## press Command+Option+O to collapse all sections and get an overview of the workflow!
-  ##==============================================================================
 
-##############
-## Packages ##
-##############
+
+
+#### Packages ####
+
 library(googledrive) 
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
 library(patchwork)
-
-#########################################
-##### Part 1: File Merging and Timestamps ####
-#########################################
+library(ggpmisc)
 
 
-###################################
+## Part 1: File Merging and Timestamps ####
+
+
 ## Clear folders that we will use ##
-###################################
+
 # list and delete all files in the folder
 files <- list.files(path = "googledrive", full.names = TRUE)
 file.remove(files)
 
-#####################
-#### Import PT Data ####
-#####################
+
+##### Import PT Data ####
+
 # set up Google Drive folder
 pt <- googledrive::as_id("1_f7I40tZq0trjxeIqOctxAzBfXi3Wg6j")
 
@@ -60,9 +59,9 @@ pt_list <- lapply(seq_along(pt_files$name), function(i) {
 # assign names to the list elements based on the file names
 names(pt_list) <- pt_files$name
 
-############################
+
 #### Format date column ####
-############################
+
 # loop through each data frame in the list
 for (i in seq_along(pt_list)) {
   # Access the current data frame
@@ -74,9 +73,8 @@ for (i in seq_along(pt_list)) {
   pt_list[[i]] <- df
 }
 
-##########################################################
 #### Combine and format Date and Time into one column #### 
-##########################################################
+
 # loop through each data frame in the list
 for (i in seq_along(pt_list)) {
   # access the current data frame
@@ -94,9 +92,8 @@ for (i in seq_along(pt_list)) {
   pt_list[[i]] <- df
 }
 
-####################################
 #### Combine data for each site ####
-####################################
+
 # site names
 site_names <- c("TEAK01", "Outlet")
 # group files in `pt_list` by matching `site_names` in file names
@@ -132,9 +129,9 @@ combined_by_site <- lapply(combined_by_site, function(df) {
     ))
 })
 
-###########################################
+
 #### Save combined files back to Drive ####
-###########################################
+
 # write files to local data folder
 lapply(names(combined_by_site), function(site) {
   # define file path
@@ -155,9 +152,9 @@ lapply(names(combined_by_site), function(site) {
 
 
 
-#####################################################
-### Now for the Air PT (these are HOBO logger files)
-######################################################
+
+#### Air PT (these are HOBO logger files) ####
+
 
 #define folder
 pt <- googledrive::as_id("https://drive.google.com/drive/folders/1_f7I40tZq0trjxeIqOctxAzBfXi3Wg6j")
@@ -243,15 +240,13 @@ drive_put(
 
 
 
-#########################################################
-#####Part 2: Compensating with Air PT data #########
-#######################################################
+## Part 2: Compensating with Air PT data #########
 
 air_data <- Air_pt_combined
 
-#####################################
+
 #### Change all units to meters and round to every 15 min ####
-#####################################
+
 ## air pressure in kPa to m
 #1 kPa = 0.101972 m
 air_data <- air_data %>%
@@ -261,9 +256,9 @@ air_data <- air_data %>%
 
 
 
-######################################
+
 #### Merging PT with Air pressure ####
-######################################
+
   
 #again, we want this rounded to every 15 minutes
 
@@ -274,9 +269,8 @@ air_data <- air_data %>%
   })
   
   
-########################################
 #### Manual Barometric Compensation ####
-########################################
+
 ## Once the units for each column are the same, subtract the barometric column from the Levelogger data 
 # to get the true net water level recorded by the Levelogger.
 
@@ -287,9 +281,9 @@ air_data <- air_data %>%
   
 
 
-#####################################
+
 #### Plot it up! #####################
-######################################
+
 
 
   all_sites <- bind_rows(combined_with_air, .id = "Site")
@@ -314,16 +308,16 @@ air_data <- air_data %>%
   
   
   
-  #########################################
+
   #### Save compensated files to Drive ####
-  #########################################
+ 
   # loop through each data frame in the list
   for (i in seq_along(combined_with_air)) {
     # access the current data frame
     df <- combined_with_air[[i]]
     
     # save new data frame
-    write.csv(df, paste0("", names(combined_with_air)[i]), row.names=FALSE, quote=FALSE)
+    write.csv(df, paste0(names(combined_with_air)[i], "_final.csv"), row.names=FALSE, quote=FALSE)
     
     # define the local folder path and the target folder ID in Google Drive
     file <- paste0("", names(combined_with_air)[i])
@@ -339,9 +333,9 @@ air_data <- air_data %>%
   
 
   
-  ################################################
+
   ######## Fix Sensor Offets (moving PT) #########
-  ###############################################
+ 
   
   
   #### Manuela's reusable sensor-move offset fn ####
@@ -366,7 +360,8 @@ air_data <- air_data %>%
     df
   }
   
-
+# NOTES FROM SIRAJ:
+  ### 5/25/26: Outlet went from 15 cm to 23 at bottom of opening.  TEAK01 went from 30 cm to 15 cm.
   
   
   #TEAK01
@@ -409,6 +404,7 @@ air_data <- air_data %>%
   
   OUT_out_of_water_points <- as.POSIXct(c(
     "2026-05-19 09:00:00",
+    "2026-05-19 09:15:00",
     "2026-05-19 09:30:00",
     "2026-05-19 09:45:00",
     "2026-05-19 10:00:00",
@@ -447,9 +443,8 @@ air_data <- air_data %>%
   
   
   
-  ################################################
+
   ######### Merge PT data with field Q data ########
-  ###############################################
 
   #Get Q data ready
   file <- drive_get("2026_Q")
@@ -491,7 +486,7 @@ air_data <- air_data %>%
     select(-Date, -Time, -ms)   # avoid clashing with injections' Date/Time
   
   # Match DateTime type/timezone in both
-  tz_use <- "America/Denver"   # change to your logger timezone
+  tz_use <- "Etc/GMT+7"   # change to your logger timezone
   loggers    <- loggers    %>% mutate(DateTime = force_tz(as.POSIXct(DateTime), tz_use))
   Q_PT_sites <- Q_PT_sites %>% mutate(DateTime = force_tz(as.POSIXct(DateTime), tz_use))
   
@@ -501,12 +496,10 @@ air_data <- air_data %>%
   
   
   
-  #How does it look?
-
-
+  #### Plot joined salt slug/ PT data ####
   
   tz_use  <- "Etc/GMT+8"   # same as before
-  t_start <- as.POSIXct("2026-05-01 00:00:00", tz = tz_use)
+  t_start <- as.POSIXct("2025-10-01 00:00:00", tz = tz_use)
   t_end   <- as.POSIXct("2026-10-01 00:00:00", tz = tz_use)
   
   plot_site <- function(site) {
@@ -518,7 +511,7 @@ air_data <- air_data %>%
     k <- max(lv$LEVEL_comp.m) / max(q$Q_m3s)
     
     ggplot() +
-      geom_line(data = lv, aes(DateTime, LEVEL_comp.m), color = "steelblue") +
+      geom_line(data = lv, aes(DateTime, Final_Corrected_Lvl), color = "steelblue") +
       geom_point(data = q,  aes(DateTime, Q_m3s * k), color = "firebrick", size = 2.5) +
       scale_y_continuous(
         name = "LEVEL_comp (m)",
@@ -536,10 +529,302 @@ air_data <- air_data %>%
   
   sites <- unique(Q_PT_sites$DataID)
   wrap_plots(lapply(sites, plot_site), ncol = 1)
+  
+  
+  #### TEAK01 - Rating Curve 1: October 2025 - May 22 2026 ####
+  ### PT moved on May 25, 2026
 
+ #Filter to calibration points 
+#Select the right tame frame and site, with no na's, 0's or flagged data points
+  rating_data <- joined %>%
+    filter(!is.na(Final_Corrected_Lvl), Final_Corrected_Lvl > 0, !is.na(Q_m3s), Q_m3s > 0, DataID == "TEAK01", Date < "2026-05-25", flag == "Good" | flag == "ok")
+  
 
-#file.remove(list.files(pattern = "\\.png$", ignore.case = TRUE))
+  ##### Fit rating curve #####
+
+  log_model <- lm(log(Q_m3s) ~ log(Final_Corrected_Lvl), data = rating_data)
+  summary(log_model)
+  
+  a <- exp(coef(log_model)[1])
+  b <- coef(log_model)[2]
+  cat(sprintf("Rating curve: Q_m3s = %.6f * Final_Corrected_Lvl ^ %.4f
+", a, b))
+  
+  #Predict flows based on rating curve
+  cutoff_teak <- ymd_hm("2026-05-25 10:30", tz = "Etc/GMT+7")
+  
+  TEAK01_predicted <- combined_with_air$TEAK01 %>%
+    mutate(Q_m3s_pred = ifelse(Final_Corrected_Lvl > 0 & DateTime <= cutoff_teak,
+                               a * (Final_Corrected_Lvl ^ b),
+                               NA))
+  TEAK01_pred1 <- TEAK01_predicted
+
+  ##### Diagnostic plot: equation + R2 #####
+  
+  p_rating_real <- ggplot(rating_data, aes(x = Final_Corrected_Lvl, y = Q_m3s)) +
+    geom_point() +
+    stat_poly_line() +
+    stat_poly_eq(aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*"))) +
+    labs(title = paste("rating curve -- real space (reference only)"),
+         subtitle = "Line/R2 here are a plain linear fit on raw units, NOT the power-law model -- see log-log plot for the real fit",
+         x = "Final_Corrected_Lvl (m)", y = "Observed Q (m3/s)") +
+    theme_classic(base_size = 15)
+  print(p_rating_real)
+  ggsave(paste0("figures/TEAK01_1_ratingcurve_realspace.png"), plot = p_rating_real, width = 8, height = 6, dpi = 300)
+  
+ 
+  ##### Diagnostic plot 2: log-log space -- this IS the model fit #####
+
+  # log_model was fit as log(Q_m3s) ~ log(Final_Corrected_Lvl), so plotting the
+  # same log-transformed axes and overlaying that model's own coefficients
+  # (geom_abline, not a re-fit stat_poly_line) guarantees the line and R2 shown
+  # here are exactly the model actually used downstream -- a straight line here
+  # is what "the power-law assumption holds" looks like.
+  r2_log_val <- summary(log_model)$r.squared
+  p_rating_log <- ggplot(rating_data, aes(x = log(Final_Corrected_Lvl), y = log(Q_m3s))) +
+    geom_point() +
+    geom_abline(intercept = coef(log_model)[1], slope = coef(log_model)[2],
+                color = "steelblue", linewidth = 1) +
+    annotate("text", x = -Inf, y = Inf, hjust = -0.05, vjust = 1.3, size = 4,
+             label = sprintf("log(Q) = %.4f + %.4f*log(Level)\nR2 (log-log) = %.3f",
+                             coef(log_model)[1], coef(log_model)[2], r2_log_val)) +
+    labs(title = paste("rating curve -- log-log space"),
+         x = "log( Final_Corrected_Lvl )", y = "log( Observed Q )") +
+    theme_classic(base_size = 15)
+  print(p_rating_log)
+  ggsave(paste0("figures/TEAK01_1_ratingcurve_loglog.png"), plot = p_rating_log, width = 8, height = 6, dpi = 300)
+  
+ 
+  ##### Time series: predicted vs. observed #####
+ 
+  p_ts <- ggplot() +
+    geom_line(data = TEAK01_predicted, aes(x = DateTime, y = Q_m3s_pred), linewidth = 1.0, color = "black") +
+    geom_point(data = rating_data, aes(x = DateTime, y = Q_m3s), color = "red", size = 4) +
+    labs(x = "", y = "Q (m3/s)", title = paste("predicted discharge")) +
+    theme_classic(base_size = 15)
+  print(p_ts)
+  ggsave(paste0("figures/TEAK01_1_predicted_Q.png"), plot = p_ts, width = 8, height = 4, dpi = 300)
+  
+  
+ 
+  
+  #### TEAK01 - Rating Curve 2: May 28 - Sept 2026 ####
+  ### PT moved on May 25, 2026
+  
+  #Filter to calibration points 
+  
+  #Select the right tame frame and site, with no na's, 0's or flagged data points
+  rating_data <- joined %>%
+    filter(!is.na(Final_Corrected_Lvl), Final_Corrected_Lvl > 0, !is.na(Q_m3s), Q_m3s > 0, DataID == "TEAK01", Date > "2026-05-25", flag == "Good"| flag == "ok")
+  
+  
+  
+  ##### Fit rating curve #####
+  
+  log_model <- lm(log(Q_m3s) ~ log(Final_Corrected_Lvl), data = rating_data)
+  summary(log_model)
+  
+  a <- exp(coef(log_model)[1])
+  b <- coef(log_model)[2]
+  cat(sprintf("Rating curve: Q_m3s = %.6f * Final_Corrected_Lvl ^ %.4f
+", a, b))
+  
+  
+  #Predict flows based on rating curve
+  cutoff_teak <- ymd_hm("2026-05-25 10:30", tz = "Etc/GMT+7")
+  
+  TEAK01_predicted <- combined_with_air$TEAK01 %>%
+    mutate(Q_m3s_pred = ifelse(Final_Corrected_Lvl > 0 & DateTime > cutoff_teak,
+                               a * (Final_Corrected_Lvl ^ b),
+                               NA))
+  TEAK01_pred2 <- TEAK01_predicted
+  
+  
+  ##### Diagnostic plot: equation + R2 #####
+  
+  p_rating_real <- ggplot(rating_data, aes(x = Final_Corrected_Lvl, y = Q_m3s)) +
+    geom_point() +
+    stat_poly_line() +
+    stat_poly_eq(aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*"))) +
+    labs(title = paste("rating curve -- real space (reference only)"),
+         subtitle = "Line/R2 here are a plain linear fit on raw units, NOT the power-law model -- see log-log plot for the real fit",
+         x = "Final_Corrected_Lvl (m)", y = "Observed Q (m3/s)") +
+    theme_classic(base_size = 15)
+  print(p_rating_real)
+  ggsave(paste0("figures/TEAK01_2_ratingcurve_realspace.png"), plot = p_rating_real, width = 8, height = 6, dpi = 300)
+  
+
+  ##### Diagnostic plot 2: log-log space -- this IS the model fit #####
+  
+  # log_model was fit as log(Q_m3s) ~ log(Final_Corrected_Lvl), so plotting the
+  # same log-transformed axes and overlaying that model's own coefficients
+  # (geom_abline, not a re-fit stat_poly_line) guarantees the line and R2 shown
+  # here are exactly the model actually used downstream -- a straight line here
+  # is what "the power-law assumption holds" looks like.
+  r2_log_val <- summary(log_model)$r.squared
+  p_rating_log <- ggplot(rating_data, aes(x = log(Final_Corrected_Lvl), y = log(Q_m3s))) +
+    geom_point() +
+    geom_abline(intercept = coef(log_model)[1], slope = coef(log_model)[2],
+                color = "steelblue", linewidth = 1) +
+    annotate("text", x = -Inf, y = Inf, hjust = -0.05, vjust = 1.3, size = 4,
+             label = sprintf("log(Q) = %.4f + %.4f*log(Level)\nR2 (log-log) = %.3f",
+                             coef(log_model)[1], coef(log_model)[2], r2_log_val)) +
+    labs(title = paste("rating curve -- log-log space"),
+         x = "log( Final_Corrected_Lvl )", y = "log( Observed Q )") +
+    theme_classic(base_size = 15)
+  print(p_rating_log)
+  ggsave(paste0("figures/TEAK01_2_ratingcurve_loglog.png"), plot = p_rating_log, width = 8, height = 6, dpi = 300)
+  
+  
+  ##### Time series: predicted vs. observed #####
+  
+  p_ts <- ggplot() +
+    geom_line(data = TEAK01_predicted, aes(x = DateTime, y = Q_m3s_pred), linewidth = 1.0, color = "black") +
+    geom_point(data = rating_data, aes(x = DateTime, y = Q_m3s), color = "red", size = 4) +
+    labs(x = "", y = "Q (m3/s)", title = paste("predicted discharge")) +
+    theme_classic(base_size = 15)
+  print(p_ts)
+  ggsave(paste0("figures/TEAK01_2_predicted_Q.png"), plot = p_ts, width = 8, height = 4, dpi = 300)
+  
+  
+  
+  
+  #### Outlet - Rating Curve 1: October 2025 - Sept 2026 ####
+  
+  
+  #Filter to calibration points 
+  
+  #Select the right tame frame and site, with no na's, 0's or flagged data points
+  rating_data <- joined %>%
+    filter(!is.na(Final_Corrected_Lvl), Final_Corrected_Lvl > 0, !is.na(Q_m3s), Q_m3s > 0, DataID == "OUT", flag == "Good"| flag == "ok")
+  
+  
+  
+  ##### Fit rating curve #####
+  
+  log_model <- lm(log(Q_m3s) ~ log(Final_Corrected_Lvl), data = rating_data)
+  summary(log_model)
+  
+  a <- exp(coef(log_model)[1])
+  b <- coef(log_model)[2]
+  cat(sprintf("Rating curve: Q_m3s = %.6f * Final_Corrected_Lvl ^ %.4f
+", a, b))
+  
+  
+  #Predict flows based on rating curve
+  cutoff <- ymd_hm("2025-10-01 10:30", tz = "Etc/GMT+7")
+  
+  Outlet_predicted <- combined_with_air$OUT %>%
+    mutate(Q_m3s_pred = ifelse(Final_Corrected_Lvl > 0 & DateTime > cutoff,
+                               a * (Final_Corrected_Lvl ^ b),
+                               NA))
+  
+  
+  
+  ##### Diagnostic plot: equation + R2 #####
+  
+  p_rating_real <- ggplot(rating_data, aes(x = Final_Corrected_Lvl, y = Q_m3s)) +
+    geom_point() +
+    stat_poly_line() +
+    stat_poly_eq(aes(label = paste(after_stat(eq.label), after_stat(rr.label), after_stat(p.value.label), sep = "*\", \"*"))) +
+    labs(title = paste("rating curve -- real space (reference only)"),
+         subtitle = "Line/R2 here are a plain linear fit on raw units, NOT the power-law model -- see log-log plot for the real fit",
+         x = "Final_Corrected_Lvl (m)", y = "Observed Q (m3/s)") +
+    theme_classic(base_size = 15)
+  print(p_rating_real)
+  ggsave(paste0("figures/Outlet_1_ratingcurve_realspace.png"), plot = p_rating_real, width = 8, height = 6, dpi = 300)
+  
+  
+  ##### Diagnostic plot 2: log-log space -- this IS the model fit #####
+  
+  # log_model was fit as log(Q_m3s) ~ log(Final_Corrected_Lvl), so plotting the
+  # same log-transformed axes and overlaying that model's own coefficients
+  # (geom_abline, not a re-fit stat_poly_line) guarantees the line and R2 shown
+  # here are exactly the model actually used downstream -- a straight line here
+  # is what "the power-law assumption holds" looks like.
+  r2_log_val <- summary(log_model)$r.squared
+  p_rating_log <- ggplot(rating_data, aes(x = log(Final_Corrected_Lvl), y = log(Q_m3s))) +
+    geom_point() +
+    geom_abline(intercept = coef(log_model)[1], slope = coef(log_model)[2],
+                color = "steelblue", linewidth = 1) +
+    annotate("text", x = -Inf, y = Inf, hjust = -0.05, vjust = 1.3, size = 4,
+             label = sprintf("log(Q) = %.4f + %.4f*log(Level)\nR2 (log-log) = %.3f",
+                             coef(log_model)[1], coef(log_model)[2], r2_log_val)) +
+    labs(title = paste("rating curve -- log-log space"),
+         x = "log( Final_Corrected_Lvl )", y = "log( Observed Q )") +
+    theme_classic(base_size = 15)
+  print(p_rating_log)
+  ggsave(paste0("figures/Outlet_1_ratingcurve_loglog.png"), plot = p_rating_log, width = 8, height = 6, dpi = 300)
+  
+  
+  ##### Time series: predicted vs. observed #####
+  
+  p_ts <- ggplot() +
+    geom_line(data = Outlet_predicted, aes(x = DateTime, y = Q_m3s_pred), linewidth = 1.0, color = "black") +
+    geom_point(data = rating_data, aes(x = DateTime, y = Q_m3s), color = "red", size = 4) +
+    labs(x = "", y = "Q (m3/s)", title = paste("predicted discharge")) +
+    theme_classic(base_size = 15)
+  print(p_ts)
+  ggsave(paste0("figures/Outlet_1_predicted_Q.png"), plot = p_ts, width = 8, height = 4, dpi = 300)
+  
+  
+  #### Plot full predicted discharge timeline ####
+  
+  # Stitch the two TEAK01 rating curves together at the PT move
+  TEAK01_full <- bind_rows(
+    TEAK01_pred1 %>% filter(DateTime <= cutoff_teak),
+    TEAK01_pred2 %>% filter(DateTime >  cutoff_teak)
+  ) %>%
+    transmute(Site = "TEAK01", DateTime, Q_m3s_pred)
+  
+  Outlet_full <- Outlet_predicted %>%
+    transmute(Site = "Outlet", DateTime, Q_m3s_pred)
+  
+  full_pred <- bind_rows(TEAK01_full, Outlet_full)
+  
+  p_full <- ggplot(full_pred, aes(x = DateTime, y = Q_m3s_pred)) +
+    geom_line(linewidth = 0.8, color = "black") +
+    geom_vline(xintercept = cutoff_teak, linetype = "dashed", color = "grey50") +  # PT move (shows on both panels)
+    facet_wrap(~ Site, ncol = 1, scales = "free_y") +   # shared y-axis so the two sites are directly comparable
+    scale_x_datetime(date_breaks = "1 month", date_labels = "%b %Y") +
+    labs(x = NULL, y = "Q (m3/s)", title = "Predicted discharge") +
+    theme_classic(base_size = 15)
+  
+  print(p_full)
+  ggsave("figures/Full_predicted_Q.png", p_full, width = 12, height = 8, dpi = 300)
+ 
+  
+#### Upload all files and figs to gdrive ####
+  
+  # Folder IDs (the part after /folders/ in each URL)
+  figures_folder_id <- "1kwkEwgYSi_eQLCF-mk0AzM7dKhN2CfSI"
+  predicted_Q_folder_id    <- "1vl_NjSlwYpnCMWUulOZnn3rJesHEItro"
+  
+  # --- 1. Upload everything in the figures folder ---
+  fig_files <- list.files("figures", full.names = TRUE)
+  fig_files <- fig_files[!dir.exists(fig_files)]   # files only, skip subfolders
+  
+  for (f in fig_files) {
+    drive_put(media = f, path = as_id(figures_folder_id))
+  }
+  
+  # --- 2. Save and upload full predicted flow, one file per site ---
+
+  
+  write.csv(TEAK01_full, "TEAK01_predicted_Q.csv",
+            row.names = FALSE, quote = FALSE)
+  write.csv(Outlet_full, "OUT_predicted_Q.csv",
+            row.names = FALSE, quote = FALSE)
+  
+  drive_put(media = "TEAK01_predicted_Q.csv", path = as_id(predicted_Q_folder_id))
+  drive_put(media = "OUT_predicted_Q.csv", path = as_id(predicted_Q_folder_id))
+  
+  
+#### Clean up repo ####
+file.remove(list.files(pattern = "\\.png$", ignore.case = TRUE))
 file.remove(list.files(pattern = "\\.csv$", ignore.case = TRUE))
+
+file.remove(fig_files)
 
 #also clear out google drive downloads
 
