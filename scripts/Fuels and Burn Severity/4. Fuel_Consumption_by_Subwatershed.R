@@ -11,6 +11,7 @@ library(tidyverse)
 library(ggplot2)
 library(googledrive)
 library(sf)
+library(terra)
 
 
 ### Data Download and Merging ####
@@ -335,7 +336,57 @@ p <- ggplot() +
   theme_minimal() +
   labs(title = "Change in fuel biomass by transect")
 
-ggsave("biomass_change_map.png", plot = p,
+
+
+
+
+#### Add TK 2.0 Gridpoint Data ####
+
+#create id and select columns of interest
+
+# Grid plots: IDs prefixed with "P"
+grid_pts <- gridpoints %>%
+  st_zm(drop = TRUE, what = "ZM") %>%
+  st_transform(st_crs(subwatersheds_sf)) %>%
+  inner_join(grid_fuels %>% select(Plot, biomass_change), by = "Plot") %>%
+  filter(!is.na(biomass_change)) %>%
+  transmute(plot_id = sprintf("P%03d", Plot),
+            biomass_change,
+            survey = "Grid plots (2022-2026)")
+
+# Transects: IDs prefixed with "T"
+trans_pts <- paired_fuels_sf %>%
+  st_zm(drop = TRUE, what = "ZM") %>%
+  st_transform(st_crs(subwatersheds_sf)) %>%
+  transmute(plot_id = sprintf("T%03d", transect),      # T001 ... T222
+            biomass_change,
+            survey = "Additional transects (2025-2026)") %>%
+  filter(!is.na(biomass_change))
+
+
+
+all_pts <- rbind(grid_pts, trans_pts) %>%
+  filter(!is.na(biomass_change)) 
+  
+lims <- quantile(all_pts$biomass_change, c(0.05, 0.95), na.rm = TRUE)
+
+p_map <- ggplot() +
+  geom_sf(data = subwatersheds_sf, fill = "grey95", color = "grey40", linewidth = 0.4) +
+  geom_sf(data = streams_clipped, color = "lightblue3", linewidth = 0.2) +
+  geom_sf(data = all_pts, aes(color = biomass_change, shape = survey), size = 2.5) +
+  scale_color_gradientn(colors = c( "red3", "red2", "orange2", "orange",
+                                   "gold2", "yellowgreen", "green4"),
+                        limits = lims, oob = scales::squish,
+                        name = "Biomass change (Mg/ha)") +
+  scale_shape_manual(values = c("Grid plots (2022-2026)" = 16,
+                                "Additional transects (2025-2026)" = 17),
+                     name = "Survey") +
+  theme_minimal() +
+  labs(title = "Change in fuel biomass")
+
+p_map
+
+ggsave("biomass_change_map.png", plot = p_map,
        width = 8, height = 8, dpi = 300, bg = "white")
 
 # 2. Upload to the Drive folder
@@ -347,35 +398,282 @@ drive_put(media = "biomass_change_map.png",
 
 
 
+#### Count transects and summarize biomass change by subwatershed ####
+
+# Tag each point with the subwatershed it falls inside
+pts_in_ws <- st_join(all_pts,
+                     subwatersheds_sf %>% select(watershed_name),
+                     join = st_intersects)
+
+# Summarize per watershed
+ws_summary <- pts_in_ws %>%
+  st_drop_geometry() %>%
+  filter(!is.na(watershed_name)) %>%
+  group_by(watershed_name) %>%
+  summarise(n_pts = n(),
+            n_grid = sum(survey == "Grid plots (2022-2026)"),
+            n_trans = sum(survey == "Additional transects (2025-2026)"),
+            mean_biomass_change = mean(biomass_change, na.rm = TRUE),
+            .groups = "drop")
+
+# Attach back to the polygons (watersheds with no points get a count of 0, mean NA)
+subwatersheds_summary <- subwatersheds_sf %>%
+  left_join(ws_summary, by = "watershed_name") %>%
+  mutate(across(c(n_pts, n_grid, n_trans), ~ replace_na(.x, 0)))
 
 
-#add gridpoints transects -- check this
+# Build the table without geometry
+ws_table <- subwatersheds_summary %>%
+  st_drop_geometry() %>%
+  select(watershed_name, n_pts, n_grid, n_trans, mean_biomass_change) %>%
+  arrange(watershed_name)
 
-grid_pts <- grid_fuels_sf %>%
-  transmute(id = as.character(Plot), biomass_change, survey = "Grid plots (2022-2026)")
+# Save locally
+write.csv(ws_table, "subwatershed_biomass_change_summary.csv", row.names = FALSE)
 
-trans_pts <- paired_fuels_sf %>%
-  st_transform(st_crs(subwatersheds_sf)) %>%
-  transmute(id = as.character(transect), biomass_change, survey = "Additional transects (2025-2026)")
+drive_put(media = "subwatershed_biomass_change_summary.csv",
+          path = map_folder,
+          name = "subwatershed_biomass_change_summary.csv")
 
-all_pts <- rbind(grid_pts, trans_pts) %>%
-  filter(!is.na(biomass_change)) %>%
-  arrange(abs(biomass_change))
+#Plot these subwatersheds by avg biomass change
 
-lims <- quantile(all_pts$biomass_change, c(0.05, 0.95), na.rm = TRUE)
+# Color limits based on the watershed means (not the individual points)
+ws_lims <- quantile(subwatersheds_summary$mean_biomass_change, c(0.05, 0.95), na.rm = TRUE)
 
-# 3. Map
-p_map <- ggplot() +
-  geom_sf(data = subwatersheds_sf, fill = "grey95", color = "grey40", linewidth = 0.4) +
+p_ws <- ggplot() +
+  geom_sf(data = subwatersheds_summary,
+          aes(fill = mean_biomass_change),
+          color = "grey30", linewidth = 0.3) +
   geom_sf(data = streams_clipped, color = "lightblue3", linewidth = 0.2) +
-  geom_sf(data = all_pts, aes(color = biomass_change, shape = survey), size = 2.5) +
-  scale_color_gradient(low = "red", high = "green3",
-                       limits = lims, oob = scales::squish,
-                       name = "Biomass change (Mg/ha)") +
-  scale_shape_manual(values = c("Grid plots (2022-2026)" = 16,
-                                "Additional transects (2025-2026)" = 17),
-                     name = "Survey") +
+  geom_sf_text(data = subwatersheds_summary %>%
+                 filter(watershed_name != "outlet") %>%
+                 mutate(label = paste0(watershed_name, "\nn = ", n_pts)),
+               aes(label = label),
+               size = 2.5, lineheight = 0.9, check_overlap = TRUE) +
+  scale_fill_gradientn(colors = c("red4", "red3", "red2", "orange2", "orange",
+                                  "gold2", "yellow", "yellowgreen", "green4"),
+                       limits = ws_lims, oob = scales::squish,
+                       na.value = "grey90",
+                       name = "Mean biomass\nchange (Mg/ha)") +
   theme_minimal() +
-  labs(title = "Change in fuel biomass")
+  labs(title = "Mean change in fuel biomass by subwatershed")
 
-p_map
+p_ws
+
+ggsave("subwatershed_biomass_change_map.png", plot = p_ws,
+       width = 12, height = 12, dpi = 300, bg = "white")
+
+drive_put(media = "subwatershed_biomass_change_map.png",
+          path = map_folder,
+          name = "subwatershed_biomass_change_map.png")
+
+
+
+#### Correlate fuel loads to RdNBR data ####
+
+
+
+#Pulling in burn severity data again -- see  1. Teakettle Burn Severity for details
+r <- drive_get("ca3686111904320250824_20241009_20251012_rdnbr.tif")
+
+drive_download(r, path = "temp.tif", overwrite = TRUE)
+
+r <- rast("temp.tif")  # raster
+
+
+outlet_vect <- project(vect(outlet), crs(r))
+
+r_cont <- crop(r, outlet_vect) %>% mask(outlet_vect)
+
+names(r_cont) <- "RdNBR"
+
+
+#get everybody in the same crs
+# Give every point a stable ID, then build the buffer from that
+pts_v <- project(vect(all_pts), crs(r_cont))
+pts_v$pt_id <- seq_len(nrow(pts_v))
+
+# buffer() keeps the attributes, so pt_id rides along
+#put a 110 m buffer on each brown's line -- this was the distance with the best r2 values in the output 
+pts_buf  <- buffer(pts_v, width = 110)
+#get the mean of each set of pixels
+
+# Extract — keep ID
+sev_vals <- extract(r_cont, pts_buf, fun = mean, na.rm = TRUE)
+sev_vals <- sev_vals[, c("ID", "RdNBR")]     # explicit columns
+names(sev_vals) <- c("pt_id", "avg_RdNBR")
+
+# Sanity check
+stopifnot(nrow(sev_vals) == nrow(all_pts))
+
+# Join by ID, not position
+all_pts_sev <- all_pts %>%
+  mutate(pt_id = row_number()) %>%
+  left_join(sev_vals, by = "pt_id") %>%
+  filter(!is.na(avg_RdNBR), !is.na(biomass_change))
+
+nrow(all_pts_sev)
+
+cor.test(all_pts_sev$avg_RdNBR, all_pts_sev$biomass_change, method = "spearman")
+
+mod <- lm(biomass_change ~ avg_RdNBR, data = all_pts_sev)
+summary(mod)
+
+ggplot(all_pts_sev, aes(avg_RdNBR, biomass_change)) +
+  geom_point(alpha = 0.4) +
+  geom_smooth(method = "lm", se = FALSE) +
+  #geom_smooth(se = FALSE, color = "red")  # loess — see if it's curved
+theme_minimal() +
+  labs(title = "All transects: biomass change vs RdNBR")
+
+
+
+# Reproject the raster to WGS84 lat/lon so ggplot handles it correctly
+r_ll <- project(r_cont, "EPSG:4326")
+
+# Now the x/y are true degrees
+r_df <- as.data.frame(r_ll, xy = TRUE, na.rm = TRUE)
+names(r_df)[3] <- "RdNBR"
+
+all_pts_ll <- st_transform(all_pts, crs(r_ll))
+
+p_check <- ggplot() +
+  geom_raster(data = r_df, aes(x = x, y = y, fill = RdNBR)) +
+  scale_fill_gradientn(
+    colors = c("darkgreen", "yellowgreen", "yellow", "orange", "red", "darkred"),
+    limits = c(-500, 1200), oob = squish, name = "RdNBR"
+  ) +
+  geom_sf(data = all_pts_ll, aes(color = biomass_change), size = 2.5) +
+  scale_color_gradientn(
+    colors = c("black", "white"), name = "Biomass change (Mg/ha)"
+  ) +
+  theme_minimal() +
+  labs(title = "Biomass change points over RdNBR severity")
+
+
+p_check
+
+# Keep only grid plots (plot_id starts with "P")
+grid_only <- all_pts_sev %>%
+  filter(grepl("^P", plot_id))
+
+# How many survived?
+nrow(grid_only)
+
+# Correlation
+cor.test(grid_only$avg_RdNBR, grid_only$biomass_change, method = "spearman")
+
+# Model
+mod_grid <- lm(biomass_change ~ avg_RdNBR, data = grid_only)
+summary(mod_grid)
+
+# Quick visual
+ggplot(grid_only, aes(avg_RdNBR, biomass_change)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm", se = FALSE) +
+ # geom_smooth(se = FALSE, color = "red") +   # loess — check for curvature
+  theme_minimal() +
+  labs(title = "Grid plots only: biomass change vs RdNBR")
+
+
+#### The correlation is shit. Lets try CBI data. ####
+
+r <- drive_get("ca3686111904320250824_20241009_20251012_rdnbr_cbi.tif")
+drive_download(r, path = "temp.tif", overwrite = TRUE)
+r <- rast("temp.tif")
+r[r %in% c(-9, -9999)] <- NA
+
+outlet_vect <- project(vect(outlet), crs(r))
+r_cont <- crop(r, outlet_vect) %>% mask(outlet_vect)   # <- added mask for parity
+names(r_cont) <- "CBI"
+
+pts_v <- project(vect(all_pts), crs(r_cont))
+pts_v$pt_id <- seq_len(nrow(pts_v))
+pts_buf <- buffer(pts_v, width = 110)
+
+sev_vals <- extract(r_cont, pts_buf, fun = mean, na.rm = TRUE)
+sev_vals <- sev_vals[, c("ID", "CBI")]
+names(sev_vals) <- c("pt_id", "avg_CBI")
+
+stopifnot(nrow(sev_vals) == nrow(all_pts))
+
+all_pts_sev <- all_pts %>%
+  mutate(pt_id = row_number()) %>%
+  left_join(sev_vals, by = "pt_id") %>%
+  filter(!is.na(avg_CBI), !is.na(biomass_change))
+
+
+cor.test(all_pts_sev$avg_CBI, all_pts_sev$biomass_change, method = "spearman")
+
+mod <- lm(biomass_change ~ avg_CBI, data = all_pts_sev)
+summary(mod)
+
+ggplot(all_pts_sev, aes(avg_CBI, biomass_change)) +
+  geom_point(alpha = 0.4) +
+  geom_smooth(method = "lm", se = FALSE) +
+  #geom_smooth(se = FALSE, color = "red")  # loess — see if it's curved
+  theme_minimal() +
+  labs(title = "All transects: biomass change vs CBI")
+
+
+
+# Reproject the raster to WGS84 lat/lon so ggplot handles it correctly
+r_ll <- project(r_cont, "EPSG:4326")
+
+# Now the x/y are true degrees
+r_df <- as.data.frame(r_ll, xy = TRUE, na.rm = TRUE)
+names(r_df)[3] <- "CBI"
+
+all_pts_ll <- st_transform(all_pts, crs(r_ll))
+
+p_check <- ggplot() +
+  geom_raster(data = r_df, aes(x = x, y = y, fill = CBI)) +
+  scale_fill_gradientn(
+    colors = c("darkgreen", "yellowgreen", "yellow", "orange", "red", "darkred"),
+    limits = c(-0.5, 3), oob = squish, name = "CBI"
+  ) +
+  geom_sf(data = all_pts_ll, aes(color = biomass_change), size = 2.5) +
+  scale_color_gradientn(
+    colors = c("blue", "white", "red"), name = "Biomass change (Mg/ha)"
+  ) +
+  theme_minimal() +
+  labs(title = "Biomass change points over Composite Burn Index")
+
+p_check
+
+# Keep only grid plots (plot_id starts with "P")
+grid_only <- all_pts_sev %>%
+  filter(grepl("^P", plot_id))
+
+# How many survived?
+nrow(grid_only)
+
+# Correlation
+cor.test(grid_only$avg_CBI, grid_only$biomass_change, method = "spearman")
+
+# Model
+mod_grid <- lm(biomass_change ~ avg_CBI, data = grid_only)
+summary(mod_grid)
+
+# Quick visual
+ggplot(grid_only, aes(avg_CBI, biomass_change)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm", se = FALSE) +
+  # geom_smooth(se = FALSE, color = "red") +   # loess — check for curvature
+  theme_minimal() +
+  labs(title = "Grid plots only: biomass change vs CBI")
+
+### OOF
+
+#### Clean up repo ####
+
+# 1. Free-floating CSVs in the working directory (not in subfolders)
+loose_csvs <- list.files(pattern = "\\.csv$", full.names = TRUE)
+loose_pngs <- list.files(pattern = "\\.png$", full.names = TRUE)
+loose_tifs <- list.files(pattern = "\\.tif$", full.names = TRUE)
+loose_gpx <- list.files(pattern = "\\.gpx$", full.names = TRUE)
+
+file.remove(loose_csvs)
+file.remove(loose_pngs)
+file.remove(loose_tifs)
+file.remove(loose_gpx)
