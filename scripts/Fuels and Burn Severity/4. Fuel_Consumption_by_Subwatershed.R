@@ -74,6 +74,8 @@ gridpoints$Plot <- as.numeric(gridpoints$name)
 folder <- as_id("1AATNCB0taGl6pY7CG60nvgs0pM00k5Dz")
 files  <- drive_ls(folder)
 
+if (!dir.exists("googledrive")) dir.create("googledrive")
+
 for (i in seq_len(nrow(files))) {
   drive_download(as_id(files$id[i]),
                  path = file.path("googledrive", files$name[i]),
@@ -308,7 +310,7 @@ streams_clipped <- st_intersection(streams, outlet)
 # Teakettle_Fuels.csv are actually called (check names(paired_fuels))
 # Use crs = 4326 (WGS84 lat/long)
 paired_fuels_sf <- paired_fuels %>%
-  filter(!is.na(Longitude), !is.na(Latitude), !is.na(biomass_change)) %>%
+  filter(!is.na(Longitude), !is.na(Latitude), !is.na(carbon_change)) %>%
   st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326)
 
 
@@ -317,26 +319,20 @@ paired_fuels_sf <- st_transform(paired_fuels_sf, st_crs(subwatersheds_sf))
 gridpoints      <- st_transform(gridpoints, st_crs(subwatersheds_sf))
 
 
-#get fuel consumption quantiles
-qs <- quantile(paired_fuels_sf$biomass_change, probs = seq(0, 1, 0.25), na.rm = TRUE)
-
 # 3. Map
 p <- ggplot() +
   geom_sf(data = subwatersheds_sf,
           fill = "grey95", color = "grey40", linewidth = 0.4) +
   geom_sf(data =streams_clipped, color = "lightblue3", linewidth = 0.2) +
   geom_sf(data = paired_fuels_sf,
-          aes(color = biomass_change),
+          aes(color = carbon_change),
           size = 2) +
   geom_sf(data = gridpoints, color = "grey20", shape = 1, size = 1) + 
   
-  scale_color_gradientn(colors = c("red", "orange", "yellow", "green4"),
-                        values = scales::rescale(qs),
-                        name = "Biomass change (Mg/ha)") +
+  scale_color_gradientn(colors = c("red", "orange", "yellow2", "green4"),
+                        name = "Carbon change (Mg/ha)") +
   theme_minimal() +
-  labs(title = "Change in fuel biomass by transect")
-
-
+  labs(title = "Change in surface fuel carbon by transect")
 
 
 
@@ -348,10 +344,10 @@ p <- ggplot() +
 grid_pts <- gridpoints %>%
   st_zm(drop = TRUE, what = "ZM") %>%
   st_transform(st_crs(subwatersheds_sf)) %>%
-  inner_join(grid_fuels %>% select(Plot, biomass_change), by = "Plot") %>%
-  filter(!is.na(biomass_change)) %>%
+  inner_join(grid_fuels %>% select(Plot, carbon_change), by = "Plot") %>%
+  filter(!is.na(carbon_change)) %>%
   transmute(plot_id = sprintf("P%03d", Plot),
-            biomass_change,
+            carbon_change,
             survey = "Grid plots (2022-2026)")
 
 # Transects: IDs prefixed with "T"
@@ -359,44 +355,47 @@ trans_pts <- paired_fuels_sf %>%
   st_zm(drop = TRUE, what = "ZM") %>%
   st_transform(st_crs(subwatersheds_sf)) %>%
   transmute(plot_id = sprintf("T%03d", transect),      # T001 ... T222
-            biomass_change,
+            carbon_change,
             survey = "Additional transects (2025-2026)") %>%
-  filter(!is.na(biomass_change))
+  filter(!is.na(carbon_change))
 
 
 
 all_pts <- rbind(grid_pts, trans_pts) %>%
-  filter(!is.na(biomass_change)) 
+  filter(!is.na(carbon_change)) 
   
-lims <- quantile(all_pts$biomass_change, c(0.05, 0.95), na.rm = TRUE)
+
 
 p_map <- ggplot() +
   geom_sf(data = subwatersheds_sf, fill = "grey95", color = "grey40", linewidth = 0.4) +
   geom_sf(data = streams_clipped, color = "lightblue3", linewidth = 0.2) +
-  geom_sf(data = all_pts, aes(color = biomass_change, shape = survey), size = 2.5) +
-  scale_color_gradientn(colors = c( "red3", "red2", "orange2", "orange",
-                                   "gold2", "yellowgreen", "green4"),
-                        limits = lims, oob = scales::squish,
-                        name = "Biomass change (Mg/ha)") +
+  geom_sf(data = all_pts, aes(color = carbon_change, shape = survey), size = 2.5) +
+  scale_color_gradientn(colors = c( "red3", "orange2","goldenrod1",
+                                   "gold2", "yellowgreen", "green4", "darkgreen"),
+                      
+                        name = "Carbon change (Mg/ha)") +
   scale_shape_manual(values = c("Grid plots (2022-2026)" = 16,
                                 "Additional transects (2025-2026)" = 17),
                      name = "Survey") +
   theme_minimal() +
-  labs(title = "Change in fuel biomass")
+  labs(title = "Change in fuel carbon")
 
 p_map
 
-ggsave("biomass_change_map.png", plot = p_map,
+ggsave("carbon_change_map.png", plot = p_map,
        width = 8, height = 8, dpi = 300, bg = "white")
 
 # 2. Upload to the Drive folder
 map_folder <- drive_get(as_id("1Wz4wbdnr1I7UyPM5elQTy9NjdFajzHmV"))
 
-drive_put(media = "biomass_change_map.png",
+drive_put(media = "carbon_change_map.png",
           path = map_folder,
-          name = "biomass_change_map.png")
+          name = "carbon_change_map.png")
 
-
+hist(grid_pts$carbon_change)
+mean(grid_pts$carbon_change)
+hist(trans_pts$carbon_change)
+mean(trans_pts$cabon_change)
 
 #### Count transects and summarize biomass change by subwatershed ####
 

@@ -337,9 +337,11 @@ fwd.coeff <- aggregate(cbind(QMD1, QMD10, QMD100, SG1, SG10, SG100, SEC1, SEC10,
 
 #Calculate average litter + duff depth, biomass, and carbon per transect
 
+#calculate average depth
 fine_fuels$littduff.ave <- (fine_fuels$littduff_1.5 + fine_fuels$littduff_0.5)/2 
-
+#calculate biomass -- using coefficient for litter + duff combined. Multiplying by 10 gets us to Mg/ha
 fine_fuels$littduff.biomass <- ((fine_fuels$littduff.ave*1.5286)*10) 
+#calculate carbon
 fine_fuels$littduff.carbon <- fine_fuels$littduff.biomass*0.37
 
 
@@ -498,6 +500,7 @@ logs$carbon <- logs$biomass/2
 
 
 #Save output of Carbon Calculations for each log
+if (!dir.exists("output")) dir.create("output")
 write.table(logs, "output/add_logcalculations2025.2026.csv", sep=",", row.names=FALSE)
 
 #Group Logs by New Logs, Sound Logs (Class 1-3), and Rotten Logs (Class 4-5)
@@ -543,7 +546,65 @@ upload_output("output/add.fuel.carbon.2026.csv")
 
 ### Plot Data for Comparison ####
 
-#first summarize
+#first carbon
+# Only transects measured in both years (drop #6)
+both <- intersect(carbon$transect[carbon$year == 2025],
+                  carbon$transect[carbon$year == 2026])
+
+carbon_long <- carbon %>%
+  filter(transect %in% both) %>%
+  select(transect, year, littduff.carbon, Carbon1hour, Carbon10hour,
+         Carbon100hour, CWD.Carbon.Sound, CWD.Carbon.Rotten) %>%
+  pivot_longer(-c(transect, year), names_to = "fuel_type", values_to = "carbon") %>%
+  mutate(
+    carbon = replace_na(carbon, 0),   # no logs / no material = 0, so it counts in the mean
+    year = factor(year),
+    fuel_type = factor(fuel_type,
+                       levels = c("CWD.Carbon.Rotten", "CWD.Carbon.Sound", "Carbon100hour",
+                                  "Carbon10hour", "Carbon1hour", "littduff.carbon"),   # first level = top of stack
+                       labels = c("CWD rotten (class 4-5)", "CWD sound (class 1-3)", "100-hr",
+                                  "10-hr", "1-hr", "Litter + duff"))
+  )
+
+# Mean per year x type
+stack_means <- carbon_long %>%
+  group_by(year, fuel_type) %>%
+  summarise(mean_c = mean(carbon), .groups = "drop")
+
+# Mean total + SE across transects, for the label on top of each bar
+totals_lab <- carbon_long %>%
+  group_by(year, transect) %>%
+  summarise(total = sum(carbon), .groups = "drop") %>%
+  group_by(year) %>%
+  summarise(mean_total = mean(total),
+            se = sd(total) / sqrt(n()),
+            n = n(), .groups = "drop")
+
+p_stack <- ggplot(stack_means, aes(x = year, y = mean_c, fill = fuel_type)) +
+  geom_col(width = 0.6, color = "black", linewidth = 0.3) +
+  geom_text(data = totals_lab,
+            aes(x = year, y = mean_total,
+                label = paste0(round(mean_total, 1), "\n(n = ", n, ")")),
+            inherit.aes = FALSE, vjust = -0.3, size = 3.8) +
+  scale_fill_manual(values = c(
+    "Litter + duff"         = '#4d184d',
+    "1-hr"                  = '#facd7f', 
+    "10-hr"                 = '#f5b038',
+    "100-hr"                = 'orange3',
+    "CWD sound (class 1-3)" = '#4061AD',
+    "CWD rotten (class 4-5)" = '#052878')) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
+  labs(x = NULL, y = "Mean carbon (Mg/ha)", fill = NULL,
+       title = "Fuel carbon by type, 2025 vs. 2026",
+       caption = "Means across transects measured in both years; transects without a fuel type count as 0") +
+  theme_classic(base_size = 14)
+
+p_stack
+
+#bring in 2022/2026 gridpoint data for comparison
+
+
+#Now Biomass
 
 biomass_summary <- carbon %>%   # swap in total_fuels if that's your combined data frame
   # Treat "no logs found" as zero so those transects count in the average
