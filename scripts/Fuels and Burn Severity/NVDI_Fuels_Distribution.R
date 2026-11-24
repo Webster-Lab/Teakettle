@@ -363,7 +363,20 @@ aoi <- st_read("googledrive/OUTLET_watershed.shp") |> st_transform(32611)
  
  #### Clean up repo ####
  
+ # 1. Free-floating CSVs in the working directory (not in subfolders)
+ loose_csvs <- list.files(pattern = "\\.csv$", full.names = TRUE)
+ loose_pngs <- list.files(pattern = "\\.png$", full.names = TRUE)
+ loose_tifs <- list.files(pattern = "\\.tif$", full.names = TRUE)
+ loose_gpx <- list.files(pattern = "\\.gpx$", full.names = TRUE)
  
+ file.remove(loose_csvs)
+ file.remove(loose_pngs)
+ file.remove(loose_tifs)
+ file.remove(loose_gpx)
  
+ #clear other folders:
+ 
+ unlink(list.files("googledrive", full.names = TRUE), recursive = TRUE)
+ unlink("teakettle_ndvi", recursive = TRUE)
  
  

@@ -1,5 +1,4 @@
-
-#### Investigating higher fuel loads in the Additional Brown's Lines
+#### Investigating higher fuel loads in the Additional Brown's Lines -------------------------------------
 
 library(dplyr)
 library(tidyverse)
@@ -9,9 +8,7 @@ library(stringr)
 library(patchwork)
 
 
-# --------------------------------------------------
-# READ IN DATASETS
-# --------------------------------------------------
+#### READ IN DATASETS -------------------------------------
 
 # 2025 data
 folder <- as_id("12iF1t9FRETTb08eRjNvXjJkYHZGOTMeu")
@@ -77,9 +74,7 @@ fuel_2021 <- read.csv(
 )
 
 
-# --------------------------------------------------
-# 2025: TRANSECT-LEVEL DEPTH DATA
-# --------------------------------------------------
+#### 2025: TRANSECT-LEVEL DEPTH DATA -------------------------------------
 
 fuel_2025_depth <- fuel_2025 %>%
   mutate(
@@ -106,23 +101,21 @@ fuel_2025_depth <- fuel_2025 %>%
   )
 
 
-# --------------------------------------------------
-# 2025: INDIVIDUAL LOG DATA
-# --------------------------------------------------
+#### 2025: INDIVIDUAL LOG DATA -------------------------------------
 
+# Species.Code is the species column in Additional_Fuels_2025_Compiled.csv.
 fuel_2025_logs <- fuel_2025 %>%
   transmute(
     Year = 2025,
     Transect,
+    Species.Code = as.character(Species.Code),
     Diameter = as.numeric(Diameter..cm.),
     Decay = as.numeric(as.character(Decay.Class))
   ) %>%
   filter(!is.na(Diameter))
 
 
-# --------------------------------------------------
-# 2022: TRANSECT-LEVEL DEPTH DATA
-# --------------------------------------------------
+#### 2022: TRANSECT-LEVEL DEPTH DATA -------------------------------------
 
 fuel_2022_depth <- fuel_2022 %>%
   mutate(
@@ -149,10 +142,8 @@ fuel_2022_depth <- fuel_2022 %>%
   )
 
 
-# --------------------------------------------------
-# 2022: INDIVIDUAL LOG DATA
+#### 2022: INDIVIDUAL LOG DATA -------------------------------------
 # USE SEPARATE COMPLETE LOG DATASET
-# --------------------------------------------------
 
 fuel_2022_logs <- logs_2022 %>%
   separate(
@@ -171,9 +162,7 @@ fuel_2022_logs <- logs_2022 %>%
   filter(!is.na(Diameter)) 
 
 
-# --------------------------------------------------
-# 2021: TRANSECT-LEVEL DEPTH DATA
-# --------------------------------------------------
+#### 2021: TRANSECT-LEVEL DEPTH DATA -------------------------------------
 
 fuel_2021_depth <- fuel_2021 %>%
   mutate(
@@ -200,9 +189,7 @@ fuel_2021_depth <- fuel_2021 %>%
   )
 
 
-# --------------------------------------------------
-# 2021: INDIVIDUAL LOG DATA
-# --------------------------------------------------
+#### 2021: INDIVIDUAL LOG DATA -------------------------------------
 
 fuel_2021_logs <- fuel_2021 %>%
   pivot_longer(
@@ -220,9 +207,7 @@ fuel_2021_logs <- fuel_2021 %>%
   filter(!is.na(Diameter))
 
 
-# --------------------------------------------------
-# COMBINE YEARS
-# --------------------------------------------------
+#### COMBINE YEARS -------------------------------------
 
 # Transect-level depth comparison
 
@@ -255,6 +240,7 @@ fuel_depth_comparison <- bind_rows(
 
 
 # Individual log comparison
+# (Species.Code only exists for 2025, so 2021 and 2022 logs get NA for Species.Code)
 
 fuel_log_comparison <- bind_rows(
   
@@ -268,17 +254,15 @@ fuel_log_comparison <- bind_rows(
       Plot = NA_character_,
       Transect = as.character(Transect)
     ) %>%
-    select(Year, Plot, Transect, Diameter, Decay)
+    select(Year, Plot, Transect, Species.Code, Diameter, Decay)
 )
 
 # Remove class 4-5 to check discrepancy
 
-fuel_log_comparison <- fuel_log_comparison %>%
+fuel_log_comparison_sound <- fuel_log_comparison %>%
   filter(Decay != 5 & Decay != 4)
 
-# --------------------------------------------------
-# CHECK DATASETS
-# --------------------------------------------------
+#### CHECK DATASETS -------------------------------------
 
 head(fuel_depth_comparison)
 head(fuel_log_comparison)
@@ -304,9 +288,7 @@ fuel_log_comparison %>%
   count(Year, Decay)
 
 
-# --------------------------------------------------
-# SUMMARY STATISTICS
-# --------------------------------------------------
+#### SUMMARY STATISTICS -------------------------------------
 
 # Mean litter + duff depth by year
 
@@ -338,9 +320,7 @@ depth_summary
 diameter_summary
 
 
-# --------------------------------------------------
-# PLOT COLORS
-# --------------------------------------------------
+#### PLOT COLORS -------------------------------------
 
 year_colors <- c(
   "2021" = "#8C6DAD",
@@ -349,9 +329,7 @@ year_colors <- c(
 )
 
 
-# --------------------------------------------------
-# PLOT 1: MEAN LITTER + DUFF DEPTH
-# --------------------------------------------------
+#### PLOT 1: MEAN LITTER + DUFF DEPTH -------------------------------------
 
 p1 <- ggplot(
   depth_summary,
@@ -378,9 +356,7 @@ p1 <- ggplot(
 p1
 
 
-# --------------------------------------------------
-# PLOT 2: MEAN LOG DIAMETER
-# --------------------------------------------------
+#### PLOT 2: MEAN LOG DIAMETER -------------------------------------
 
 p2 <- ggplot(
   diameter_summary,
@@ -412,9 +388,7 @@ p2
 p1 + p2
 
 
-# --------------------------------------------------
-# LOGS PER METER (INCLUDING ZERO-LOG TRANSECTS)
-# --------------------------------------------------
+#### LOGS PER METER (INCLUDING ZERO-LOG TRANSECTS) -------------------------------------
 
 # Create complete list of sampled transects
 
@@ -483,9 +457,7 @@ fuel_logs_per_meter <- all_transects %>%
 fuel_logs_per_meter
 
 
-# --------------------------------------------------
-# SUMMARY: LOGS PER METER
-# --------------------------------------------------
+#### SUMMARY: LOGS PER METER -------------------------------------
 
 logs_meter_summary <- fuel_logs_per_meter %>%
   group_by(Year) %>%
@@ -500,9 +472,7 @@ logs_meter_summary <- fuel_logs_per_meter %>%
 logs_meter_summary
 
 
-# --------------------------------------------------
-# PLOT 3: MEAN LOG DENSITY
-# --------------------------------------------------
+#### PLOT 3: MEAN LOG DENSITY -------------------------------------
 
 p3 <- ggplot(
   logs_meter_summary,
@@ -529,9 +499,7 @@ p3 <- ggplot(
 p3
 
 
-# --------------------------------------------------
-# COMBINE ALL THREE PLOTS
-# --------------------------------------------------
+#### COMBINE ALL THREE PLOTS -------------------------------------
 
 p1 + p2 + p3
 
@@ -548,9 +516,7 @@ p1 + p2 + p3
 
 
 
-#-------------------
-# COMPARE CARBON
-#------------------------
+#### COMPARE CARBON -------------------------------------
 
 #Download all files
 # Google Drive folder ID
@@ -570,27 +536,21 @@ for (i in seq_len(nrow(files))) {
 
 
 
-# --------------------------------------------------
-# INVESTIGATING CARBON BY FUEL TYPE AND YEAR
-# --------------------------------------------------
+#### INVESTIGATING CARBON BY FUEL TYPE AND YEAR -------------------------------------
 
 library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(tidyverse)
 
-# --------------------------------------------------
-# READ IN DATASETS
-# --------------------------------------------------
+#### READ IN DATASETS (CARBON) -------------------------------------
 
 c_plot_2026 <- read.csv("plotlevel.carbon.2026.csv")
 c_plot_2022 <- read.csv("plotlevel.carbon.2022.csv")
-c_add_2025.2026 <- read.csv("add.fuel.carbon.2026.csv")
+c_add_2025.2026 <- read.csv("add.fuel.carbon.2026.corrected.csv")
 
 
-# --------------------------------------------------
-# PREPARE PLOT-LEVEL DATA
-# --------------------------------------------------
+#### PREPARE PLOT-LEVEL DATA -------------------------------------
 
 # Add years
 c_plot_2026$Year <- 2026
@@ -655,9 +615,7 @@ c_plot <- bind_rows(
   select(-Litter.Carbon, -Duff.Carbon)
 
 
-# --------------------------------------------------
-# PREPARE ADDITIONAL FUELS DATA
-# --------------------------------------------------
+#### PREPARE ADDITIONAL FUELS DATA -------------------------------------
 
 c_add_2025.2026 <- c_add_2025.2026 %>%
   mutate(
@@ -677,9 +635,7 @@ c_add_2025.2026 <- c_add_2025.2026 %>%
   )
 
 
-# --------------------------------------------------
-# STANDARDIZE ADDITIONAL FUELS DATA
-# --------------------------------------------------
+#### STANDARDIZE ADDITIONAL FUELS DATA -------------------------------------
 
 c_add_clean <- c_add_2025.2026 %>%
   rename(
@@ -701,9 +657,7 @@ c_add_clean <- c_add_2025.2026 %>%
   )
 
 
-# --------------------------------------------------
-# STANDARDIZE PLOT-LEVEL DATA
-# --------------------------------------------------
+#### STANDARDIZE PLOT-LEVEL DATA -------------------------------------
 
 c_plot_clean <- c_plot %>%
   mutate(
@@ -721,9 +675,7 @@ c_plot_clean <- c_plot %>%
   )
 
 
-# --------------------------------------------------
-# COMBINE ALL DATASETS
-# --------------------------------------------------
+#### COMBINE ALL DATASETS -------------------------------------
 
 carbon_combined <- bind_rows(
   c_plot_clean,
@@ -751,9 +703,7 @@ carbon_combined %>%
   count(Year_Type)
 
 
-# --------------------------------------------------
-# PREPARE DATA FOR STACKED BAR GRAPH
-# --------------------------------------------------
+#### PREPARE DATA FOR STACKED BAR GRAPH -------------------------------------
 
 carbon_long <- carbon_combined %>%
   pivot_longer(
@@ -793,16 +743,7 @@ carbon_long <- carbon_combined %>%
 
 
 
-# ---------------------------------------------------
-# REMOVE CLASS 4-5 LOGS TO TEST DISCREPANCY
-#----------------------------------------------------
-
-carbon_long <- carbon_long %>%
-  filter(Fuel_Type != "Coarse Woody Debris (Class 4-5)")
-
-# --------------------------------------------------
-# CALCULATE MEAN CARBON BY YEAR TYPE AND FUEL TYPE
-# --------------------------------------------------
+#### CALCULATE MEAN CARBON BY YEAR TYPE AND FUEL TYPE -------------------------------------
 
 carbon_summary <- carbon_long %>%
   group_by(Year_Type, Fuel_Type) %>%
@@ -823,9 +764,7 @@ carbon_summary <- carbon_long %>%
 carbon_summary
 
 
-# --------------------------------------------------
-# STACKED BAR GRAPH
-# --------------------------------------------------
+#### STACKED BAR GRAPH -------------------------------------
 
 p_carbon <- ggplot(
   carbon_summary,
@@ -868,7 +807,7 @@ p_carbon <- ggplot(
     drop = FALSE
   ) +
   labs(
-    title = "Mean Carbon by Fuel Type and Sampling Year_No Class 4-5",
+    title = "Mean Carbon by Fuel Type and Sampling Year_Corrected",
     x = "Year / Dataset",
     y = expression("Mean Carbon (Mg/ha)"),
     fill = "Fuel Type"
@@ -893,7 +832,7 @@ p_carbon
 
 
 ggsave(
-  "Mean_Carbon_by_Fuel_Type_No4-5.png",
+  "Mean_Carbon_by_Fuel_Type_Corrected.png",
   plot = p_carbon,
   width = 10,
   height = 6,
@@ -905,8 +844,124 @@ folder <- as_id("1Wz4wbdnr1I7UyPM5elQTy9NjdFajzHmV")
 
 # Upload figure to Google Drive
 drive_upload(
-  media = "Mean_Carbon_by_Fuel_Type_No4-5.png",
+  media = "Mean_Carbon_by_Fuel_Type_Corrected.png",
   path = folder,
-  name = "Mean_Carbon_by_Fuel_Type_No4-5.png"
+  name = "Mean_Carbon_by_Fuel_Type_Corrected.png"
 )
 
+
+
+
+#### Correct class 5 diameter distributions -------------------------------------
+df <- fuel_log_comparison %>%
+  filter(Year == 2025)
+df <- df %>%
+  mutate(ClassGroup = factor(case_when(Decay <= 3 ~ "Class 1-3 (Sound)",
+                                       Decay == 4 ~ "Class 4",
+                                       Decay == 5 ~ "Class 5"),
+                             levels = c("Class 1-3 (Sound)", "Class 4", "Class 5")))
+
+
+
+
+# Mean and median per class group
+stats <- df %>%
+  group_by(ClassGroup) %>%
+  summarise(Mean = mean(Diameter), Median = median(Diameter), .groups = "drop") %>%
+  pivot_longer(c(Mean, Median), names_to = "Statistic", values_to = "value")
+
+ggplot(df, aes(x = Diameter)) +
+  geom_histogram(aes(fill = ClassGroup), binwidth = 10, boundary = 0, color = "white") +
+  geom_vline(data = stats,
+             aes(xintercept = value, linetype = Statistic, color = Statistic),
+             linewidth = 1) +
+  facet_wrap(~ ClassGroup, ncol = 1, scales = "free_y") +
+  scale_fill_manual(values = c("Class 1-3 (Sound)" = "#2c7fb8",
+                               "Class 4" = "#fdae61",
+                               "Class 5" = "#d73027"),
+                    guide = "none") +
+  scale_color_manual(values = c(Mean = "black", Median = "firebrick")) +
+  scale_linetype_manual(values = c(Mean = "solid", Median = "dashed")) +
+  labs(x = "Diameter (cm)", y = "Number of logs",
+       title = "Log diameter distribution by decay class",
+       color = NULL, linetype = NULL) +
+  theme_minimal() +
+  theme(legend.position = "top",
+        strip.text = element_text(face = "bold"))
+
+
+
+write.csv(df, "Prefire_Logs_combined.csv")
+
+
+#### Use Quantile Mapping to re-assign Class 5 diameter values based on Class 1-4 diameter distributions -------------------------------------
+
+# Drop logs with no decay class (one row in this file), since they can't be assigned to a pool
+df <- df %>% filter(!is.na(Decay))
+
+# Set the reference pool: class 1-4 logs from 2025, the same survey as the class 5 logs.
+ref_diam <- df %>%
+  filter(Year == 2025, Decay <= 4) %>%
+  pull(Diameter)
+
+# Identify which logs get corrected (2025 class 5 only)
+fix_idx <- df$Year == 2025 & df$Decay == 5
+
+# Convert each class 5 diameter to a percentile within the class 5 pool.
+# Mid-ranks (rank - 0.5) keep percentiles strictly between 0 and 1.
+p <- (rank(df$Diameter[fix_idx], ties.method = "average") - 0.5) / sum(fix_idx)
+
+# Look up the class 1-4 diameter at those same percentiles
+mapped <- quantile(ref_diam, probs = p, type = 8, names = FALSE)
+
+# Build predicted_diameter: unchanged for everything except 2025 class 5
+df$predicted_diameter <- df$Diameter
+df$predicted_diameter[fix_idx] <- mapped
+
+#Write csv and upload to gdrive
+
+write.csv(df, "2025_Fuels_Class_5_Predicted.csv")
+
+# Identify destination Google Drive folder
+folder <- as_id("1xneBVWvZuoQEdT53WLp3k8Iw3JcCXWRm")
+
+# Upload figure to Google Drive
+drive_upload(
+  media = "2025_Fuels_Class_5_Predicted.csv",
+  path = folder,
+  name = "2025_Fuels_Class_5_Predicted.csv"
+)
+
+
+
+# Sanity check: the class 5 distribution should now match class 1-4
+df %>%
+  filter(Year == 2025) %>%
+  mutate(ClassGroup = case_when(Decay <= 3 ~ "1-3", Decay == 4 ~ "4", Decay == 5 ~ "5")) %>%
+  group_by(ClassGroup) %>%
+  summarise(n = n(),
+            orig_median = median(Diameter),
+            pred_median = median(predicted_diameter),
+            orig_mean = mean(Diameter),
+            pred_mean = mean(predicted_diameter))
+
+# Plot class 5 before vs after against the class 1-4 reference
+
+plot_df <- bind_rows(
+  df %>% filter(Year == 2025, Decay <= 4) %>%
+    transmute(Pool = "Class 1-4 (reference)", Diameter = Diameter),
+  df %>% filter(fix_idx) %>%
+    transmute(Pool = "Class 5 (original)", Diameter = Diameter),
+  df %>% filter(fix_idx) %>%
+    transmute(Pool = "Class 5 (predicted)", Diameter = predicted_diameter)
+) %>%
+  mutate(Pool = factor(Pool, levels = c("Class 1-4 (reference)",
+                                        "Class 5 (original)",
+                                        "Class 5 (predicted)")))
+
+ggplot(plot_df, aes(x = Diameter, fill = Pool)) +
+  geom_histogram(aes(y = after_stat(density)), binwidth = 10, boundary = 0, color = "white") +
+  facet_wrap(~ Pool, ncol = 1) +
+  labs(x = "Diameter (cm)", y = "Density") +
+  theme_minimal() +
+  theme(legend.position = "none")

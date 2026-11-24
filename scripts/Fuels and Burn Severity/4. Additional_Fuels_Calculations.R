@@ -16,9 +16,6 @@ library(googledrive)
 ### Data Download, Cleaning, & Merging ####
 
 #Download from Google Drive
-drive_auth()
-
-
 
 #designate where to store outputs and create upload function
 google_drive_outputs <- drive_get(as_id("1kAl5ASxI4XlM5YA3sXrcRfdk0joRFkYC"))
@@ -47,9 +44,20 @@ drive_download(file,
                path = "Additional_Fuels_2025_Compiled.csv", 
                overwrite = TRUE)
 
+
+folder <- as_id("1xneBVWvZuoQEdT53WLp3k8Iw3JcCXWRm")
+files <- drive_ls(folder)
+file <- files[files$name == "2025_Fuels_Class_5_Predicted.csv", ]
+
+drive_download(file, 
+               path = "2025_Fuels_Class_5_Predicted.csv", 
+               overwrite = TRUE)
+
+
 #Read in cleaned and compiled Fuels Data 
 fuel_2025 <- read.csv("Additional_Fuels_2025_Compiled.csv")
 fuel_2026 <- read.csv("Additional_Fuels_2026_Compiled.csv")
+logs25 <- read.csv("2025_Fuels_Class_5_Predicted.csv")
 
 #lets separate out fine fuels and logs, and clean up column names first
 
@@ -68,15 +76,16 @@ fine_fuels25 <- fuel_2025 %>%
     h90 = as.numeric(Height.90cm)
   )
 
-logs25 <- fuel_2025 %>%
-  filter(!is.na(`Diameter..cm.`)) %>%
+logs25 <- logs25 %>%
   transmute(
-    year = 2025,
-    transect = as.integer(Transect),
-    diam = as.numeric(`Diameter..cm.`),
-    spec = toupper(str_trim(`Species.Code`)),
-    decay = as.integer(`Decay.Class`)
+    year      = as.integer(Year),
+    transect  = as.integer(Transect),
+    diam      = predicted_diameter,
+    spec      = Species.Code,
+    decay     = as.integer(Decay),
+    diam_orig = Diameter
   )
+
 
 fine_fuels26 <- fuel_2026 %>%
   transmute(
@@ -111,15 +120,19 @@ logs26 <- fuel_2026 %>%
     decay = as.integer(Decay)
   )
 
+
+
+
+
 #combine these dataframes 
 fine_fuels <- bind_rows(fine_fuels25, fine_fuels26)
 
 fine_fuels <-fine_fuels %>%
   filter(!is.na(bearing))
 
-#combine logs and recode UNK and ABIES SP. to UNKN (no coefficients for abies sp.)
+#combine logs and recode UNK, PINUS and ABIES SP.
 logs  <- bind_rows(logs25, logs26) %>%
-  mutate(spec = recode(spec, UNK = "UNKN", ABIES = "UNKN", PINUS = "PISP"))
+  mutate(spec = recode(spec, UNK = "UNKN", ABIES = "ABSP", PINUS = "PISP"))
 
 
 
@@ -499,6 +512,7 @@ logs$carbon <- logs$biomass/2
 
 
 
+
 #Save output of Carbon Calculations for each log
 if (!dir.exists("output")) dir.create("output")
 write.table(logs, "output/add_logcalculations2025.2026.csv", sep=",", row.names=FALSE)
@@ -540,8 +554,8 @@ carbon <- total_fuels %>%
 carbon$CWD.Biomass <- carbon$CWD.Biomass.Rotten + carbon$CWD.Biomass.Sound
 carbon$CWD.Carbon<- carbon$CWD.Carbon.Rotten + carbon$CWD.Carbon.Sound
 
-write.table(carbon, "output/add.fuel.carbon.2026.csv", sep=",", row.names=FALSE)
-upload_output("output/add.fuel.carbon.2026.csv")
+write.table(carbon, "output/add.fuel.carbon.2026.corrected.csv", sep=",", row.names=FALSE)
+upload_output("output/add.fuel.carbon.2026.corrected.csv")
 
 
 ### Plot Data for Comparison ####
@@ -637,10 +651,10 @@ p <- ggplot(biomass_summary, aes(x = fuel_type, y = mean_b, fill = year)) +
        caption = "Error bars show ± 1 SE") +
   theme_minimal(base_size = 13)
 
-ggsave("output/additional_fuels_summary.png", plot = p,
+ggsave("output/additional_fuels_summary_corrected.png", plot = p,
        width = 8, height = 5, dpi = 300, bg = "white")
 
-upload_output("output/additional_fuels_summary.png")
+upload_output("output/additional_fuels_summary_corrected.png")
 
 ### Pair Transects and Calculate Difference ####
 
@@ -664,8 +678,8 @@ totals_wide <- totals %>%
 totals_paired <- totals_wide %>%
   filter(!is.na(biomass_change))
 
-write.table(totals_paired, "output/add.paired.fuel.diff.csv", sep=",", row.names=FALSE)
-upload_output("output/add.paired.fuel.diff.csv")
+write.table(totals_paired, "output/add.paired.fuel.diff.corrected.csv", sep=",", row.names=FALSE)
+upload_output("output/add.paired.fuel.diff.corrected.csv")
 
 
 
